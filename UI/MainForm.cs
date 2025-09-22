@@ -309,11 +309,12 @@ namespace SymptomCheckerApp.UI
             _missingTransButton.Click += (s, e) => ShowMissingTranslationsDialog();
 
             _resultsList.Dock = DockStyle.Fill;
-            _resultsList.DrawMode = DrawMode.OwnerDrawFixed;
+            _resultsList.DrawMode = DrawMode.OwnerDrawVariable;
             _resultsList.ItemHeight = 22;
             _resultsList.AccessibleName = "Results";
             _resultsList.AccessibleDescription = "List of matching conditions";
             _resultsList.DrawItem += ResultsList_DrawItem;
+            _resultsList.MeasureItem += ResultsList_MeasureItem;
             _resultsList.DoubleClick += ResultsList_DoubleClick;
             _resultsList.MouseUp += (s, e) => { if (e.Button == MouseButtons.Right) _resultsContext.Show(_resultsList, e.Location); };
             // Configure tooltip (infobulle) to guide user to double-click for details
@@ -557,6 +558,14 @@ namespace SymptomCheckerApp.UI
                 // RTL for Arabic
                 bool rtl = string.Equals(t.CurrentLanguage, "ar", StringComparison.OrdinalIgnoreCase);
                 ApplyRtl(this, rtl);
+                // Align banner and menus for RTL
+                _triageBanner.TextAlign = rtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft;
+                try { _triageBanner.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _resultsContext.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                // Ensure primary list controls mirror for RTL languages
+                try { _resultsList.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _symptomList.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                // ToolTip may not expose RightToLeft in this target; skip explicit RTL on tooltip
 
                 // Rebuild triage banner for current language
                 UpdateTriageBanner();
@@ -585,8 +594,19 @@ namespace SymptomCheckerApp.UI
                 messages.Add(t?.T(k) ?? k);
             }
             var notice = t?.T("SeekCareDisclaimer") ?? "If these apply, consider seeking urgent medical attention. This tool is educational, not medical advice.";
-            var bullet = string.Join(Environment.NewLine + " • ", messages);
-            _triageBanner.Text = header + Environment.NewLine + " • " + bullet + Environment.NewLine + notice;
+            bool rtl = string.Equals(_translationService?.CurrentLanguage, "ar", StringComparison.OrdinalIgnoreCase);
+            if (rtl)
+            {
+                // For RTL, place bullet at the end for more natural reading
+                var lines = messages.Select(m => m + "  •");
+                var joined = string.Join(Environment.NewLine, lines);
+                _triageBanner.Text = header + Environment.NewLine + joined + Environment.NewLine + notice;
+            }
+            else
+            {
+                var bullet = string.Join(Environment.NewLine + " • ", messages);
+                _triageBanner.Text = header + Environment.NewLine + " • " + bullet + Environment.NewLine + notice;
+            }
             _triageBanner.Visible = true;
         }
 
@@ -734,7 +754,7 @@ namespace SymptomCheckerApp.UI
                 e.Graphics.FillRectangle(backBrush, e.Bounds);
                 var font = e.Font ?? SystemFonts.DefaultFont;
                 bool rtl = string.Equals(_translationService?.CurrentLanguage, "ar", StringComparison.OrdinalIgnoreCase);
-                var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+                var flags = TextFormatFlags.NoPrefix | TextFormatFlags.TextBoxControl | TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.WordBreak;
                 if (rtl) flags |= TextFormatFlags.RightToLeft | TextFormatFlags.Right;
                 var rect = e.Bounds;
                 rect.Inflate(-4, -2);
@@ -742,6 +762,25 @@ namespace SymptomCheckerApp.UI
             }
 
             e.DrawFocusRectangle();
+        }
+
+        private void ResultsList_MeasureItem(object? sender, MeasureItemEventArgs e)
+        {
+            if (e.Index < 0 || e.Index >= _resultsList.Items.Count)
+            {
+                e.ItemHeight = 22;
+                return;
+            }
+            string text = _resultsList.Items[e.Index]?.ToString() ?? string.Empty;
+            var font = _resultsList.Font ?? SystemFonts.DefaultFont;
+            bool rtl = string.Equals(_translationService?.CurrentLanguage, "ar", StringComparison.OrdinalIgnoreCase);
+            var flags = TextFormatFlags.NoPrefix | TextFormatFlags.TextBoxControl | TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.WordBreak;
+            if (rtl) flags |= TextFormatFlags.RightToLeft | TextFormatFlags.Right;
+            var width = Math.Max(10, _resultsList.ClientSize.Width - 8);
+            var size = TextRenderer.MeasureText(text, font, new Size(width, int.MaxValue), flags);
+            int min = 22;
+            e.ItemHeight = Math.Max(min, size.Height + 4);
+            e.ItemWidth = width;
         }
 
         private void ResultsList_DoubleClick(object? sender, EventArgs e)
@@ -870,6 +909,10 @@ namespace SymptomCheckerApp.UI
                 Height = 550
             };
             ApplyRtl(dlg, rtl);
+            if (rtl)
+            {
+                text = TransformBulletsForRtl(text);
+            }
             var tb = new TextBox
             {
                 Multiline = true,
@@ -883,6 +926,7 @@ namespace SymptomCheckerApp.UI
             if (rtl)
             {
                 try { tb.RightToLeft = RightToLeft.Yes; } catch { }
+                try { tb.TextAlign = HorizontalAlignment.Right; } catch { }
             }
             var btnPanel = new FlowLayoutPanel { Dock = DockStyle.Bottom, AutoSize = true, FlowDirection = FlowDirection.RightToLeft, Padding = new Padding(6) };
             var btnClose = new Button { Text = _translationService?.T("Close") ?? "Close", AutoSize = true };
@@ -894,6 +938,28 @@ namespace SymptomCheckerApp.UI
             dlg.Controls.Add(tb);
             dlg.Controls.Add(btnPanel);
             dlg.ShowDialog(this);
+        }
+
+        private string TransformBulletsForRtl(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            var lines = input.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var l = lines[i];
+                var trimmed = l.TrimStart();
+                if (trimmed.StartsWith("• ") || trimmed.StartsWith("•\t") || trimmed.StartsWith("•"))
+                {
+                    // Remove leading bullet and spaces, then append bullet at end
+                    int idx = l.IndexOf('•');
+                    if (idx >= 0)
+                    {
+                        var after = l.Substring(idx + 1).TrimStart();
+                        lines[i] = after + "  •";
+                    }
+                }
+            }
+            return string.Join(Environment.NewLine, lines);
         }
 
         private void ShowMissingTranslationsDialog()
@@ -965,8 +1031,10 @@ namespace SymptomCheckerApp.UI
             pd.PrintPage += (s, e) =>
             {
                 var font = new Font(FontFamily.GenericSansSerif, 10);
-                e.Graphics.MeasureString(text.Substring(charFrom), font, e.MarginBounds.Size, StringFormat.GenericTypographic, out int chars, out int lines);
-                e.Graphics.DrawString(text.Substring(charFrom, chars), font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
+                var g = e.Graphics;
+                if (g == null) { e.HasMorePages = false; return; }
+                g.MeasureString(text.Substring(charFrom), font, e.MarginBounds.Size, StringFormat.GenericTypographic, out int chars, out int lines);
+                g.DrawString(text.Substring(charFrom, chars), font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
                 charFrom += chars;
                 e.HasMorePages = charFrom < text.Length;
             };
@@ -1170,7 +1238,9 @@ namespace SymptomCheckerApp.UI
                 {
                     for (int i = 0; i < _languageSelector.Items.Count; i++)
                     {
-                        if (((LangItem)_languageSelector.Items[i]).Code.Equals(data.Language, StringComparison.OrdinalIgnoreCase))
+                        if (_languageSelector.Items[i] is LangItem li &&
+                            data.Language is string lang &&
+                            string.Equals(li.Code, lang, StringComparison.OrdinalIgnoreCase))
                         { _languageSelector.SelectedIndex = i; break; }
                     }
                 }
