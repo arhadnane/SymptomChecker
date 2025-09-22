@@ -96,6 +96,8 @@ SymptomChecker/
 
 ## Diagrams
 
+For a comprehensive set of UML-style diagrams (Use Case, Class, Sequence, Activity, State, Component, Deployment, Package, and more), see docs/uml-diagrams.md.
+
 ### Architecture overview
 
 ```mermaid
@@ -158,8 +160,8 @@ Note: GitHub and VS Code Preview support Mermaid. If needed, enable Mermaid prev
 
 - `data/conditions.json` contains a curated set of ~60+ conditions with standardized symptom names.
 - `data/categories.json` lists broad symptom categories. Each category can define:
-	- `keywords`: substrings to match symptoms (case-insensitive). Example: "Cough", "Wheez", "Nasal".
-	- `symptoms`: optional explicit list of symptom names. If present, it overrides keyword matching.
+  - `keywords`: substrings to match symptoms (case-insensitive). Example: "Cough", "Wheez", "Nasal".
+  - `symptoms`: optional explicit list of symptom names. If present, it overrides keyword matching.
 - `data/synonyms.json` provides alias mappings used by the filter and category keyword matching.
 - Sync will merge new conditions and symptoms; existing items are preserved where possible.
 - You can edit the JSON manually if you wish; the app rebuilds its symptom vocabulary at startup and after Sync.
@@ -167,13 +169,13 @@ Note: GitHub and VS Code Preview support Mermaid. If needed, enable Mermaid prev
 ## Troubleshooting
 
 - No results after clicking “Check”:
-	- Ensure you’ve selected at least one symptom.
-	- Lower the threshold, reduce Min Match, or increase Top‑K.
+  - Ensure you’ve selected at least one symptom.
+  - Lower the threshold, reduce Min Match, or increase Top‑K.
 - Unexpected matches:
-	- Try Jaccard or Cosine first; increase Min Match to 2.
-	- Naive Bayes may surface conditions with partial evidence due to smoothing.
+  - Try Jaccard or Cosine first; increase Min Match to 2.
+  - Naive Bayes may surface conditions with partial evidence due to smoothing.
 - Filter not finding a symptom:
-	- Check for synonymous terms (e.g., “Runny Nose” vs “Rhinorrhea”). The dataset uses common lay terms.
+  - Check for synonymous terms (e.g., “Runny Nose” vs “Rhinorrhea”). The dataset uses common lay terms.
 
 ## Disclaimer
 

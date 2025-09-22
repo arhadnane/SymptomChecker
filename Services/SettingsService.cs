@@ -7,6 +7,14 @@ public class SettingsService
     public class AppSettings
     {
         public string? Language { get; set; }
+        public bool DarkMode { get; set; }
+        public string? Model { get; set; }
+        public int ThresholdPercent { get; set; }
+        public int MinMatch { get; set; }
+        public int TopK { get; set; }
+        public bool ShowOnlyCategory { get; set; }
+        public string? SelectedCategory { get; set; }
+        public string? FilterText { get; set; }
     }
 
     private readonly string _settingsPath;
