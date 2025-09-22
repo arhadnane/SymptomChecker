@@ -186,7 +186,26 @@
     { "key": "Sweating", "fr": "Transpiration", "ar": "تعرق" },
     { "key": "Loss of Appetite", "fr": "Perte d'appétit", "ar": "فقدان الشهية" },
     { "key": "Insomnia", "fr": "Insomnie", "ar": "أرق" },
-    { "key": "Crusting", "fr": "Croûtes", "ar": "تكوّن قشور" }
+    { "key": "Crusting", "fr": "Croûtes", "ar": "تكوّن قشور" },
+    { "key": "Low Hemoglobin", "fr": "Hémoglobine basse", "ar": "انخفاض الهيموغلوبين" },
+    { "key": "Low Hematocrit", "fr": "Hématocrite bas", "ar": "انخفاض الهيماتوكريت" },
+    { "key": "Low Ferritin", "fr": "Ferritine basse", "ar": "انخفاض الفيريتين" },
+    { "key": "High WBC", "fr": "Leucocytose", "ar": "ارتفاع كريات الدم البيضاء" },
+    { "key": "High CRP", "fr": "CRP élevée", "ar": "ارتفاع البروتين المتفاعل C" },
+    { "key": "High ESR", "fr": "VS élevée", "ar": "ارتفاع سرعة الترسيب" },
+    { "key": "Elevated ALT", "fr": "ALAT élevée", "ar": "ارتفاع ALT (ألانين ترانسفيراز)" },
+    { "key": "Elevated AST", "fr": "ASAT élevée", "ar": "ارتفاع AST (أسبارتات ترانسفيراز)" },
+    { "key": "Elevated Bilirubin", "fr": "Bilirubine élevée", "ar": "ارتفاع البيليروبين" },
+    { "key": "Elevated ALP", "fr": "Phosphatase alcaline élevée", "ar": "ارتفاع الفوسفاتاز القلوي" },
+    { "key": "Elevated Amylase", "fr": "Amylase élevée", "ar": "ارتفاع الأميلاز" },
+    { "key": "Elevated Lipase", "fr": "Lipase élevée", "ar": "ارتفاع الليباز" },
+    { "key": "High Fasting Glucose", "fr": "Glycémie à jeun élevée", "ar": "ارتفاع سكر الدم الصائم" },
+    { "key": "High HbA1c", "fr": "Hémoglobine glyquée (HbA1c) élevée", "ar": "ارتفاع الهيموغلوبين السكري (HbA1c)" },
+    { "key": "High TSH", "fr": "TSH élevée", "ar": "ارتفاع TSH" },
+    { "key": "Low TSH", "fr": "TSH basse", "ar": "انخفاض TSH" },
+    { "key": "Low Free T4", "fr": "T4 libre basse", "ar": "انخفاض T4 الحر" },
+    { "key": "High Free T4", "fr": "T4 libre élevée", "ar": "ارتفاع T4 الحر" },
+    { "key": "Low Vitamin D", "fr": "Vitamine D basse", "ar": "انخفاض فيتامين د" }
   ],
   "conditions": [
     { "key": "Flu", "fr": "Grippe", "ar": "إنفلونزا" },
@@ -301,6 +320,7 @@
     { "key": "Genitourinary", "fr": "Génito-urinaire", "ar": "بولي تناسلي" },
     { "key": "Mental Health", "fr": "Santé mentale", "ar": "صحة نفسية" },
     { "key": "General/Systemic", "fr": "Général/Systémique", "ar": "عام/جهازي" },
-    { "key": "Sexual Health / STIs", "fr": "Santé sexuelle / IST", "ar": "الصحة الجنسية / الأمراض المنقولة جنسيًا" }
+    { "key": "Sexual Health / STIs", "fr": "Santé sexuelle / IST", "ar": "الصحة الجنسية / الأمراض المنقولة جنسيًا" },
+    { "key": "Laboratory Findings", "fr": "Résultats biologiques", "ar": "نتائج المختبر" }
   ]
 }

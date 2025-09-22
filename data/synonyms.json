@@ -26,6 +26,25 @@
     { "canonical": "Itching", "aliases": ["Pruritus"] },
     { "canonical": "Joint Pain", "aliases": ["Arthralgia"] },
     { "canonical": "Fatigue", "aliases": ["Malaise"] },
-    { "canonical": "Loss of Appetite", "aliases": ["Anorexia"] }
+    { "canonical": "Loss of Appetite", "aliases": ["Anorexia"] },
+    { "canonical": "Low Hemoglobin", "aliases": ["Low Hb", "Anemia on CBC", "Hb low"] },
+    { "canonical": "Low Hematocrit", "aliases": ["Low Hct", "Hematocrit low"] },
+    { "canonical": "Low Ferritin", "aliases": ["Ferritin low", "Low iron stores"] },
+    { "canonical": "High WBC", "aliases": ["Leukocytosis", "WBC elevated", "High white count"] },
+    { "canonical": "High CRP", "aliases": ["CRP elevated", "C-reactive protein high"] },
+    { "canonical": "High ESR", "aliases": ["ESR elevated", "Sed rate high"] },
+    { "canonical": "Elevated ALT", "aliases": ["ALT elevated", "High ALT", "SGPT high"] },
+    { "canonical": "Elevated AST", "aliases": ["AST elevated", "High AST", "SGOT high"] },
+    { "canonical": "Elevated Bilirubin", "aliases": ["Bilirubin elevated", "High bilirubin", "Hyperbilirubinemia"] },
+    { "canonical": "Elevated ALP", "aliases": ["ALP elevated", "High alkaline phosphatase", "ALP high"] },
+    { "canonical": "Elevated Amylase", "aliases": ["Amylase elevated", "High amylase"] },
+    { "canonical": "Elevated Lipase", "aliases": ["Lipase elevated", "High lipase"] },
+    { "canonical": "High Fasting Glucose", "aliases": ["Fasting glucose high", "High FBG", "Hyperglycemia (fasting)"] },
+    { "canonical": "High HbA1c", "aliases": ["A1c high", "Elevated HbA1c", "Glycated hemoglobin high"] },
+    { "canonical": "High TSH", "aliases": ["TSH elevated", "TSH high"] },
+    { "canonical": "Low TSH", "aliases": ["TSH low", "Suppressed TSH"] },
+    { "canonical": "Low Free T4", "aliases": ["FT4 low", "Free T4 low"] },
+    { "canonical": "High Free T4", "aliases": ["FT4 high", "Free T4 high"] },
+    { "canonical": "Low Vitamin D", "aliases": ["Vitamin D low", "25(OH)D low", "25-hydroxy vitamin D low"] }
   ]
 }

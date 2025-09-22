@@ -73,6 +73,49 @@
         "Testicular"
       ],
       "symptoms": []
+    },
+    {
+      "name": "Laboratory Findings",
+      "keywords": [
+        "Hemoglobin",
+        "Hematocrit",
+        "Ferritin",
+        "WBC",
+        "CRP",
+        "ESR",
+        "ALT",
+        "AST",
+        "Bilirubin",
+        "ALP",
+        "Amylase",
+        "Lipase",
+        "Glucose",
+        "HbA1c",
+        "TSH",
+        "T4",
+        "Vitamin D"
+      ],
+      "symptoms": [
+        "Low Hemoglobin",
+        "Low Hematocrit",
+        "Low Ferritin",
+        "High WBC",
+        "High CRP",
+        "High ESR",
+        "Elevated ALT",
+        "Elevated AST",
+        "Elevated Bilirubin",
+        "Elevated ALP",
+        "Elevated Amylase",
+        "Elevated Lipase",
+        "High Fasting Glucose",
+        "High HbA1c",
+        "High TSH",
+        "Low TSH",
+        "Low Free T4",
+        "High Free T4",
+        "Low Vitamin D"
+      ]
     }
   ]
 }
