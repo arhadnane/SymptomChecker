@@ -1,0 +1,31 @@
+{
+  "synonyms": [
+    { "canonical": "Runny Nose", "aliases": ["Rhinorrhea", "Nasal Discharge"] },
+    { "canonical": "Cough", "aliases": ["Tussis"] },
+    { "canonical": "Shortness of Breath", "aliases": ["Dyspnea", "Breathlessness"] },
+    { "canonical": "Fever", "aliases": ["Pyrexia", "High Temperature"] },
+    { "canonical": "Vomiting", "aliases": ["Emesis"] },
+    { "canonical": "Diarrhea", "aliases": ["Diarrhoea", "Loose Stools"] },
+    { "canonical": "Headache", "aliases": ["Cephalalgia"] },
+    { "canonical": "Rash", "aliases": ["Exanthem"] },
+    { "canonical": "Itching", "aliases": ["Pruritus"] },
+    { "canonical": "Ear Pain", "aliases": ["Otalgia"] },
+    { "canonical": "Genital Discharge", "aliases": ["Penile Discharge", "Vaginal Discharge", "Urethral Discharge"] },
+    { "canonical": "Urinary Burning", "aliases": ["Dysuria", "Burning with Urination"] },
+    { "canonical": "Pain During Sex", "aliases": ["Dyspareunia"] },
+    { "canonical": "Genital Ulcer", "aliases": ["Chancre", "Genital Sore", "Penile Ulcer", "Vaginal Ulcer"] },
+    { "canonical": "Genital Sores", "aliases": ["Herpetic Lesions", "Genital Blisters"] },
+    { "canonical": "Genital Warts", "aliases": ["HPV Warts", "Condyloma Acuminata"] },
+    { "canonical": "Pelvic Pain", "aliases": ["Lower Pelvic Pain"] },
+    { "canonical": "Genital Discomfort", "aliases": ["Irritation in Genital Area", "Urethral Irritation"] },
+    { "canonical": "Testicular Pain", "aliases": ["Scrotal Pain"] },
+    { "canonical": "Jaundice", "aliases": ["Icterus", "Yellow Skin", "Yellow Eyes"] },
+    { "canonical": "Dark Urine", "aliases": ["Tea-colored Urine", "Brown Urine"] },
+    { "canonical": "Right Upper Abdominal Pain", "aliases": ["RUQ Pain", "Right Upper Quadrant Pain"] },
+    { "canonical": "Pale Stools", "aliases": ["Light-colored Stools", "Clay-colored Stools", "Acholic Stools"] },
+    { "canonical": "Itching", "aliases": ["Pruritus"] },
+    { "canonical": "Joint Pain", "aliases": ["Arthralgia"] },
+    { "canonical": "Fatigue", "aliases": ["Malaise"] },
+    { "canonical": "Loss of Appetite", "aliases": ["Anorexia"] }
+  ]
+}

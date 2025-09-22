@@ -1,0 +1,78 @@
+{
+  "categories": [
+    {
+      "name": "Respiratory",
+      "keywords": ["Cough", "Shortness of Breath", "Wheez", "Chest Tightness", "Nasal", "Runny Nose", "Sneez", "Sore Throat", "Pharyngitis", "Bronch"],
+      "symptoms": []
+    },
+    {
+      "name": "Gastrointestinal",
+  "keywords": ["Abdominal", "Nausea", "Vomit", "Diarrhea", "Bloat", "Constipation", "Heartburn", "Regurgitation", "Appetite", "Gas", "Blood in Stool", "Stool"],
+      "symptoms": []
+    },
+    {
+      "name": "Neurological",
+      "keywords": ["Headache", "Dizziness", "Vertigo", "Numbness", "Tingling", "Weakness", "Balance", "Sensitivity to Light", "Sensitivity to Sound"],
+      "symptoms": []
+    },
+    {
+      "name": "Musculoskeletal",
+      "keywords": ["Back Pain", "Neck Pain", "Leg Pain", "Muscle", "Stiffness", "Spasm", "Joint", "Tenderness", "Reduced Mobility", "Gout"],
+      "symptoms": []
+    },
+    {
+      "name": "Dermatological",
+      "keywords": ["Rash", "Itching", "Scaling", "Dry Skin", "Facial Redness", "Flushing", "Visible Blood Vessels", "Skin Redness", "Warmth", "Psoriasis", "Eczema", "Dermatitis"],
+      "symptoms": []
+    },
+    {
+      "name": "ENT/Eye",
+      "keywords": ["Ear", "Hearing", "Tinnitus", "Eye", "Conjunctivitis", "Crusting", "Tearing", "Discharge", "Blurred Vision", "Dry Eye", "Irritation"],
+      "symptoms": []
+    },
+    {
+      "name": "Cardiac/Vascular",
+      "keywords": ["Chest Pain", "Palpitations", "Hypertension", "Angina", "Heart Failure"],
+      "symptoms": []
+    },
+    {
+      "name": "Endocrine/Metabolic",
+      "keywords": ["Thirst", "Frequent Urination", "Weight Gain", "Weight Loss", "Heat Intolerance", "Cold Intolerance", "Dry Skin", "Hypothyroidism", "Hyperthyroidism", "Diabetes"],
+      "symptoms": []
+    },
+    {
+      "name": "Genitourinary",
+      "keywords": ["Urinary", "Flank Pain", "Blood in Urine", "Lower Abdominal Pain", "Kidney"],
+      "symptoms": []
+    },
+    {
+      "name": "Mental Health",
+      "keywords": ["Anxiety", "Panic", "Low Mood", "Loss of Interest", "Sleep Changes", "Insomnia", "Irritability", "Poor Concentration"],
+      "symptoms": []
+    },
+    {
+      "name": "General/Systemic",
+  "keywords": ["Fever", "Fatigue", "Chills", "Sweating", "Night Sweats", "Weakness", "Pale Skin", "Confusion", "Jaundice"],
+      "symptoms": []
+    },
+    {
+      "name": "Sexual Health / STIs",
+      "keywords": [
+        "Genital",
+        "Penile",
+        "Vaginal",
+        "Urethral",
+        "Discharge",
+        "Ulcer",
+        "Sores",
+        "Dysuria",
+        "Urinary Burning",
+        "Dyspareunia",
+        "Pain During Sex",
+        "Pelvic Pain",
+        "Testicular"
+      ],
+      "symptoms": []
+    }
+  ]
+}

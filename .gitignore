@@ -1,0 +1,31 @@
+# Build artifacts
+bin/
+obj/
+TestResults/
+
+# IDE
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code workspace settings (optional)
+.vscode/
+
+# Logs and reports
+*.log
+/data/translation_report.txt
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Other
+*.pdb
+*.cache
+*.tmp
+*.DS_Store
+Thumbs.db
