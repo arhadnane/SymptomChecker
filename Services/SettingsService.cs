@@ -23,6 +23,8 @@ public class SettingsService
         public int? DiastolicBP { get; set; }
         public int? SpO2 { get; set; }
         public double? WeightKg { get; set; }
+        // Decision rules context
+        public int? AgeYears { get; set; }
     }
 
     private readonly string _settingsPath;

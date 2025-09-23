@@ -106,6 +106,18 @@ namespace SymptomCheckerApp.UI
     private readonly Label _lblBP = new Label();
     private readonly Label _lblSpO2 = new Label();
     private readonly Label _lblWeight = new Label();
+    // Decision rules (Centor/McIsaac)
+    private readonly Label _lblRules = new Label();
+    private readonly GroupBox _grpCentor = new GroupBox();
+    private readonly CheckBox _centorFever = new CheckBox();
+    private readonly CheckBox _centorTonsils = new CheckBox();
+    private readonly CheckBox _centorNodes = new CheckBox();
+    private readonly CheckBox _centorNoCough = new CheckBox();
+    private readonly Label _centorScore = new Label();
+    private readonly Label _mcIsaacScore = new Label();
+    private readonly Label _centorAdvice = new Label();
+    private readonly Label _lblAge = new Label();
+    private readonly NumericUpDown _numAge = new NumericUpDown();
     private SymptomCheckerService? _service;
     private CategoriesService? _categoriesService;
     private SynonymService? _synonymService;
@@ -262,8 +274,9 @@ namespace SymptomCheckerApp.UI
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
-                RowCount = 5
+                RowCount = 6
             };
+            rightPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             rightPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             rightPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             rightPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
@@ -272,6 +285,7 @@ namespace SymptomCheckerApp.UI
 
             var topControls = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
             var vitalsRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+            var rulesRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
 
             _modelSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _modelSelector.Items.AddRange(new object[] { DetectionModel.Jaccard, DetectionModel.Cosine, DetectionModel.NaiveBayes });
@@ -372,29 +386,29 @@ namespace SymptomCheckerApp.UI
             _lblVitals.Text = "Vitals:"; _lblVitals.AutoSize = true; _lblVitals.Padding = new Padding(10, 6, 0, 0);
             _lblTemp.Text = "Temp (°C):"; _lblTemp.AutoSize = true; _lblTemp.Padding = new Padding(10, 6, 0, 0);
             _numTempC.DecimalPlaces = 1; _numTempC.Increment = 0.1M; _numTempC.Minimum = 30; _numTempC.Maximum = 45; _numTempC.Width = 70;
-            _numTempC.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.TempC = (double)_numTempC.Value; _settingsService.Save(); } };
+            _numTempC.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.TempC = (double)_numTempC.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             _lblHR.Text = "HR (bpm):"; _lblHR.AutoSize = true; _lblHR.Padding = new Padding(10, 6, 0, 0);
             _numHR.Minimum = 20; _numHR.Maximum = 240; _numHR.Width = 70;
-            _numHR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.HeartRate = (int)_numHR.Value; _settingsService.Save(); } };
+            _numHR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.HeartRate = (int)_numHR.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             _lblRR.Text = "RR (/min):"; _lblRR.AutoSize = true; _lblRR.Padding = new Padding(10, 6, 0, 0);
             _numRR.Minimum = 4; _numRR.Maximum = 80; _numRR.Width = 70;
-            _numRR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.RespRate = (int)_numRR.Value; _settingsService.Save(); } };
+            _numRR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.RespRate = (int)_numRR.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             _lblBP.Text = "BP (SBP/DBP):"; _lblBP.AutoSize = true; _lblBP.Padding = new Padding(10, 6, 0, 0);
             _numSBP.Minimum = 50; _numSBP.Maximum = 260; _numSBP.Width = 70;
-            _numSBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SystolicBP = (int)_numSBP.Value; _settingsService.Save(); } };
+            _numSBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SystolicBP = (int)_numSBP.Value; _settingsService.Save(); } UpdateDecisionRules(); };
             _numDBP.Minimum = 30; _numDBP.Maximum = 160; _numDBP.Width = 70;
-            _numDBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.DiastolicBP = (int)_numDBP.Value; _settingsService.Save(); } };
+            _numDBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.DiastolicBP = (int)_numDBP.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             _lblSpO2.Text = "SpO₂ (%):"; _lblSpO2.AutoSize = true; _lblSpO2.Padding = new Padding(10, 6, 0, 0);
             _numSpO2.Minimum = 50; _numSpO2.Maximum = 100; _numSpO2.Width = 70;
-            _numSpO2.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SpO2 = (int)_numSpO2.Value; _settingsService.Save(); } };
+            _numSpO2.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SpO2 = (int)_numSpO2.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             _lblWeight.Text = "Weight (kg):"; _lblWeight.AutoSize = true; _lblWeight.Padding = new Padding(10, 6, 0, 0);
             _numWeightKg.DecimalPlaces = 1; _numWeightKg.Increment = 0.5M; _numWeightKg.Minimum = 2; _numWeightKg.Maximum = 350; _numWeightKg.Width = 80;
-            _numWeightKg.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.WeightKg = (double)_numWeightKg.Value; _settingsService.Save(); } };
+            _numWeightKg.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.WeightKg = (double)_numWeightKg.Value; _settingsService.Save(); } UpdateDecisionRules(); };
 
             leftPanel.Controls.Add(filterBar, 0, 0);
             leftPanel.Controls.Add(_symptomList, 0, 1);
@@ -432,9 +446,36 @@ namespace SymptomCheckerApp.UI
             vitalsRow.Controls.Add(_lblWeight);
             vitalsRow.Controls.Add(_numWeightKg);
             rightPanel.Controls.Add(vitalsRow, 0, 1);
-            rightPanel.Controls.Add(_triageBanner, 0, 2);
-            rightPanel.Controls.Add(_resultsList, 0, 3);
-            rightPanel.Controls.Add(_disclaimer, 0, 4);
+            // Decision rules row (Centor/McIsaac)
+            _lblRules.Text = "Decision rules:"; _lblRules.AutoSize = true; _lblRules.Padding = new Padding(10, 6, 0, 0);
+            _lblAge.Text = "Age (years):"; _lblAge.AutoSize = true; _lblAge.Padding = new Padding(10, 6, 0, 0);
+            _numAge.Minimum = 0; _numAge.Maximum = 120; _numAge.Value = 25; _numAge.Width = 70;
+            _numAge.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.AgeYears = (int)_numAge.Value; _settingsService.Save(); } UpdateDecisionRules(); };
+            _grpCentor.Text = "Centor/McIsaac"; _grpCentor.AutoSize = true; _grpCentor.Padding = new Padding(6);
+            _centorFever.Text = "Fever (or Temp ≥38°C)"; _centorFever.AutoSize = true; _centorFever.Enabled = false;
+            _centorTonsils.Text = "Tonsillar exudates/swelling"; _centorTonsils.AutoSize = true; _centorTonsils.Enabled = false;
+            _centorNodes.Text = "Tender anterior cervical nodes"; _centorNodes.AutoSize = true; _centorNodes.Enabled = false;
+            _centorNoCough.Text = "Absence of cough"; _centorNoCough.AutoSize = true; _centorNoCough.Enabled = false;
+            _centorScore.Text = "Centor: 0"; _centorScore.AutoSize = true; _centorScore.Padding = new Padding(10, 6, 0, 0);
+            _mcIsaacScore.Text = "McIsaac: 0"; _mcIsaacScore.AutoSize = true; _mcIsaacScore.Padding = new Padding(10, 6, 0, 0);
+            _centorAdvice.Text = ""; _centorAdvice.AutoSize = true; _centorAdvice.Padding = new Padding(10, 6, 0, 0);
+            var centorPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+            centorPanel.Controls.Add(_centorFever);
+            centorPanel.Controls.Add(_centorTonsils);
+            centorPanel.Controls.Add(_centorNodes);
+            centorPanel.Controls.Add(_centorNoCough);
+            centorPanel.Controls.Add(_centorScore);
+            centorPanel.Controls.Add(_mcIsaacScore);
+            centorPanel.Controls.Add(_centorAdvice);
+            _grpCentor.Controls.Add(centorPanel);
+            rulesRow.Controls.Add(_lblRules);
+            rulesRow.Controls.Add(_lblAge);
+            rulesRow.Controls.Add(_numAge);
+            rulesRow.Controls.Add(_grpCentor);
+            rightPanel.Controls.Add(rulesRow, 0, 2);
+            rightPanel.Controls.Add(_triageBanner, 0, 3);
+            rightPanel.Controls.Add(_resultsList, 0, 4);
+            rightPanel.Controls.Add(_disclaimer, 0, 5);
             split.Panel2.Controls.Add(rightPanel);
 
             Controls.Add(split);
@@ -552,6 +593,9 @@ namespace SymptomCheckerApp.UI
                 try { _showOnlyCategory.Checked = _settingsService?.Settings.ShowOnlyCategory ?? false; } catch { }
                 ApplyTheme();
                 RefreshSymptomList();
+                // Restore Age if present
+                try { if (_settingsService?.Settings.AgeYears.HasValue == true) _numAge.Value = Math.Max(_numAge.Minimum, Math.Min(_numAge.Maximum, _settingsService!.Settings.AgeYears!.Value)); } catch { }
+                UpdateDecisionRules();
             }
             catch (Exception ex)
             {
@@ -640,6 +684,15 @@ namespace SymptomCheckerApp.UI
                 _lblBP.Text = t.T("BP");
                 _lblSpO2.Text = t.T("SpO2");
                 _lblWeight.Text = t.T("WeightKg");
+                // Decision rules labels
+                _lblRules.Text = t.T("DecisionRules") ?? _lblRules.Text;
+                _grpCentor.Text = t.T("CentorMcIsaac") ?? _grpCentor.Text;
+                _lblAge.Text = t.T("AgeYears") ?? _lblAge.Text;
+                _centorFever.Text = t.T("Centor_Fever") ?? _centorFever.Text;
+                _centorTonsils.Text = t.T("Centor_Tonsils") ?? _centorTonsils.Text;
+                _centorNodes.Text = t.T("Centor_Nodes") ?? _centorNodes.Text;
+                _centorNoCough.Text = t.T("Centor_NoCough") ?? _centorNoCough.Text;
+                UpdateDecisionRules();
 
                 // Localize tooltip hint on results list
                 _toolTip.SetToolTip(_resultsList, t.T("DoubleClickHint"));
@@ -660,6 +713,12 @@ namespace SymptomCheckerApp.UI
                 // Ensure primary list controls mirror for RTL languages
                 try { _resultsList.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
                 try { _symptomList.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                // Rules row RTL
+                try { _grpCentor.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _centorFever.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _centorTonsils.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _centorNodes.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _centorNoCough.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
                 // ToolTip may not expose RightToLeft in this target; skip explicit RTL on tooltip
 
                 // Rebuild triage banner for current language
@@ -670,6 +729,62 @@ namespace SymptomCheckerApp.UI
                 Text = TitleText;
                 _disclaimer.Text = DisclaimerText;
             }
+        }
+
+        // Compute Centor and McIsaac scores based on current selections and vitals
+        private void UpdateDecisionRules()
+        {
+            // Guard: group might not be initialized during early constructor runs
+            if (_grpCentor == null) return;
+            var t = _translationService;
+            // Determine Centor components from current symptoms and vitals
+            bool hasFever = false;
+            try
+            {
+                if (_settingsService?.Settings.TempC.HasValue == true)
+                    hasFever = _settingsService!.Settings.TempC!.Value >= 38.0;
+            }
+            catch { }
+            // Also infer from selected symptom 'Fever'
+            hasFever = hasFever || _checkedSymptoms.Contains("Fever");
+
+            bool tonsils = _checkedSymptoms.Contains("Sore Throat") || _checkedSymptoms.Contains("Tonsillar Exudates") || _checkedSymptoms.Contains("Tonsillar Swelling");
+            // If we have a symptom like 'Tonsillar exudates/swelling' in translations only, we can't detect canonical; keep basic sore throat proxy
+            bool nodes = _checkedSymptoms.Contains("Swollen Lymph Nodes");
+            bool noCough = !_checkedSymptoms.Contains("Cough");
+
+            // Update disabled checkboxes to reflect inferred state
+            try { _centorFever.Checked = hasFever; } catch { }
+            try { _centorTonsils.Checked = tonsils; } catch { }
+            try { _centorNodes.Checked = nodes; } catch { }
+            try { _centorNoCough.Checked = noCough; } catch { }
+
+            int centor = 0;
+            if (hasFever) centor++;
+            if (tonsils) centor++;
+            if (nodes) centor++;
+            if (noCough) centor++;
+
+            int age = (int)_numAge.Value;
+            int ageAdj = 0;
+            if (age < 15) ageAdj = 1; else if (age >= 45) ageAdj = -1;
+            int mcIsaac = centor + ageAdj;
+            if (mcIsaac < 0) mcIsaac = 0; if (mcIsaac > 5) mcIsaac = 5;
+
+            string centorLabel = t?.T("CentorLabel") ?? "Centor:";
+            string mcIsaacLabel = t?.T("McIsaacLabel") ?? "McIsaac:";
+            _centorScore.Text = $"{centorLabel} {centor}";
+            _mcIsaacScore.Text = $"{mcIsaacLabel} {mcIsaac}";
+
+            // Provide brief advice based on McIsaac score (educational)
+            string advice = mcIsaac switch
+            {
+                <= 1 => t?.T("CentorAdvice_0_1") ?? "Low risk: likely viral. No antibiotics. Consider symptomatic care.",
+                2 => t?.T("CentorAdvice_2") ?? "Intermediate risk: consider rapid strep test (RADT).",
+                3 => t?.T("CentorAdvice_3") ?? "Higher risk: RADT and/or consider empiric antibiotics as per local guidance.",
+                _ => t?.T("CentorAdvice_4_5") ?? "High risk: consider testing and/or empiric antibiotics per guidelines."
+            };
+            _centorAdvice.Text = advice;
         }
 
         private void UpdateTriageBanner()
@@ -761,6 +876,10 @@ namespace SymptomCheckerApp.UI
                     break;
                 case Label lbl:
                     lbl.BackColor = panel; lbl.ForeColor = fore;
+                    break;
+                case GroupBox gb:
+                    gb.BackColor = panel; gb.ForeColor = fore;
+                    foreach (Control child in gb.Controls) ApplyThemeToControl(child, back, fore, panel, dark);
                     break;
                 case Button btn:
                     btn.BackColor = dark ? Color.FromArgb(60, 60, 60) : SystemColors.Control;
