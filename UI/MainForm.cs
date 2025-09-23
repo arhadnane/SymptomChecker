@@ -118,6 +118,14 @@ namespace SymptomCheckerApp.UI
     private readonly Label _centorAdvice = new Label();
     private readonly Label _lblAge = new Label();
     private readonly NumericUpDown _numAge = new NumericUpDown();
+    // PERC Rule (Pulmonary Embolism Rule-out Criteria)
+    private readonly GroupBox _grpPerc = new GroupBox();
+    private readonly Label _percResult = new Label();
+    private readonly CheckBox _percHemoptysis = new CheckBox();
+    private readonly CheckBox _percEstrogen = new CheckBox();
+    private readonly CheckBox _percPriorDvtPe = new CheckBox();
+    private readonly CheckBox _percUnilateralLeg = new CheckBox();
+    private readonly CheckBox _percRecentSurgery = new CheckBox();
     private SymptomCheckerService? _service;
     private CategoriesService? _categoriesService;
     private SynonymService? _synonymService;
@@ -468,10 +476,33 @@ namespace SymptomCheckerApp.UI
             centorPanel.Controls.Add(_mcIsaacScore);
             centorPanel.Controls.Add(_centorAdvice);
             _grpCentor.Controls.Add(centorPanel);
+
+            // PERC group
+            _grpPerc.Text = "PERC"; _grpPerc.AutoSize = true; _grpPerc.Padding = new Padding(6);
+            _percResult.Text = "PERC: not evaluated"; _percResult.AutoSize = true; _percResult.Padding = new Padding(10, 6, 0, 0);
+            _percHemoptysis.Text = "Hemoptysis"; _percHemoptysis.AutoSize = true;
+            _percHemoptysis.CheckedChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.PercHemoptysis = _percHemoptysis.Checked; _settingsService.Save(); } UpdatePercRule(); };
+            _percEstrogen.Text = "Estrogen use"; _percEstrogen.AutoSize = true;
+            _percEstrogen.CheckedChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.PercEstrogenUse = _percEstrogen.Checked; _settingsService.Save(); } UpdatePercRule(); };
+            _percPriorDvtPe.Text = "Prior DVT/PE"; _percPriorDvtPe.AutoSize = true;
+            _percPriorDvtPe.CheckedChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.PercPriorDvtPe = _percPriorDvtPe.Checked; _settingsService.Save(); } UpdatePercRule(); };
+            _percUnilateralLeg.Text = "Unilateral leg swelling"; _percUnilateralLeg.AutoSize = true;
+            _percUnilateralLeg.CheckedChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.PercUnilateralLegSwelling = _percUnilateralLeg.Checked; _settingsService.Save(); } UpdatePercRule(); };
+            _percRecentSurgery.Text = "Recent surgery/trauma"; _percRecentSurgery.AutoSize = true;
+            _percRecentSurgery.CheckedChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.PercRecentSurgeryTrauma = _percRecentSurgery.Checked; _settingsService.Save(); } UpdatePercRule(); };
+            var percPanel = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+            percPanel.Controls.Add(_percHemoptysis);
+            percPanel.Controls.Add(_percEstrogen);
+            percPanel.Controls.Add(_percPriorDvtPe);
+            percPanel.Controls.Add(_percUnilateralLeg);
+            percPanel.Controls.Add(_percRecentSurgery);
+            percPanel.Controls.Add(_percResult);
+            _grpPerc.Controls.Add(percPanel);
             rulesRow.Controls.Add(_lblRules);
             rulesRow.Controls.Add(_lblAge);
             rulesRow.Controls.Add(_numAge);
             rulesRow.Controls.Add(_grpCentor);
+            rulesRow.Controls.Add(_grpPerc);
             rightPanel.Controls.Add(rulesRow, 0, 2);
             rightPanel.Controls.Add(_triageBanner, 0, 3);
             rightPanel.Controls.Add(_resultsList, 0, 4);
@@ -588,14 +619,20 @@ namespace SymptomCheckerApp.UI
                 try { if (_settingsService?.Settings.DiastolicBP.HasValue == true) _numDBP.Value = Math.Max(_numDBP.Minimum, Math.Min(_numDBP.Maximum, _settingsService!.Settings.DiastolicBP!.Value)); } catch { }
                 try { if (_settingsService?.Settings.SpO2.HasValue == true) _numSpO2.Value = Math.Max(_numSpO2.Minimum, Math.Min(_numSpO2.Maximum, _settingsService!.Settings.SpO2!.Value)); } catch { }
                 try { if (_settingsService?.Settings.WeightKg.HasValue == true) _numWeightKg.Value = (decimal)Math.Max((double)_numWeightKg.Minimum, Math.Min((double)_numWeightKg.Maximum, _settingsService!.Settings.WeightKg!.Value)); } catch { }
+                // Restore age and PERC persisted flags
+                try { if (_settingsService?.Settings.AgeYears.HasValue == true) _numAge.Value = Math.Max(_numAge.Minimum, Math.Min(_numAge.Maximum, _settingsService!.Settings.AgeYears!.Value)); } catch { }
+                try { if (_settingsService?.Settings.PercHemoptysis.HasValue == true) _percHemoptysis.Checked = _settingsService!.Settings.PercHemoptysis!.Value; } catch { }
+                try { if (_settingsService?.Settings.PercEstrogenUse.HasValue == true) _percEstrogen.Checked = _settingsService!.Settings.PercEstrogenUse!.Value; } catch { }
+                try { if (_settingsService?.Settings.PercPriorDvtPe.HasValue == true) _percPriorDvtPe.Checked = _settingsService!.Settings.PercPriorDvtPe!.Value; } catch { }
+                try { if (_settingsService?.Settings.PercUnilateralLegSwelling.HasValue == true) _percUnilateralLeg.Checked = _settingsService!.Settings.PercUnilateralLegSwelling!.Value; } catch { }
+                try { if (_settingsService?.Settings.PercRecentSurgeryTrauma.HasValue == true) _percRecentSurgery.Checked = _settingsService!.Settings.PercRecentSurgeryTrauma!.Value; } catch { }
                 // Restore filter and category visibility
                 try { _filterBox.Text = _settingsService?.Settings.FilterText ?? string.Empty; } catch { }
                 try { _showOnlyCategory.Checked = _settingsService?.Settings.ShowOnlyCategory ?? false; } catch { }
                 ApplyTheme();
                 RefreshSymptomList();
-                // Restore Age if present
-                try { if (_settingsService?.Settings.AgeYears.HasValue == true) _numAge.Value = Math.Max(_numAge.Minimum, Math.Min(_numAge.Maximum, _settingsService!.Settings.AgeYears!.Value)); } catch { }
                 UpdateDecisionRules();
+                UpdatePercRule();
             }
             catch (Exception ex)
             {
@@ -694,6 +731,15 @@ namespace SymptomCheckerApp.UI
                 _centorNoCough.Text = t.T("Centor_NoCough") ?? _centorNoCough.Text;
                 UpdateDecisionRules();
 
+                // PERC labels
+                _grpPerc.Text = t.T("PERC") ?? _grpPerc.Text;
+                _percHemoptysis.Text = t.T("PERC_Hemoptysis") ?? _percHemoptysis.Text;
+                _percEstrogen.Text = t.T("PERC_EstrogenUse") ?? _percEstrogen.Text;
+                _percPriorDvtPe.Text = t.T("PERC_PriorDvtPe") ?? _percPriorDvtPe.Text;
+                _percUnilateralLeg.Text = t.T("PERC_UnilateralLeg") ?? _percUnilateralLeg.Text;
+                _percRecentSurgery.Text = t.T("PERC_RecentSurgery") ?? _percRecentSurgery.Text;
+                UpdatePercRule();
+
                 // Localize tooltip hint on results list
                 _toolTip.SetToolTip(_resultsList, t.T("DoubleClickHint"));
                 // Localize context menu entries if present
@@ -719,6 +765,12 @@ namespace SymptomCheckerApp.UI
                 try { _centorTonsils.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
                 try { _centorNodes.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
                 try { _centorNoCough.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _grpPerc.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _percHemoptysis.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _percEstrogen.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _percPriorDvtPe.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _percUnilateralLeg.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
+                try { _percRecentSurgery.RightToLeft = rtl ? RightToLeft.Yes : RightToLeft.No; } catch { }
                 // ToolTip may not expose RightToLeft in this target; skip explicit RTL on tooltip
 
                 // Rebuild triage banner for current language
@@ -729,6 +781,26 @@ namespace SymptomCheckerApp.UI
                 Text = TitleText;
                 _disclaimer.Text = DisclaimerText;
             }
+        }
+
+        // Compute PERC rule result based on vitals, age, and history flags
+        private void UpdatePercRule()
+        {
+            var t = _translationService;
+            // Criteria
+            bool ageOk = _numAge.Value < 50;
+            bool hrOk = _numHR.Value < 100;
+            bool spo2Ok = _numSpO2.Value >= 95;
+            bool hemoptysisOk = !_percHemoptysis.Checked;
+            bool estrogenOk = !_percEstrogen.Checked;
+            bool priorOk = !_percPriorDvtPe.Checked;
+            bool unilatOk = !_percUnilateralLeg.Checked;
+            bool surgeryOk = !_percRecentSurgery.Checked;
+            bool percNegative = ageOk && hrOk && spo2Ok && hemoptysisOk && estrogenOk && priorOk && unilatOk && surgeryOk;
+
+            string neg = t?.T("PERC_Negative") ?? "PERC negative — PE unlikely if pretest probability is low.";
+            string pos = t?.T("PERC_Positive") ?? "PERC positive — cannot rule out PE; consider further testing if suspicion persists.";
+            _percResult.Text = percNegative ? neg : pos;
         }
 
         // Compute Centor and McIsaac scores based on current selections and vitals

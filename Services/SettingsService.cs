@@ -25,6 +25,12 @@ public class SettingsService
         public double? WeightKg { get; set; }
         // Decision rules context
         public int? AgeYears { get; set; }
+        // PERC flags (true means risk factor present)
+        public bool? PercHemoptysis { get; set; }
+        public bool? PercEstrogenUse { get; set; }
+        public bool? PercPriorDvtPe { get; set; }
+        public bool? PercUnilateralLegSwelling { get; set; }
+        public bool? PercRecentSurgeryTrauma { get; set; }
     }
 
     private readonly string _settingsPath;

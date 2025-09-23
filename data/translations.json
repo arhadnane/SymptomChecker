@@ -40,6 +40,14 @@
   { "key": "CentorAdvice_2", "en": "Intermediate risk: consider rapid strep test (RADT).", "fr": "Risque intermédiaire : envisager un test streptococcique rapide (TROD).", "ar": "خطر متوسط: النظر في اختبار سريع للبكتيريا العقدية." },
   { "key": "CentorAdvice_3", "en": "Higher risk: RADT and/or consider empiric antibiotics as per local guidance.", "fr": "Risque plus élevé : TROD et/ou envisager des antibiotiques empiriques selon les recommandations locales.", "ar": "خطر أعلى: اختبار سريع و/أو التفكير في مضادات حيوية تجريبية حسب الإرشادات المحلية." },
   { "key": "CentorAdvice_4_5", "en": "High risk: consider testing and/or empiric antibiotics per guidelines.", "fr": "Risque élevé : envisager des tests et/ou antibiothérapie empirique selon les recommandations.", "ar": "خطر مرتفع: النظر في الاختبارات و/أو مضادات حيوية تجريبية حسب الإرشادات." },
+  { "key": "PERC", "en": "PERC", "fr": "PERC", "ar": "PERC" },
+  { "key": "PERC_Hemoptysis", "en": "Hemoptysis", "fr": "Hémoptysie", "ar": "نفث الدم" },
+  { "key": "PERC_EstrogenUse", "en": "Estrogen use", "fr": "Usage d'œstrogènes", "ar": "استخدام الإستروجين" },
+  { "key": "PERC_PriorDvtPe", "en": "Prior DVT/PE", "fr": "ATCD TVP/EP", "ar": "سوابق خثار وريدي عميق/انسداد رئوي" },
+  { "key": "PERC_UnilateralLeg", "en": "Unilateral leg swelling", "fr": "Œdème unilatéral d'une jambe", "ar": "تورم أحادي بالساق" },
+  { "key": "PERC_RecentSurgery", "en": "Recent surgery/trauma", "fr": "Chirurgie/traumatisme récents", "ar": "جراحة/رض حديث" },
+  { "key": "PERC_Negative", "en": "PERC negative — PE unlikely if pretest probability is low.", "fr": "PERC négatif — EP peu probable si probabilité pré-test faible.", "ar": "PERC سلبي — احتمال انسداد رئوي منخفض إذا كانت الاحتمالية قبل الاختبار منخفضة." },
+  { "key": "PERC_Positive", "en": "PERC positive — cannot rule out PE; consider further testing if suspicion persists.", "fr": "PERC positif — EP non exclue ; envisager des examens complémentaires si la suspicion persiste.", "ar": "PERC إيجابي — لا يمكن استبعاد الانسداد الرئوي؛ فكر في فحوصات إضافية إذا استمر الاشتباه." },
     { "key": "Disclaimer", "en": "Educational only. Not medical advice.", "fr": "À des fins éducatives uniquement. Pas un avis médical.", "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية." }
   ],
   "messages": [
