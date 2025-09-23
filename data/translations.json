@@ -85,6 +85,15 @@
     { "key": "RF_TesticularPain", "en": "Sudden testicular pain can be an emergency.", "fr": "Douleur testiculaire soudaine peut être une urgence.", "ar": "ألم مفاجئ في الخصية قد يكون حالة طارئة." },
     { "key": "RF_Confusion", "en": "New confusion or disorientation is concerning.", "fr": "Confusion ou désorientation récente est préoccupante.", "ar": "الارتباك أو التشوش حديث الظهور أمر مقلق." }
   ],
+  "triage_vitals": [
+    { "key": "RF_Hypoxia", "en": "Low oxygen level (SpO₂) can be dangerous.", "fr": "Une faible saturation en oxygène (SpO₂) peut être dangereuse.", "ar": "انخفاض مستوى الأكسجين (SpO₂) قد يكون خطيرًا." },
+    { "key": "RF_Hypotension", "en": "Very low blood pressure can be life‑threatening.", "fr": "Une pression artérielle très basse peut engager le pronostic vital.", "ar": "انخفاض شديد في ضغط الدم قد يهدد الحياة." },
+    { "key": "RF_SevereHypertension", "en": "Severely high blood pressure needs urgent assessment.", "fr": "Une hypertension artérielle sévère nécessite une évaluation urgente.", "ar": "ارتفاع شديد في ضغط الدم يحتاج إلى تقييم عاجل." },
+    { "key": "RF_Tachycardia", "en": "Very fast heart rate can be concerning.", "fr": "Un rythme cardiaque très élevé peut être préoccupant.", "ar": "معدل ضربات قلب مرتفع جدًا قد يكون مقلقًا." },
+    { "key": "RF_Tachypnea", "en": "Very fast breathing can be concerning.", "fr": "Une respiration très rapide peut être préoccupante.", "ar": "تنفس سريع جدًا قد يكون مقلقًا." },
+    { "key": "RF_HighFever", "en": "Very high fever may require urgent care.", "fr": "Une fièvre très élevée peut nécessiter des soins urgents.", "ar": "حمّى مرتفعة جدًا قد تتطلب رعاية عاجلة." },
+    { "key": "RF_PERC_Positive", "en": "PERC positive with chest symptoms — cannot rule out PE.", "fr": "PERC positif avec symptômes thoraciques — EP non exclue.", "ar": "PERC إيجابي مع أعراض صدرية — لا يمكن استبعاد الانصمام الرئوي." }
+  ],
   "ui_details": [
     { "key": "Treatments", "en": "Possible treatments (educational):", "fr": "Traitements possibles (éducatif) :", "ar": ":علاجات محتملة (تعليمي)" },
     { "key": "Medications", "en": "Over‑the‑counter examples (educational):", "fr": "Exemples en vente libre (éducatif) :", "ar": ":أمثلة أدوية بدون وصفة (تعليمي)" },

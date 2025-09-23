@@ -862,7 +862,34 @@ namespace SymptomCheckerApp.UI
         private void UpdateTriageBanner()
         {
             var selected = new HashSet<string>(_checkedSymptoms, StringComparer.OrdinalIgnoreCase);
-            var keys = SymptomCheckerApp.Services.TriageService.Evaluate(selected);
+            // PERC context: flag PERC positive combined with chest pain or SOB to escalate
+            bool chestOrSob = selected.Contains("Chest Pain") || selected.Contains("Shortness of Breath");
+            bool percPositive = false;
+            try
+            {
+                // Determine PERC result from current UI state
+                bool ageOk = _numAge.Value < 50;
+                bool hrOk = _numHR.Value < 100;
+                bool spo2Ok = _numSpO2.Value >= 95;
+                bool hemoptysisOk = !_percHemoptysis.Checked;
+                bool estrogenOk = !_percEstrogen.Checked;
+                bool priorOk = !_percPriorDvtPe.Checked;
+                bool unilatOk = !_percUnilateralLeg.Checked;
+                bool surgeryOk = !_percRecentSurgery.Checked;
+                bool percNeg = ageOk && hrOk && spo2Ok && hemoptysisOk && estrogenOk && priorOk && unilatOk && surgeryOk;
+                percPositive = !percNeg;
+            }
+            catch { }
+            var keys = SymptomCheckerApp.Services.TriageService.EvaluateV2(
+                selected,
+                tempC: (double?)_numTempC.Value,
+                heartRate: (int?)_numHR.Value,
+                respRate: (int?)_numRR.Value,
+                systolicBP: (int?)_numSBP.Value,
+                diastolicBP: (int?)_numDBP.Value,
+                spO2: (int?)_numSpO2.Value,
+                percPositiveWithChestOrSob: chestOrSob && percPositive
+            );
             if (keys.Count == 0)
             {
                 _triageBanner.Visible = false;
