@@ -83,9 +83,7 @@
     { "key": "RF_BloodInUrine", "en": "Blood in urine should be promptly evaluated.", "fr": "Sang dans les urines doit être évalué rapidement.", "ar": "وجود دم في البول يستلزم التقييم سريعًا." },
     { "key": "RF_SevereCough_SOB", "en": "Severe cough with shortness of breath can indicate breathing problems.", "fr": "Toux sévère avec essoufflement peut indiquer un problème respiratoire.", "ar": "سعال شديد مع ضيق تنفس قد يدل على مشكلة تنفسية." },
     { "key": "RF_TesticularPain", "en": "Sudden testicular pain can be an emergency.", "fr": "Douleur testiculaire soudaine peut être une urgence.", "ar": "ألم مفاجئ في الخصية قد يكون حالة طارئة." },
-    { "key": "RF_Confusion", "en": "New confusion or disorientation is concerning.", "fr": "Confusion ou désorientation récente est préoccupante.", "ar": "الارتباك أو التشوش حديث الظهور أمر مقلق." }
-  ],
-  "triage_vitals": [
+    { "key": "RF_Confusion", "en": "New confusion or disorientation is concerning.", "fr": "Confusion ou désorientation récente est préoccupante.", "ar": "الارتباك أو التشوش حديث الظهور أمر مقلق." },
     { "key": "RF_Hypoxia", "en": "Low oxygen level (SpO₂) can be dangerous.", "fr": "Une faible saturation en oxygène (SpO₂) peut être dangereuse.", "ar": "انخفاض مستوى الأكسجين (SpO₂) قد يكون خطيرًا." },
     { "key": "RF_Hypotension", "en": "Very low blood pressure can be life‑threatening.", "fr": "Une pression artérielle très basse peut engager le pronostic vital.", "ar": "انخفاض شديد في ضغط الدم قد يهدد الحياة." },
     { "key": "RF_SevereHypertension", "en": "Severely high blood pressure needs urgent assessment.", "fr": "Une hypertension artérielle sévère nécessite une évaluation urgente.", "ar": "ارتفاع شديد في ضغط الدم يحتاج إلى تقييم عاجل." },
