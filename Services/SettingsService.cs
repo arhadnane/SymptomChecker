@@ -15,6 +15,14 @@ public class SettingsService
         public bool ShowOnlyCategory { get; set; }
         public string? SelectedCategory { get; set; }
         public string? FilterText { get; set; }
+        // Vitals (0 or null means not set)
+        public double? TempC { get; set; }
+        public int? HeartRate { get; set; }
+        public int? RespRate { get; set; }
+        public int? SystolicBP { get; set; }
+        public int? DiastolicBP { get; set; }
+        public int? SpO2 { get; set; }
+        public double? WeightKg { get; set; }
     }
 
     private readonly string _settingsPath;

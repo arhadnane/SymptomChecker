@@ -91,6 +91,21 @@ namespace SymptomCheckerApp.UI
     private readonly Label _lblThresh = new Label();
     private readonly Label _lblMinMatch = new Label();
     private readonly Label _lblTopK = new Label();
+    // Vitals controls
+    private readonly Label _lblVitals = new Label();
+    private readonly NumericUpDown _numTempC = new NumericUpDown();
+    private readonly NumericUpDown _numHR = new NumericUpDown();
+    private readonly NumericUpDown _numRR = new NumericUpDown();
+    private readonly NumericUpDown _numSBP = new NumericUpDown();
+    private readonly NumericUpDown _numDBP = new NumericUpDown();
+    private readonly NumericUpDown _numSpO2 = new NumericUpDown();
+    private readonly NumericUpDown _numWeightKg = new NumericUpDown();
+    private readonly Label _lblTemp = new Label();
+    private readonly Label _lblHR = new Label();
+    private readonly Label _lblRR = new Label();
+    private readonly Label _lblBP = new Label();
+    private readonly Label _lblSpO2 = new Label();
+    private readonly Label _lblWeight = new Label();
     private SymptomCheckerService? _service;
     private CategoriesService? _categoriesService;
     private SynonymService? _synonymService;
@@ -256,6 +271,7 @@ namespace SymptomCheckerApp.UI
             rightPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             var topControls = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
+            var vitalsRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true };
 
             _modelSelector.DropDownStyle = ComboBoxStyle.DropDownList;
             _modelSelector.Items.AddRange(new object[] { DetectionModel.Jaccard, DetectionModel.Cosine, DetectionModel.NaiveBayes });
@@ -352,6 +368,34 @@ namespace SymptomCheckerApp.UI
             _triageBanner.AccessibleName = "Red flags";
             _triageBanner.AccessibleDescription = "Banner showing potential red flags";
 
+            // Vitals setup and defaults
+            _lblVitals.Text = "Vitals:"; _lblVitals.AutoSize = true; _lblVitals.Padding = new Padding(10, 6, 0, 0);
+            _lblTemp.Text = "Temp (°C):"; _lblTemp.AutoSize = true; _lblTemp.Padding = new Padding(10, 6, 0, 0);
+            _numTempC.DecimalPlaces = 1; _numTempC.Increment = 0.1M; _numTempC.Minimum = 30; _numTempC.Maximum = 45; _numTempC.Width = 70;
+            _numTempC.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.TempC = (double)_numTempC.Value; _settingsService.Save(); } };
+
+            _lblHR.Text = "HR (bpm):"; _lblHR.AutoSize = true; _lblHR.Padding = new Padding(10, 6, 0, 0);
+            _numHR.Minimum = 20; _numHR.Maximum = 240; _numHR.Width = 70;
+            _numHR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.HeartRate = (int)_numHR.Value; _settingsService.Save(); } };
+
+            _lblRR.Text = "RR (/min):"; _lblRR.AutoSize = true; _lblRR.Padding = new Padding(10, 6, 0, 0);
+            _numRR.Minimum = 4; _numRR.Maximum = 80; _numRR.Width = 70;
+            _numRR.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.RespRate = (int)_numRR.Value; _settingsService.Save(); } };
+
+            _lblBP.Text = "BP (SBP/DBP):"; _lblBP.AutoSize = true; _lblBP.Padding = new Padding(10, 6, 0, 0);
+            _numSBP.Minimum = 50; _numSBP.Maximum = 260; _numSBP.Width = 70;
+            _numSBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SystolicBP = (int)_numSBP.Value; _settingsService.Save(); } };
+            _numDBP.Minimum = 30; _numDBP.Maximum = 160; _numDBP.Width = 70;
+            _numDBP.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.DiastolicBP = (int)_numDBP.Value; _settingsService.Save(); } };
+
+            _lblSpO2.Text = "SpO₂ (%):"; _lblSpO2.AutoSize = true; _lblSpO2.Padding = new Padding(10, 6, 0, 0);
+            _numSpO2.Minimum = 50; _numSpO2.Maximum = 100; _numSpO2.Width = 70;
+            _numSpO2.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.SpO2 = (int)_numSpO2.Value; _settingsService.Save(); } };
+
+            _lblWeight.Text = "Weight (kg):"; _lblWeight.AutoSize = true; _lblWeight.Padding = new Padding(10, 6, 0, 0);
+            _numWeightKg.DecimalPlaces = 1; _numWeightKg.Increment = 0.5M; _numWeightKg.Minimum = 2; _numWeightKg.Maximum = 350; _numWeightKg.Width = 80;
+            _numWeightKg.ValueChanged += (s, e) => { if (_settingsService != null) { _settingsService.Settings.WeightKg = (double)_numWeightKg.Value; _settingsService.Save(); } };
+
             leftPanel.Controls.Add(filterBar, 0, 0);
             leftPanel.Controls.Add(_symptomList, 0, 1);
             split.Panel1.Controls.Add(leftPanel);
@@ -370,10 +414,27 @@ namespace SymptomCheckerApp.UI
             topControls.Controls.Add(_exitButton);
             topControls.Controls.Add(_syncButton);
             topControls.Controls.Add(_missingTransButton);
+            // Top bar (models etc.)
             rightPanel.Controls.Add(topControls, 0, 0);
-            rightPanel.Controls.Add(_triageBanner, 0, 1);
-            rightPanel.Controls.Add(_resultsList, 0, 2);
-            rightPanel.Controls.Add(_disclaimer, 0, 3);
+            // Vitals row
+            vitalsRow.Controls.Add(_lblVitals);
+            vitalsRow.Controls.Add(_lblTemp);
+            vitalsRow.Controls.Add(_numTempC);
+            vitalsRow.Controls.Add(_lblHR);
+            vitalsRow.Controls.Add(_numHR);
+            vitalsRow.Controls.Add(_lblRR);
+            vitalsRow.Controls.Add(_numRR);
+            vitalsRow.Controls.Add(_lblBP);
+            vitalsRow.Controls.Add(_numSBP);
+            vitalsRow.Controls.Add(_numDBP);
+            vitalsRow.Controls.Add(_lblSpO2);
+            vitalsRow.Controls.Add(_numSpO2);
+            vitalsRow.Controls.Add(_lblWeight);
+            vitalsRow.Controls.Add(_numWeightKg);
+            rightPanel.Controls.Add(vitalsRow, 0, 1);
+            rightPanel.Controls.Add(_triageBanner, 0, 2);
+            rightPanel.Controls.Add(_resultsList, 0, 3);
+            rightPanel.Controls.Add(_disclaimer, 0, 4);
             split.Panel2.Controls.Add(rightPanel);
 
             Controls.Add(split);
@@ -419,9 +480,12 @@ namespace SymptomCheckerApp.UI
                         int idx = 0;
                         for (int i = 0; i < _languageSelector.Items.Count; i++)
                         {
-                            var code = ((LangItem)_languageSelector.Items[i]).Code;
-                            if (!string.IsNullOrEmpty(_settingsService?.Settings.Language) && code.Equals(_settingsService!.Settings.Language, StringComparison.OrdinalIgnoreCase)) { idx = i; break; }
-                            if (string.IsNullOrEmpty(_settingsService?.Settings.Language) && code.Equals("en", StringComparison.OrdinalIgnoreCase)) { idx = i; }
+                            if (_languageSelector.Items[i] is LangItem liItem)
+                            {
+                                var code = liItem.Code ?? string.Empty;
+                                if (!string.IsNullOrEmpty(_settingsService?.Settings.Language) && code.Equals(_settingsService!.Settings.Language, StringComparison.OrdinalIgnoreCase)) { idx = i; break; }
+                                if (string.IsNullOrEmpty(_settingsService?.Settings.Language) && code.Equals("en", StringComparison.OrdinalIgnoreCase)) { idx = i; }
+                            }
                         }
                         _languageSelector.SelectedIndex = idx;
                     }
@@ -446,7 +510,7 @@ namespace SymptomCheckerApp.UI
                         {
                             for (int i = 0; i < _categorySelector.Items.Count; i++)
                             {
-                                if (((CatItem)_categorySelector.Items[i]).Canonical.Equals(desired, StringComparison.OrdinalIgnoreCase))
+                                if (_categorySelector.Items[i] is CatItem ci && ci.Canonical != null && desired != null && ci.Canonical.Equals(desired, StringComparison.OrdinalIgnoreCase))
                                 { _categorySelector.SelectedIndex = i; break; }
                             }
                         }
@@ -461,23 +525,31 @@ namespace SymptomCheckerApp.UI
                     }
                 ApplyTranslations();
                 // Apply theme after settings are loaded
-                _darkModeToggle.Checked = _settingsService.Settings.DarkMode;
+                _darkModeToggle.Checked = _settingsService?.Settings.DarkMode ?? false;
                 // Restore other UI state from settings
-                if (!string.IsNullOrEmpty(_settingsService.Settings.Model))
+                if (!string.IsNullOrEmpty(_settingsService?.Settings.Model))
                 {
                     for (int i = 0; i < _modelSelector.Items.Count; i++)
                     {
-                        if (string.Equals(_modelSelector.Items[i]?.ToString(), _settingsService.Settings.Model, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(_modelSelector.Items[i]?.ToString(), _settingsService!.Settings.Model, StringComparison.OrdinalIgnoreCase))
                         { _modelSelector.SelectedIndex = i; break; }
                     }
                 }
                 // Restore numeric values
-                try { _threshold.Value = Math.Max(_threshold.Minimum, Math.Min(_threshold.Maximum, _settingsService.Settings.ThresholdPercent)); } catch { }
-                try { _minMatch.Value = Math.Max(_minMatch.Minimum, Math.Min(_minMatch.Maximum, _settingsService.Settings.MinMatch)); } catch { }
-                try { _topK.Value = Math.Max(_topK.Minimum, Math.Min(_topK.Maximum, _settingsService.Settings.TopK)); } catch { }
+                try { if (_settingsService != null) _threshold.Value = Math.Max(_threshold.Minimum, Math.Min(_threshold.Maximum, _settingsService.Settings.ThresholdPercent)); } catch { }
+                try { if (_settingsService != null) _minMatch.Value = Math.Max(_minMatch.Minimum, Math.Min(_minMatch.Maximum, _settingsService.Settings.MinMatch)); } catch { }
+                try { if (_settingsService != null) _topK.Value = Math.Max(_topK.Minimum, Math.Min(_topK.Maximum, _settingsService.Settings.TopK)); } catch { }
+                // Restore vitals values if present
+                try { if (_settingsService?.Settings.TempC.HasValue == true) _numTempC.Value = (decimal)Math.Max((double)_numTempC.Minimum, Math.Min((double)_numTempC.Maximum, _settingsService!.Settings.TempC!.Value)); } catch { }
+                try { if (_settingsService?.Settings.HeartRate.HasValue == true) _numHR.Value = Math.Max(_numHR.Minimum, Math.Min(_numHR.Maximum, _settingsService!.Settings.HeartRate!.Value)); } catch { }
+                try { if (_settingsService?.Settings.RespRate.HasValue == true) _numRR.Value = Math.Max(_numRR.Minimum, Math.Min(_numRR.Maximum, _settingsService!.Settings.RespRate!.Value)); } catch { }
+                try { if (_settingsService?.Settings.SystolicBP.HasValue == true) _numSBP.Value = Math.Max(_numSBP.Minimum, Math.Min(_numSBP.Maximum, _settingsService!.Settings.SystolicBP!.Value)); } catch { }
+                try { if (_settingsService?.Settings.DiastolicBP.HasValue == true) _numDBP.Value = Math.Max(_numDBP.Minimum, Math.Min(_numDBP.Maximum, _settingsService!.Settings.DiastolicBP!.Value)); } catch { }
+                try { if (_settingsService?.Settings.SpO2.HasValue == true) _numSpO2.Value = Math.Max(_numSpO2.Minimum, Math.Min(_numSpO2.Maximum, _settingsService!.Settings.SpO2!.Value)); } catch { }
+                try { if (_settingsService?.Settings.WeightKg.HasValue == true) _numWeightKg.Value = (decimal)Math.Max((double)_numWeightKg.Minimum, Math.Min((double)_numWeightKg.Maximum, _settingsService!.Settings.WeightKg!.Value)); } catch { }
                 // Restore filter and category visibility
-                try { _filterBox.Text = _settingsService.Settings.FilterText ?? string.Empty; } catch { }
-                try { _showOnlyCategory.Checked = _settingsService.Settings.ShowOnlyCategory; } catch { }
+                try { _filterBox.Text = _settingsService?.Settings.FilterText ?? string.Empty; } catch { }
+                try { _showOnlyCategory.Checked = _settingsService?.Settings.ShowOnlyCategory ?? false; } catch { }
                 ApplyTheme();
                 RefreshSymptomList();
             }
@@ -512,7 +584,7 @@ namespace SymptomCheckerApp.UI
                         {
                             for (int i = 0; i < _categorySelector.Items.Count; i++)
                             {
-                                if (((CatItem)_categorySelector.Items[i]).Canonical.Equals(selectedCanonical, StringComparison.OrdinalIgnoreCase))
+                                if (_categorySelector.Items[i] is CatItem ci && ci.Canonical != null && ci.Canonical.Equals(selectedCanonical, StringComparison.OrdinalIgnoreCase))
                                 { _categorySelector.SelectedIndex = i; break; }
                             }
                         }
@@ -560,6 +632,14 @@ namespace SymptomCheckerApp.UI
                 _darkModeToggle.Text = t.T("DarkMode");
                 _saveSessionButton.Text = t.T("Save") ?? _saveSessionButton.Text;
                 _loadSessionButton.Text = t.T("Load") ?? _loadSessionButton.Text;
+                // Vitals labels
+                _lblVitals.Text = t.T("Vitals");
+                _lblTemp.Text = t.T("TempC");
+                _lblHR.Text = t.T("HeartRate");
+                _lblRR.Text = t.T("RespRate");
+                _lblBP.Text = t.T("BP");
+                _lblSpO2.Text = t.T("SpO2");
+                _lblWeight.Text = t.T("WeightKg");
 
                 // Localize tooltip hint on results list
                 _toolTip.SetToolTip(_resultsList, t.T("DoubleClickHint"));
@@ -688,6 +768,9 @@ namespace SymptomCheckerApp.UI
                     break;
                 case CheckBox chk:
                     chk.BackColor = panel; chk.ForeColor = fore;
+                    break;
+                case NumericUpDown nud:
+                    nud.BackColor = back; nud.ForeColor = fore;
                     break;
                 case Control generic:
                     generic.BackColor = panel; generic.ForeColor = fore;

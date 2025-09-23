@@ -19,7 +19,14 @@
     { "key": "Sync", "en": "Sync", "fr": "Synchroniser", "ar": "مزامنة" },
     { "key": "Save", "en": "Save", "fr": "Enregistrer", "ar": "حفظ" },
     { "key": "Load", "en": "Load", "fr": "Charger", "ar": "تحميل" },
-    { "key": "DarkMode", "en": "Dark", "fr": "Sombre", "ar": "داكن" },
+  { "key": "DarkMode", "en": "Dark", "fr": "Sombre", "ar": "داكن" },
+  { "key": "Vitals", "en": "Vitals:", "fr": "Constantes :", "ar": ":العلامات الحيوية" },
+  { "key": "TempC", "en": "Temp (°C):", "fr": "Temp (°C) :", "ar": ":الحرارة (°م)" },
+  { "key": "HeartRate", "en": "HR (bpm):", "fr": "FC (bpm) :", "ar": ":النبض (نبضة/دقيقة)" },
+  { "key": "RespRate", "en": "RR (/min):", "fr": "FR (/min) :", "ar": ":معدل التنفس (/دقيقة)" },
+  { "key": "BP", "en": "BP (SBP/DBP):", "fr": "TA (PAS/PAD) :", "ar": ":الضغط (انقباضي/انبساطي)" },
+  { "key": "SpO2", "en": "SpO₂ (%):", "fr": "SpO₂ (%) :", "ar": ":تشبع الأكسجين (%)" },
+  { "key": "WeightKg", "en": "Weight (kg):", "fr": "Poids (kg) :", "ar": ":الوزن (كغ)" },
     { "key": "Disclaimer", "en": "Educational only. Not medical advice.", "fr": "À des fins éducatives uniquement. Pas un avis médical.", "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية." }
   ],
   "messages": [

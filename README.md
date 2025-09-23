@@ -33,6 +33,7 @@ dotnet run
 - Category selector with “Select Category” / “Clear Category” (quick-pick symptoms by system)
 - Optional “Show only category” toggle to restrict the symptom list to the selected category (auto-enabled when you change the category)
 - Synonym-aware filtering (e.g., typing “Rhinorrhea” matches “Runny Nose”)
+- Laboratory Findings category: common lab findings are selectable (e.g., Low Hemoglobin/Hematocrit, Low Ferritin, High WBC/CRP/ESR, Elevated ALT/AST/Bilirubin/ALP, Elevated Amylase/Lipase, High Fasting Glucose/HbA1c, High/Low TSH, Low/High Free T4, Low Vitamin D). These also group in results.
 - Single‑click selection in the symptom list (no double‑click needed)
 - Shows only conditions that actually share ≥1 selected symptom
 - Highlights the most probable result(s) in the results list
@@ -53,6 +54,8 @@ dotnet run
 	- Top‑K: show only the top K matches (optional)
 4. Click “Check” to compute matches. Results show “Condition — Score: X.XX — Matches: N”. The top score is highlighted. Only real matches are shown.
 5. Double‑click a result to open a details dialog with the full symptom list.
+
+Tip for labs: Use the Category selector and choose “Laboratory Findings” to quickly pick lab items like High WBC, Elevated ALT/AST, High HbA1c, etc.
 
 Tip: Start with Jaccard and a low threshold (e.g., 0–30%) for exploratory use.
 
@@ -80,6 +83,8 @@ SymptomChecker/
 ├── data/
 │   └── conditions.json            # Local dataset (also updated after Sync)
 │   └── categories.json            # Symptom category groups (editable)
+│   └── translations.json          # UI/messages + symptom/condition/category labels (i18n)
+│   └── synonyms.json              # Aliases (e.g., HbA1c → High HbA1c, Rhinorrhea → Runny Nose)
 ├── Models/
 │   ├── Symptom.cs
 │   ├── Condition.cs
