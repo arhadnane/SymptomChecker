@@ -27,22 +27,8 @@ dotnet run
 
 ## Features at a glance
 
-- Three detection models: Jaccard, Cosine (binary), Naive Bayes (Bernoulli with Laplace smoothing)
-- Threshold (%), Min Match Count, and Top‑K result limiting
-- Symptom filter box with “Select Visible” / “Clear Visible”; selections persist across filters
-- Category selector with “Select Category” / “Clear Category” (quick-pick symptoms by system)
-- Optional “Show only category” toggle to restrict the symptom list to the selected category (auto-enabled when you change the category)
-- Synonym-aware filtering (e.g., typing “Rhinorrhea” matches “Runny Nose”)
-- Laboratory Findings category: common lab findings are selectable (e.g., Low Hemoglobin/Hematocrit, Low Ferritin, High WBC/CRP/ESR, Elevated ALT/AST/Bilirubin/ALP, Elevated Amylase/Lipase, High Fasting Glucose/HbA1c, High/Low TSH, Low/High Free T4, Low Vitamin D). These also group in results.
-- Single‑click selection in the symptom list (no double‑click needed)
-- Shows only conditions that actually share ≥1 selected symptom
-- Highlights the most probable result(s) in the results list
-- Double‑click a result to view a details dialog (name, score, matches, full symptom list)
-- “Sync” button to import latest disease–symptom pairs from Wikidata (no API key), merge, and save
-- Exit button for quick close; “Check” disabled until at least one symptom is selected
-
-### New in Sprint 1
-
+ 
+ [x] Model weighting & calibration
 - Vitals inputs: Temp (°C), HR, RR, BP (SBP/DBP), SpO₂, Weight (kg)
 - Decision rules (educational):
   - Centor/McIsaac scores with age adjustment and brief advice
@@ -108,6 +94,18 @@ Notes:
 
 - These signals are for learning only and do not replace clinical judgment.
 - The banner text is localized; layout adapts to RTL languages.
+
+### Exporting results
+
+You can export the current results via the results list context menu:
+
+- Export Results (CSV): Writes a UTF‑8 CSV with columns: Condition, Score, Matches, Category
+- Export Results (Markdown): Writes a Markdown table with the same columns
+
+Details:
+
+- Column headers are localized (EN/FR/AR). Category is determined by best symptom overlap with your dataset categories.
+- RTL languages are supported in the UI; the file content remains left‑to‑right for portability.
 
 ## Detection models
 

@@ -31,6 +31,11 @@ public class SettingsService
         public bool? PercPriorDvtPe { get; set; }
         public bool? PercUnilateralLegSwelling { get; set; }
         public bool? PercRecentSurgeryTrauma { get; set; }
+        public string? LastExportFolder { get; set; }
+        public Dictionary<string,double>? CategoryWeights { get; set; }
+        public double? NaiveBayesTemperature { get; set; }
+        // UI layout prefs
+        public bool? LeftPanelCollapsed { get; set; }
     }
 
     private readonly string _settingsPath;
@@ -66,5 +71,21 @@ public class SettingsService
             File.WriteAllText(_settingsPath, json);
         }
         catch { }
+    }
+
+    public void Reset()
+    {
+        Settings = new AppSettings
+        {
+            // Provide some sane defaults
+            Language = "en",
+            DarkMode = false,
+            Model = "Jaccard",
+            ThresholdPercent = 0,
+            MinMatch = 1,
+            TopK = 0,
+            ShowOnlyCategory = false
+        };
+        Save();
     }
 }

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/categories.schema.json",
+  "title": "SymptomCategoryDatabase",
+  "type": "object",
+  "required": ["categories"],
+  "properties": {
+    "categories": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/category" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "category": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "keywords": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": false
+        },
+        "symptoms": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

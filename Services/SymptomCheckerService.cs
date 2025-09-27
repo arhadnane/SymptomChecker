@@ -12,6 +12,7 @@ namespace SymptomCheckerApp.Services
         private readonly ConditionDatabase _db;
         private readonly string _jsonPath;
         private List<string> _vocabulary; // all unique symptoms
+        private Dictionary<string, HashSet<string>> _conditionSets = new(StringComparer.OrdinalIgnoreCase); // cached per-condition symptom sets
 
         public SymptomCheckerService(string jsonPath)
         {
@@ -73,7 +74,10 @@ namespace SymptomCheckerApp.Services
             DetectionModel model,
             double threshold = 0.0,
             int? topK = null,
-            int minMatchCount = 0)
+            int minMatchCount = 0,
+            IReadOnlyDictionary<string,double>? categoryWeights = null,
+            double? naiveBayesTemperature = null,
+            Func<string, IEnumerable<string>>? getConditionCategories = null)
         {
             var selectedSet = selectedSymptoms
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -93,13 +97,18 @@ namespace SymptomCheckerApp.Services
                 case DetectionModel.Jaccard:
                     foreach (var c in _db.Conditions)
                     {
-                        var condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                        int inter = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).Count();
+                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
+                        {
+                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                            _conditionSets[c.Name] = condSet;
+                        }
+                        var interSymptoms = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
+                        int inter = interSymptoms.Count;
                         int union = condSet.Union(selectedSet, StringComparer.OrdinalIgnoreCase).Count();
                         double score = union == 0 ? 0 : (double)inter / union;
                         if (score >= threshold)
                         {
-                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = inter });
+                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = inter, MatchedSymptoms = interSymptoms });
                         }
                     }
                     break;
@@ -107,13 +116,18 @@ namespace SymptomCheckerApp.Services
                     // Binary vector cosine similarity
                     foreach (var c in _db.Conditions)
                     {
-                        var condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                        int dot = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).Count();
+                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
+                        {
+                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                            _conditionSets[c.Name] = condSet;
+                        }
+                        var interSymptoms = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
+                        int dot = interSymptoms.Count;
                         double denom = Math.Sqrt(condSet.Count) * Math.Sqrt(selectedSet.Count);
                         double score = denom == 0 ? 0 : dot / denom;
                         if (score >= threshold)
                         {
-                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = dot });
+                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = dot, MatchedSymptoms = interSymptoms });
                         }
                     }
                     break;
@@ -126,12 +140,17 @@ namespace SymptomCheckerApp.Services
                     // Here, feature presence is deterministic for our dataset: symptom present or not.
                     // We set p_present = (1 + 1) / (2 + 2) if present else (0 + 1) / (2 + 2) to avoid 0/1 extremes.
                     // Alternatively, use p_present = 0.8 if present, 0.2 otherwise (heuristic). We'll use Laplace Bernoulli below.
-                    var condScores = new List<(string name, double logProb, int matchCount)>();
+                    var condScores = new List<(string name, double logProb, int matchCount, List<string> matched)>();
                     foreach (var c in _db.Conditions)
                     {
-                        var condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
+                        {
+                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                            _conditionSets[c.Name] = condSet;
+                        }
                         double logP = 0.0; // log prior same for all → omitted
-                        int matchCount = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).Count();
+                        var matched = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
+                        int matchCount = matched.Count;
 
                         foreach (var sym in _vocabulary)
                         {
@@ -143,19 +162,32 @@ namespace SymptomCheckerApp.Services
                             bool selected = selectedSet.Contains(sym);
                             logP += Math.Log(selected ? p1 : p0);
                         }
-                        condScores.Add((c.Name, logP, matchCount));
+                        condScores.Add((c.Name, logP, matchCount, matched));
                     }
                     // Normalize log probs to [0,1] via softmax
                     double maxLog = condScores.Max(t => t.logProb);
-                    var soft = condScores.Select(t => (t.name, Math.Exp(t.logProb - maxLog), t.matchCount)).ToList();
+                    var soft = condScores.Select(t => (t.name, Math.Exp(t.logProb - maxLog), t.matchCount, t.matched)).ToList();
                     double Z = soft.Sum(t => t.Item2);
-                    foreach (var (name, exp, matchCount) in soft)
+                    double temp = (naiveBayesTemperature.HasValue && naiveBayesTemperature.Value > 0.01) ? naiveBayesTemperature.Value : 1.0;
+                    foreach (var (name, exp, matchCount, matched) in soft)
                     {
-                        double prob = Z == 0 ? 0 : exp / Z;
+                        double probRaw = Z == 0 ? 0 : exp / Z;
+                        double prob = probRaw;
+                        if (Math.Abs(temp - 1.0) > 1e-6)
+                        {
+                            // Temperature scaling approximated by exponent adjustment then later normalization
+                            prob = Math.Pow(probRaw, 1.0 / temp);
+                        }
                         if (prob >= threshold)
                         {
-                            results.Add(new ConditionMatch { Name = name, Score = prob, MatchCount = matchCount });
+                            results.Add(new ConditionMatch { Name = name, Score = prob, MatchCount = matchCount, MatchedSymptoms = matched });
                         }
+                    }
+                    // If temperature scaling used, renormalize
+                    if (results.Count > 0 && Math.Abs(temp - 1.0) > 1e-6)
+                    {
+                        double sumT = results.Sum(r => r.Score);
+                        if (sumT > 0) foreach (var r in results) r.Score /= sumT;
                     }
                     break;
                 default:
@@ -166,6 +198,31 @@ namespace SymptomCheckerApp.Services
             if (minMatchCount > 0)
             {
                 results = results.Where(r => r.MatchCount >= minMatchCount).ToList();
+            }
+
+            // Apply category weighting before final ordering
+            if (categoryWeights != null && categoryWeights.Count > 0 && getConditionCategories != null)
+            {
+                foreach (var r in results)
+                {
+                    try
+                    {
+                        double bestWeight = 1.0;
+                        var cats = getConditionCategories(r.Name) ?? Array.Empty<string>();
+                        foreach (var c in cats)
+                        {
+                            if (categoryWeights.TryGetValue(c, out var w) && w > bestWeight) bestWeight = w;
+                        }
+                        r.Score *= bestWeight;
+                    }
+                    catch { }
+                }
+                // Renormalize if NaiveBayes after weighting to keep probabilistic interpretation
+                if (model == DetectionModel.NaiveBayes)
+                {
+                    double sumW = results.Sum(r => r.Score);
+                    if (sumW > 0) foreach (var r in results) r.Score /= sumW;
+                }
             }
 
             // Order by score desc, then match count desc, then name
@@ -190,6 +247,12 @@ namespace SymptomCheckerApp.Services
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(s => s)
                 .ToList();
+            // Rebuild condition sets cache
+            _conditionSets.Clear();
+            foreach (var c in _db.Conditions)
+            {
+                _conditionSets[c.Name] = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
+            }
         }
 
         public int MergeConditions(IEnumerable<Condition> newConditions)
@@ -230,7 +293,7 @@ namespace SymptomCheckerApp.Services
 
             if (changes > 0)
             {
-                RebuildVocabulary();
+                RebuildVocabulary(); // also rebuilds cached sets
             }
 
             return changes;
