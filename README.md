@@ -27,8 +27,7 @@ dotnet run
 
 ## Features at a glance
 
- 
- [x] Model weighting & calibration
+- Model weighting & calibration
 - Vitals inputs: Temp (°C), HR, RR, BP (SBP/DBP), SpO₂, Weight (kg)
 - Decision rules (educational):
   - Centor/McIsaac scores with age adjustment and brief advice

@@ -16,8 +16,7 @@ Contents:
 - Object diagram (snapshot) — approximated
 - Timing — approximated
 - Composite Structure — approximated
-
-
+ 
 Note: Indentation uses spaces (no hard tabs) to keep markdown linters happy.
 
 ---
