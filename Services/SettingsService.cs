@@ -15,6 +15,27 @@ public class SettingsService
         public bool ShowOnlyCategory { get; set; }
         public string? SelectedCategory { get; set; }
         public string? FilterText { get; set; }
+        // Vitals (0 or null means not set)
+        public double? TempC { get; set; }
+        public int? HeartRate { get; set; }
+        public int? RespRate { get; set; }
+        public int? SystolicBP { get; set; }
+        public int? DiastolicBP { get; set; }
+        public int? SpO2 { get; set; }
+        public double? WeightKg { get; set; }
+        // Decision rules context
+        public int? AgeYears { get; set; }
+        // PERC flags (true means risk factor present)
+        public bool? PercHemoptysis { get; set; }
+        public bool? PercEstrogenUse { get; set; }
+        public bool? PercPriorDvtPe { get; set; }
+        public bool? PercUnilateralLegSwelling { get; set; }
+        public bool? PercRecentSurgeryTrauma { get; set; }
+        public string? LastExportFolder { get; set; }
+        public Dictionary<string,double>? CategoryWeights { get; set; }
+        public double? NaiveBayesTemperature { get; set; }
+        // UI layout prefs
+        public bool? LeftPanelCollapsed { get; set; }
     }
 
     private readonly string _settingsPath;
@@ -50,5 +71,21 @@ public class SettingsService
             File.WriteAllText(_settingsPath, json);
         }
         catch { }
+    }
+
+    public void Reset()
+    {
+        Settings = new AppSettings
+        {
+            // Provide some sane defaults
+            Language = "en",
+            DarkMode = false,
+            Model = "Jaccard",
+            ThresholdPercent = 0,
+            MinMatch = 1,
+            TopK = 0,
+            ShowOnlyCategory = false
+        };
+        Save();
     }
 }

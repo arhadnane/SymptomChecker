@@ -17,7 +17,6 @@ Contents:
 - Timing — approximated
 - Composite Structure — approximated
 
-
 Note: Indentation uses spaces (no hard tabs) to keep markdown linters happy.
 
 ---

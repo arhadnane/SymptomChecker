@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/conditions.schema.json",
+  "title": "ConditionDatabase",
+  "type": "object",
+  "required": ["conditions"],
+  "properties": {
+    "conditions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/condition" },
+      "uniqueItems": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "condition": {
+      "type": "object",
+      "required": ["name", "symptoms"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "symptoms": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "treatments": { "type": "array", "items": { "type": "string" } },
+        "treatments_fr": { "type": "array", "items": { "type": "string" } },
+        "treatments_ar": { "type": "array", "items": { "type": "string" } },
+        "medications": { "type": "array", "items": { "type": "string" } },
+        "medications_fr": { "type": "array", "items": { "type": "string" } },
+        "medications_ar": { "type": "array", "items": { "type": "string" } },
+        "careAdvice": { "type": "string" },
+        "careAdvice_fr": { "type": "string" },
+        "careAdvice_ar": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

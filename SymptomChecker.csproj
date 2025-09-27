@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NJsonSchema" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Exclude test sources under this folder from the app project build -->
+    <Compile Remove="tests\**\*.cs" />
+    <None Remove="tests\**\*" />
+    <EmbeddedResource Remove="tests\**\*" />
+    <Content Remove="tests\**\*" />
+
     <None Update="data\conditions.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

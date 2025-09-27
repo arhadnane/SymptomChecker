@@ -19,6 +19,15 @@ namespace SymptomCheckerApp.Services
             { "RF_BloodInUrine", 2 },
 
             { "RF_TesticularPain", 3 },
+
+            // Vitals-based triage v2
+            { "RF_Hypoxia", 1 },            // SpO2 < 92%
+            { "RF_Hypotension", 1 },        // SBP < 90
+            { "RF_PERC_Positive", 1 },      // PERC positive with chest pain/SOB
+            { "RF_SevereHypertension", 2 }, // SBP >= 180 or DBP >= 120
+            { "RF_Tachycardia", 2 },        // HR >= 120
+            { "RF_Tachypnea", 2 },          // RR >= 30
+            { "RF_HighFever", 2 },          // Temp >= 40°C
         };
         /// <summary>
         /// Evaluate selected symptoms and return localized message keys for red‑flag warnings (educational only).
@@ -70,6 +79,44 @@ namespace SymptomCheckerApp.Services
 
             // Convert to list and sort by severity (then by key for stability)
             var list = new List<string>(res);
+            list.Sort((a, b) =>
+            {
+                int pa = SeverityPriority.TryGetValue(a, out var va) ? va : 99;
+                int pb = SeverityPriority.TryGetValue(b, out var vb) ? vb : 99;
+                int cmp = pa.CompareTo(pb);
+                return cmp != 0 ? cmp : string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
+            });
+            return list;
+        }
+
+        /// <summary>
+        /// Triage v2: include vitals and PERC context for more nuanced urgency signaling (educational only).
+        /// </summary>
+        public static List<string> EvaluateV2(
+            HashSet<string> selectedSymptoms,
+            double? tempC = null,
+            int? heartRate = null,
+            int? respRate = null,
+            int? systolicBP = null,
+            int? diastolicBP = null,
+            int? spO2 = null,
+            bool? percPositiveWithChestOrSob = null)
+        {
+            var keys = new HashSet<string>(Evaluate(selectedSymptoms), StringComparer.OrdinalIgnoreCase);
+
+            // Add vitals-based red flags
+            if (spO2.HasValue && spO2.Value < 92) keys.Add("RF_Hypoxia");
+            if (systolicBP.HasValue && systolicBP.Value < 90) keys.Add("RF_Hypotension");
+            if (systolicBP.HasValue && systolicBP.Value >= 180) keys.Add("RF_SevereHypertension");
+            if (diastolicBP.HasValue && diastolicBP.Value >= 120) keys.Add("RF_SevereHypertension");
+            if (heartRate.HasValue && heartRate.Value >= 120) keys.Add("RF_Tachycardia");
+            if (respRate.HasValue && respRate.Value >= 30) keys.Add("RF_Tachypnea");
+            if (tempC.HasValue && tempC.Value >= 40.0) keys.Add("RF_HighFever");
+
+            // PERC positive in the context of chest pain / SOB increases urgency
+            if (percPositiveWithChestOrSob == true) keys.Add("RF_PERC_Positive");
+
+            var list = new List<string>(keys);
             list.Sort((a, b) =>
             {
                 int pa = SeverityPriority.TryGetValue(a, out var va) ? va : 99;

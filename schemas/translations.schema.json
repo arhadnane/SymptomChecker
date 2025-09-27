@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/translations.schema.json",
+  "title": "TranslationDatabase",
+  "type": "object",
+  "required": ["languages"],
+  "properties": {
+    "languages": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 2 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "ui": { "$ref": "#/definitions/uiArray" },
+    "symptoms": { "$ref": "#/definitions/localizedArray" },
+    "conditions": { "$ref": "#/definitions/localizedArray" },
+    "messages": { "$ref": "#/definitions/messageArray" },
+    "categories": { "$ref": "#/definitions/categoryArray" },
+    "ui_details": { "$ref": "#/definitions/uiDetailsArray" }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "uiArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "en"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "en": { "type": "string" },
+          "fr": { "type": ["string", "null"] },
+          "ar": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "localizedArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "fr": { "type": ["string", "null"] },
+          "ar": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "messageArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "en"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "en": { "type": "string" },
+          "fr": { "type": "string" },
+          "ar": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "categoryArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "fr": { "type": ["string", "null"] },
+          "ar": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "uiDetailsArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "en"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "en": { "type": "string" },
+          "fr": { "type": "string" },
+          "ar": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

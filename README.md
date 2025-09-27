@@ -27,34 +27,84 @@ dotnet run
 
 ## Features at a glance
 
-- Three detection models: Jaccard, Cosine (binary), Naive Bayes (Bernoulli with Laplace smoothing)
-- Threshold (%), Min Match Count, and Top‑K result limiting
-- Symptom filter box with “Select Visible” / “Clear Visible”; selections persist across filters
-- Category selector with “Select Category” / “Clear Category” (quick-pick symptoms by system)
-- Optional “Show only category” toggle to restrict the symptom list to the selected category (auto-enabled when you change the category)
-- Synonym-aware filtering (e.g., typing “Rhinorrhea” matches “Runny Nose”)
-- Single‑click selection in the symptom list (no double‑click needed)
-- Shows only conditions that actually share ≥1 selected symptom
-- Highlights the most probable result(s) in the results list
-- Double‑click a result to view a details dialog (name, score, matches, full symptom list)
-- “Sync” button to import latest disease–symptom pairs from Wikidata (no API key), merge, and save
-- Exit button for quick close; “Check” disabled until at least one symptom is selected
+- Model weighting & calibration
+- Vitals inputs: Temp (°C), HR, RR, BP (SBP/DBP), SpO₂, Weight (kg)
+- Decision rules (educational):
+  - Centor/McIsaac scores with age adjustment and brief advice
+  - PERC rule: pass/fail with component checklist
+- Triage v2: red‑flag banner now considers symptoms + vitals thresholds + PERC context
+- Internationalization and UX: EN/FR/AR with RTL support, dark mode, and persisted settings
 
 ## How to use
 
 1. Use the filter box to quickly find symptoms. Click “Select Visible” to check all currently filtered items, or “Clear Visible” to uncheck them. Your previous checks are preserved when you change the filter text.
-2. Pick a detection model from the dropdown:
-	- Jaccard: set overlap (good baseline)
-	- Cosine (binary): vector similarity on presence/absence
-	- Naive Bayes: probabilistic model with smoothing; scores are normalized
-3. Adjust parameters as needed:
-	- Threshold (%): minimum score to keep a result
-	- Min Match: require at least N overlapping symptoms
-	- Top‑K: show only the top K matches (optional)
-4. Click “Check” to compute matches. Results show “Condition — Score: X.XX — Matches: N”. The top score is highlighted. Only real matches are shown.
-5. Double‑click a result to open a details dialog with the full symptom list.
+
+1. Pick a detection model from the dropdown:
+
+- Jaccard: set overlap (good baseline)
+- Cosine (binary): vector similarity on presence/absence
+- Naive Bayes: probabilistic model with smoothing; scores are normalized
+
+1. Adjust parameters as needed:
+
+- Threshold (%): minimum score to keep a result
+- Min Match: require at least N overlapping symptoms
+- Top‑K: show only the top K matches (optional)
+
+1. Click “Check” to compute matches. Results show “Condition — Score: X.XX — Matches: N”. The top score is highlighted. Only real matches are shown.
+
+1. Double‑click a result to open a details dialog with the full symptom list.
+
+Tip for labs: Use the Category selector and choose “Laboratory Findings” to quickly pick lab items like High WBC, Elevated ALT/AST, High HbA1c, etc.
 
 Tip: Start with Jaccard and a low threshold (e.g., 0–30%) for exploratory use.
+
+### Using vitals and decision rules (educational)
+
+- Enter vitals in the Vitals row:
+  - TempC (°C), Heart Rate (bpm), Resp Rate (/min), BP (SBP/DBP), SpO₂ (%), Weight (kg)
+  - Values persist between runs. Units are metric.
+- Centor/McIsaac group:
+  - Centor components are inferred from your current selection and vitals:
+    - Fever: Temp ≥ 38°C or “Fever” symptom
+    - Tonsillar exudates/swelling: proxied by “Sore Throat” (educational simplification)
+    - Tender anterior cervical nodes: “Swollen Lymph Nodes” symptom
+    - Absence of cough: no “Cough” symptom selected
+  - McIsaac age adjustment: +1 if < 15 years; −1 if ≥ 45 years
+  - The UI shows localized Centor and McIsaac scores plus brief advice per score band
+- PERC group (PE Rule‑out Criteria):
+  - Evaluates 8 items: Age < 50, HR < 100, SpO₂ ≥ 95, and absence of hemoptysis, estrogen use, prior DVT/PE, unilateral leg swelling, recent surgery/trauma
+  - If all are met → PERC negative (with low pretest probability, PE is unlikely). Otherwise → PERC positive
+  - The result text is localized
+
+### Triage banner (v2)
+
+The banner lists possible red flags based on symptoms and now also on vitals and PERC context. Thresholds used (educational only):
+
+- SpO₂ < 92% → Hypoxia
+- SBP < 90 → Hypotension
+- SBP ≥ 180 or DBP ≥ 120 → Severely high blood pressure
+- HR ≥ 120 → Tachycardia
+- RR ≥ 30 → Tachypnea
+- Temp ≥ 40°C → Very high fever
+- PERC positive with chest pain or shortness of breath → cannot rule out PE
+
+Notes:
+
+- These signals are for learning only and do not replace clinical judgment.
+- The banner text is localized; layout adapts to RTL languages.
+
+### Exporting results
+
+You can export the current results via the results list context menu:
+
+- Export Results (CSV): Writes a UTF‑8 CSV with columns: Condition, Score, Matches, Category
+- Export Results (Markdown): Writes a Markdown table with the same columns
+
+Details:
+
+- Column headers are localized (EN/FR/AR). Category is determined by best symptom overlap with your dataset categories.
+- RTL languages are supported in the UI; the file content remains left‑to‑right for portability.
 
 ## Detection models
 
@@ -80,6 +130,8 @@ SymptomChecker/
 ├── data/
 │   └── conditions.json            # Local dataset (also updated after Sync)
 │   └── categories.json            # Symptom category groups (editable)
+│   └── translations.json          # UI/messages + symptom/condition/category labels (i18n)
+│   └── synonyms.json              # Aliases (e.g., HbA1c → High HbA1c, Rhinorrhea → Runny Nose)
 ├── Models/
 │   ├── Symptom.cs
 │   ├── Condition.cs
