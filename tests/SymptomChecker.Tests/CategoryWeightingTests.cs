@@ -36,11 +36,11 @@ namespace SymptomChecker.Tests
         {
             var svc = new SymptomCheckerService(DataPath("conditions.min.json"));
             var sel = new [] { "Cough", "Runny Nose" }; // strongly Respiratory
-            var baseRes = svc.GetMatches(sel, SymptomCheckerService.DetectionModel.NaiveBayes, threshold:0, getConditionCategories: GetCats);
+            var baseRes = svc.GetMatches(sel, SymptomCheckerService.DetectionModel.Jaccard, threshold:0, getConditionCategories: GetCats);
             var baseCommonCold = baseRes.First(r => r.Name == "Common Cold").Score;
-            // Apply respiratory weight 2x
+            // Apply respiratory weight 2x (use Jaccard – NaiveBayes renormalizes, cancelling uniform boosts)
             var weights = new Dictionary<string,double>(StringComparer.OrdinalIgnoreCase) { { "Respiratory", 2.0 } };
-            var weightedRes = svc.GetMatches(sel, SymptomCheckerService.DetectionModel.NaiveBayes, threshold:0, categoryWeights: weights, getConditionCategories: GetCats);
+            var weightedRes = svc.GetMatches(sel, SymptomCheckerService.DetectionModel.Jaccard, threshold:0, categoryWeights: weights, getConditionCategories: GetCats);
             var weightedCommonCold = weightedRes.First(r => r.Name == "Common Cold").Score;
             Assert.True(weightedCommonCold > baseCommonCold, $"Expected boosted score > base ({weightedCommonCold} > {baseCommonCold})");
         }

@@ -51,7 +51,14 @@
   { "key": "PERC_RecentSurgery", "en": "Recent surgery/trauma", "fr": "Chirurgie/traumatisme récents", "ar": "جراحة/رض حديث" },
   { "key": "PERC_Negative", "en": "PERC negative — PE unlikely if pretest probability is low.", "fr": "PERC négatif — EP peu probable si probabilité pré-test faible.", "ar": "PERC سلبي — احتمال انسداد رئوي منخفض إذا كانت الاحتمالية قبل الاختبار منخفضة." },
   { "key": "PERC_Positive", "en": "PERC positive — cannot rule out PE; consider further testing if suspicion persists.", "fr": "PERC positif — EP non exclue ; envisager des examens complémentaires si la suspicion persiste.", "ar": "PERC إيجابي — لا يمكن استبعاد الانسداد الرئوي؛ فكر في فحوصات إضافية إذا استمر الاشتباه." },
-    { "key": "Disclaimer", "en": "Educational only. Not medical advice.", "fr": "À des fins éducatives uniquement. Pas un avis médical.", "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية." }
+    { "key": "Disclaimer", "en": "Educational only. Not medical advice.", "fr": "À des fins éducatives uniquement. Pas un avis médical.", "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية." },
+    { "key": "AiAssistantTitle", "en": "🤖 AI Diagnostic Assistant (Ollama)", "fr": "🤖 Assistant IA de diagnostic (Ollama)", "ar": "🤖 مساعد تشخيص ذكي (Ollama)" },
+    { "key": "AiDiagnose", "en": "🧠 AI Diagnosis", "fr": "🧠 Diagnostic IA", "ar": "🧠 تشخيص ذكي" },
+    { "key": "AiMedications", "en": "💊 AI Medications", "fr": "💊 Médicaments IA", "ar": "💊 أدوية ذكية" },
+    { "key": "AutoAi", "en": "Auto AI", "fr": "IA Auto", "ar": "ذكاء تلقائي" },
+    { "key": "AiNoResults", "en": "Please run a symptom check first.", "fr": "Veuillez d'abord effectuer une analyse de symptômes.", "ar": "يرجى إجراء فحص الأعراض أولاً." },
+    { "key": "AiSelectCondition", "en": "Please select a condition for medication advice.", "fr": "Veuillez sélectionner une affection pour obtenir des conseils médicamenteux.", "ar": "يرجى اختيار حالة للحصول على نصائح دوائية." },
+    { "key": "AiThinking", "en": "🤖 AI is analyzing... please wait...", "fr": "🤖 L'IA analyse... veuillez patienter...", "ar": "🤖 الذكاء الاصطناعي يحلل... يرجى الانتظار..." }
   ],
   "messages": [
     { "key": "NoMatches", "en": "No matching conditions found based on the current selection.", "fr": "Aucune affection correspondante trouvée selon la sélection actuelle.", "ar": "لم يتم العثور على حالات مطابقة بناءً على الاختيار الحالي." },

@@ -11,6 +11,7 @@ namespace SymptomCheckerApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             var logDir = Path.Combine(AppContext.BaseDirectory, "logs");
             var logger = new LoggerService(logDir);

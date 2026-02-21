@@ -34,6 +34,10 @@ public class SettingsService
         public string? LastExportFolder { get; set; }
         public Dictionary<string,double>? CategoryWeights { get; set; }
         public double? NaiveBayesTemperature { get; set; }
+        // Ollama AI settings
+        public string? OllamaUrl { get; set; }
+        public string? OllamaModel { get; set; }
+        public bool AutoAi { get; set; }
         // UI layout prefs
         public bool? LeftPanelCollapsed { get; set; }
     }

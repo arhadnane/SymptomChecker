@@ -27,16 +27,58 @@ public class TranslationService
     private readonly HashSet<string> _missing = new(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyCollection<string> MissingKeys => _missing;
 
+    // O(1) lookup dictionaries built from flat lists
+    private readonly Dictionary<string, UiString> _uiMap;
+    private readonly Dictionary<string, MessageString> _msgMap;
+    private readonly Dictionary<string, UiDetailsString> _detailsMap;
+    private readonly Dictionary<string, SymptomString> _symptomMap;
+    private readonly Dictionary<string, ConditionString> _conditionMap;
+    private readonly Dictionary<string, CategoryString> _categoryMap;
+
     public TranslationService(string path)
     {
         if (!File.Exists(path))
         {
             _db = new TranslationDatabase();
-            return;
         }
-        var json = File.ReadAllText(path);
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        _db = JsonSerializer.Deserialize<TranslationDatabase>(json, options) ?? new TranslationDatabase();
+        else
+        {
+            var json = File.ReadAllText(path);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            _db = JsonSerializer.Deserialize<TranslationDatabase>(json, options) ?? new TranslationDatabase();
+        }
+
+        // Build O(1) dictionaries
+        var cmp = StringComparer.OrdinalIgnoreCase;
+        _uiMap = new Dictionary<string, UiString>(cmp);
+        foreach (var u in _db.Ui)
+            if (!string.IsNullOrEmpty(u.Key) && !_uiMap.ContainsKey(u.Key))
+                _uiMap[u.Key] = u;
+
+        _msgMap = new Dictionary<string, MessageString>(cmp);
+        foreach (var m in _db.Messages)
+            if (!string.IsNullOrEmpty(m.Key) && !_msgMap.ContainsKey(m.Key))
+                _msgMap[m.Key] = m;
+
+        _detailsMap = new Dictionary<string, UiDetailsString>(cmp);
+        foreach (var d in _db.Ui_Details)
+            if (!string.IsNullOrEmpty(d.Key) && !_detailsMap.ContainsKey(d.Key))
+                _detailsMap[d.Key] = d;
+
+        _symptomMap = new Dictionary<string, SymptomString>(cmp);
+        foreach (var s in _db.Symptoms)
+            if (!string.IsNullOrEmpty(s.Key) && !_symptomMap.ContainsKey(s.Key))
+                _symptomMap[s.Key] = s;
+
+        _conditionMap = new Dictionary<string, ConditionString>(cmp);
+        foreach (var c in _db.Conditions)
+            if (!string.IsNullOrEmpty(c.Key) && !_conditionMap.ContainsKey(c.Key))
+                _conditionMap[c.Key] = c;
+
+        _categoryMap = new Dictionary<string, CategoryString>(cmp);
+        foreach (var c in _db.Categories)
+            if (!string.IsNullOrEmpty(c.Key) && !_categoryMap.ContainsKey(c.Key))
+                _categoryMap[c.Key] = c;
     }
 
     public IEnumerable<string> GetSupportedLanguages() => _db.Languages.Count > 0 ? _db.Languages : new[] { "en", "fr", "ar" };
@@ -49,9 +91,8 @@ public class TranslationService
 
     public string T(string key)
     {
-        // UI translations by key
-        var ui = _db.Ui.FirstOrDefault(u => string.Equals(u.Key, key, StringComparison.OrdinalIgnoreCase));
-        if (ui != null)
+        // UI translations by key (O(1))
+        if (_uiMap.TryGetValue(key, out var ui))
         {
             var val = CurrentLanguage switch
             {
@@ -62,9 +103,8 @@ public class TranslationService
             if ((CurrentLanguage == "ar" && string.IsNullOrEmpty(ui.Ar)) || (CurrentLanguage == "fr" && string.IsNullOrEmpty(ui.Fr))) _missing.Add($"ui:{key}:{CurrentLanguage}");
             return val;
         }
-        // Messages fallback
-        var msg = _db.Messages.FirstOrDefault(m => string.Equals(m.Key, key, StringComparison.OrdinalIgnoreCase));
-        if (msg != null)
+        // Messages fallback (O(1))
+        if (_msgMap.TryGetValue(key, out var msg))
         {
             var val = CurrentLanguage switch
             {
@@ -80,8 +120,7 @@ public class TranslationService
 
     public string TDetails(string key)
     {
-        var d = _db.Ui_Details.FirstOrDefault(u => string.Equals(u.Key, key, StringComparison.OrdinalIgnoreCase));
-        if (d != null)
+        if (_detailsMap.TryGetValue(key, out var d))
         {
             var val = CurrentLanguage switch
             {
@@ -97,8 +136,11 @@ public class TranslationService
 
     public string Symptom(string canonical)
     {
-        var s = _db.Symptoms.FirstOrDefault(x => string.Equals(x.Key, canonical, StringComparison.OrdinalIgnoreCase));
-        if (s == null) { _missing.Add($"sym:{canonical}:{CurrentLanguage}"); return canonical; }
+        if (!_symptomMap.TryGetValue(canonical, out var s))
+        {
+            _missing.Add($"sym:{canonical}:{CurrentLanguage}");
+            return canonical;
+        }
         var val = CurrentLanguage switch
         {
             "fr" => string.IsNullOrEmpty(s.Fr) ? canonical : s.Fr!,
@@ -111,8 +153,11 @@ public class TranslationService
 
     public string Condition(string canonical)
     {
-        var c = _db.Conditions.FirstOrDefault(x => string.Equals(x.Key, canonical, StringComparison.OrdinalIgnoreCase));
-        if (c == null) { _missing.Add($"cond:{canonical}:{CurrentLanguage}"); return canonical; }
+        if (!_conditionMap.TryGetValue(canonical, out var c))
+        {
+            _missing.Add($"cond:{canonical}:{CurrentLanguage}");
+            return canonical;
+        }
         var val = CurrentLanguage switch
         {
             "fr" => string.IsNullOrEmpty(c.Fr) ? canonical : c.Fr!,
@@ -125,8 +170,11 @@ public class TranslationService
 
     public string Category(string canonical)
     {
-        var c = _db.Categories.FirstOrDefault(x => string.Equals(x.Key, canonical, StringComparison.OrdinalIgnoreCase));
-        if (c == null) { _missing.Add($"cat:{canonical}:{CurrentLanguage}"); return canonical; }
+        if (!_categoryMap.TryGetValue(canonical, out var c))
+        {
+            _missing.Add($"cat:{canonical}:{CurrentLanguage}");
+            return canonical;
+        }
         var val = CurrentLanguage switch
         {
             "fr" => string.IsNullOrEmpty(c.Fr) ? canonical : c.Fr,

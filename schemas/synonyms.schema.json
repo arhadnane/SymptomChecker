@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Symptom Synonyms",
+  "description": "Maps canonical symptom names to their aliases/synonyms for fuzzy matching.",
+  "type": "object",
+  "required": ["synonyms"],
+  "properties": {
+    "synonyms": {
+      "type": "array",
+      "description": "Array of synonym mapping entries.",
+      "items": {
+        "type": "object",
+        "required": ["canonical", "aliases"],
+        "properties": {
+          "canonical": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The canonical (primary) symptom name used in conditions.json."
+          },
+          "aliases": {
+            "type": "array",
+            "description": "Alternative names or medical terms that map to the canonical symptom.",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
