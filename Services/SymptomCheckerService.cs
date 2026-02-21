@@ -14,6 +14,12 @@ namespace SymptomCheckerApp.Services
         private List<string> _vocabulary; // all unique symptoms
         private Dictionary<string, HashSet<string>> _conditionSets = new(StringComparer.OrdinalIgnoreCase); // cached per-condition symptom sets
 
+        // Model registry: maps DetectionModel enum to IMatchingModel implementation
+        private readonly Dictionary<DetectionModel, IMatchingModel> _models;
+
+        /// <summary>All registered matching models.</summary>
+        public IReadOnlyDictionary<DetectionModel, IMatchingModel> Models => _models;
+
         public SymptomCheckerService(string jsonPath)
         {
             if (!File.Exists(jsonPath))
@@ -29,6 +35,15 @@ namespace SymptomCheckerApp.Services
             _db = JsonSerializer.Deserialize<ConditionDatabase>(json, options) ?? new ConditionDatabase();
             _jsonPath = jsonPath;
             _vocabulary = new List<string>();
+
+            // Register default models
+            _models = new Dictionary<DetectionModel, IMatchingModel>
+            {
+                { DetectionModel.Jaccard, new JaccardModel() },
+                { DetectionModel.Cosine, new CosineModel() },
+                { DetectionModel.NaiveBayes, new NaiveBayesModel() }
+            };
+
             RebuildVocabulary();
         }
 
@@ -90,109 +105,24 @@ namespace SymptomCheckerApp.Services
                 return new List<ConditionMatch>();
             }
 
-            var results = new List<ConditionMatch>();
-
-            switch (model)
+            // Delegate to the registered IMatchingModel
+            if (!_models.TryGetValue(model, out var matchingModel))
             {
-                case DetectionModel.Jaccard:
-                    foreach (var c in _db.Conditions)
-                    {
-                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
-                        {
-                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                            _conditionSets[c.Name] = condSet;
-                        }
-                        var interSymptoms = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
-                        int inter = interSymptoms.Count;
-                        int union = condSet.Union(selectedSet, StringComparer.OrdinalIgnoreCase).Count();
-                        double score = union == 0 ? 0 : (double)inter / union;
-                        if (score >= threshold)
-                        {
-                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = inter, MatchedSymptoms = interSymptoms });
-                        }
-                    }
-                    break;
-                case DetectionModel.Cosine:
-                    // Binary vector cosine similarity
-                    foreach (var c in _db.Conditions)
-                    {
-                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
-                        {
-                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                            _conditionSets[c.Name] = condSet;
-                        }
-                        var interSymptoms = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
-                        int dot = interSymptoms.Count;
-                        double denom = Math.Sqrt(condSet.Count) * Math.Sqrt(selectedSet.Count);
-                        double score = denom == 0 ? 0 : dot / denom;
-                        if (score >= threshold)
-                        {
-                            results.Add(new ConditionMatch { Name = c.Name, Score = score, MatchCount = dot, MatchedSymptoms = interSymptoms });
-                        }
-                    }
-                    break;
-                case DetectionModel.NaiveBayes:
-                    // Simple Bernoulli Naive Bayes with Laplace smoothing.
-                    // P(c|S) ∝ P(c) * Π_{sym in V} P(x_sym|c), where x_sym=1 for selected, else 0
-                    // Use equal priors and normalize across conditions.
-                    int V = _vocabulary.Count;
-                    // Per condition, estimate P(sym=1|c) as (#sym in condition + 1) / (1 + 2) with Bernoulli smoothing.
-                    // Here, feature presence is deterministic for our dataset: symptom present or not.
-                    // We set p_present = (1 + 1) / (2 + 2) if present else (0 + 1) / (2 + 2) to avoid 0/1 extremes.
-                    // Alternatively, use p_present = 0.8 if present, 0.2 otherwise (heuristic). We'll use Laplace Bernoulli below.
-                    var condScores = new List<(string name, double logProb, int matchCount, List<string> matched)>();
-                    foreach (var c in _db.Conditions)
-                    {
-                        if (!_conditionSets.TryGetValue(c.Name, out var condSet))
-                        {
-                            condSet = c.Symptoms.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                            _conditionSets[c.Name] = condSet;
-                        }
-                        double logP = 0.0; // log prior same for all → omitted
-                        var matched = condSet.Intersect(selectedSet, StringComparer.OrdinalIgnoreCase).ToList();
-                        int matchCount = matched.Count;
-
-                        foreach (var sym in _vocabulary)
-                        {
-                            bool presentInCond = condSet.Contains(sym);
-                            // Laplace: P(x=1|c) = (count_present + 1) / (N + 2). Here count_present is 1 if presentInCond else 0, N=1 feature per symptom.
-                            double p1 = (presentInCond ? 2.0 : 1.0) / 3.0; // (1+1)/3=0.666.. if present, (0+1)/3≈0.333.. if absent
-                            double p0 = 1 - p1;
-
-                            bool selected = selectedSet.Contains(sym);
-                            logP += Math.Log(selected ? p1 : p0);
-                        }
-                        condScores.Add((c.Name, logP, matchCount, matched));
-                    }
-                    // Normalize log probs to [0,1] via softmax
-                    double maxLog = condScores.Max(t => t.logProb);
-                    var soft = condScores.Select(t => (t.name, Math.Exp(t.logProb - maxLog), t.matchCount, t.matched)).ToList();
-                    double Z = soft.Sum(t => t.Item2);
-                    double temp = (naiveBayesTemperature.HasValue && naiveBayesTemperature.Value > 0.01) ? naiveBayesTemperature.Value : 1.0;
-                    foreach (var (name, exp, matchCount, matched) in soft)
-                    {
-                        double probRaw = Z == 0 ? 0 : exp / Z;
-                        double prob = probRaw;
-                        if (Math.Abs(temp - 1.0) > 1e-6)
-                        {
-                            // Temperature scaling approximated by exponent adjustment then later normalization
-                            prob = Math.Pow(probRaw, 1.0 / temp);
-                        }
-                        if (prob >= threshold)
-                        {
-                            results.Add(new ConditionMatch { Name = name, Score = prob, MatchCount = matchCount, MatchedSymptoms = matched });
-                        }
-                    }
-                    // If temperature scaling used, renormalize
-                    if (results.Count > 0 && Math.Abs(temp - 1.0) > 1e-6)
-                    {
-                        double sumT = results.Sum(r => r.Score);
-                        if (sumT > 0) foreach (var r in results) r.Score /= sumT;
-                    }
-                    break;
-                default:
-                    throw new NotSupportedException($"Model '{model}' not supported.");
+                throw new NotSupportedException($"Model '{model}' not supported.");
             }
+
+            var options = new MatchingOptions
+            {
+                NaiveBayesTemperature = naiveBayesTemperature
+            };
+
+            var results = matchingModel.ComputeMatches(
+                selectedSet,
+                _db.Conditions,
+                _conditionSets,
+                _vocabulary,
+                threshold,
+                options);
 
             // Apply minimum match count filter
             if (minMatchCount > 0)
