@@ -1,389 +1,2459 @@
 {
-  "languages": ["en", "fr", "ar"],
+  "languages": [
+    "en",
+    "fr",
+    "ar"
+  ],
   "ui": [
-    { "key": "Title", "en": "Symptom Checker (Educational)", "fr": "Symptom Checker (Éducatif)", "ar": "مدقق الأعراض (تعليمي)" },
-    { "key": "Language", "en": "Language:", "fr": "Langue :", "ar": "اللغة:" },
-    { "key": "Filter", "en": "Filter:", "fr": "Filtre :", "ar": ":تصفية" },
-    { "key": "SelectVisible", "en": "Select Visible", "fr": "Sélectionner visibles", "ar": "تحديد الظاهر" },
-    { "key": "ClearVisible", "en": "Clear Visible", "fr": "Effacer visibles", "ar": "مسح الظاهر" },
-    { "key": "Category", "en": "Category:", "fr": "Catégorie :", "ar": "الفئة:" },
-    { "key": "SelectCategory", "en": "Select Category", "fr": "Sélectionner la catégorie", "ar": "تحديد الفئة" },
-    { "key": "ClearCategory", "en": "Clear Category", "fr": "Effacer la catégorie", "ar": "مسح الفئة" },
-    { "key": "ShowOnlyCategory", "en": "Show only category", "fr": "Afficher seulement la catégorie", "ar": "عرض الفئة فقط" },
-    { "key": "Model", "en": "Model:", "fr": "Modèle :", "ar": ":النموذج" },
-    { "key": "Threshold", "en": "Threshold (%):", "fr": "Seuil (%):", "ar": "(%): العتبة" },
-    { "key": "MinMatch", "en": "Min match:", "fr": "Correspondances min :", "ar": ":أدنى تطابق" },
-    { "key": "TopK", "en": "Top-K:", "fr": "Top-K :", "ar": ":أعلى-K" },
-  { "key": "ApplyWeight", "en": "Apply W", "fr": "Appliquer P", "ar": "تطبيق الوزن" },
-  { "key": "ClearWeights", "en": "Clear W", "fr": "Réinit P", "ar": "مسح الأوزان" },
-  { "key": "NaiveBayesTemp", "en": "NB Temp", "fr": "Temp NB", "ar": "حرارة NB" },
-    { "key": "Check", "en": "Check", "fr": "Vérifier", "ar": "تحقق" },
-    { "key": "Exit", "en": "Exit", "fr": "Quitter", "ar": "خروج" },
-    { "key": "Sync", "en": "Sync", "fr": "Synchroniser", "ar": "مزامنة" },
-    { "key": "Save", "en": "Save", "fr": "Enregistrer", "ar": "حفظ" },
-    { "key": "Load", "en": "Load", "fr": "Charger", "ar": "تحميل" },
-  { "key": "DarkMode", "en": "Dark", "fr": "Sombre", "ar": "داكن" },
-  { "key": "Vitals", "en": "Vitals:", "fr": "Constantes :", "ar": ":العلامات الحيوية" },
-  { "key": "TempC", "en": "Temp (°C):", "fr": "Temp (°C) :", "ar": ":الحرارة (°م)" },
-  { "key": "HeartRate", "en": "HR (bpm):", "fr": "FC (bpm) :", "ar": ":النبض (نبضة/دقيقة)" },
-  { "key": "RespRate", "en": "RR (/min):", "fr": "FR (/min) :", "ar": ":معدل التنفس (/دقيقة)" },
-  { "key": "BP", "en": "BP (SBP/DBP):", "fr": "TA (PAS/PAD) :", "ar": ":الضغط (انقباضي/انبساطي)" },
-  { "key": "SpO2", "en": "SpO₂ (%):", "fr": "SpO₂ (%) :", "ar": ":تشبع الأكسجين (%)" },
-  { "key": "WeightKg", "en": "Weight (kg):", "fr": "Poids (kg) :", "ar": ":الوزن (كغ)" },
-  { "key": "DecisionRules", "en": "Decision rules:", "fr": "Règles décisionnelles :", "ar": ":قواعد القرار" },
-  { "key": "CentorMcIsaac", "en": "Centor/McIsaac", "fr": "Centor/McIsaac", "ar": "سينتور/ماكإيزاك" },
-  { "key": "AgeYears", "en": "Age (years):", "fr": "Âge (années) :", "ar": ":العمر (بالسنوات)" },
-  { "key": "Centor_Fever", "en": "Fever (or Temp ≥38°C)", "fr": "Fièvre (ou Temp ≥38°C)", "ar": "حمّى (أو حرارة ≥38°م)" },
-  { "key": "Centor_Tonsils", "en": "Tonsillar exudates/swelling", "fr": "Exsudat/œdème amygdalien", "ar": "إفرازات/تورّم اللوزتين" },
-  { "key": "Centor_Nodes", "en": "Tender anterior cervical nodes", "fr": "Sensibilité des ganglions cervicaux antérieurs", "ar": "إيلام العقد اللمفاوية الرقبية الأمامية" },
-  { "key": "Centor_NoCough", "en": "Absence of cough", "fr": "Absence de toux", "ar": "غياب السعال" },
-  { "key": "CentorLabel", "en": "Centor:", "fr": "Centor :", "ar": ":سينتور" },
-  { "key": "McIsaacLabel", "en": "McIsaac:", "fr": "McIsaac :", "ar": ":ماكإيزاك" },
-  { "key": "CentorAdvice_0_1", "en": "Low risk: likely viral. No antibiotics. Consider symptomatic care.", "fr": "Risque faible : probablement viral. Pas d'antibiotiques. Soins symptomatiques.", "ar": "خطر منخفض: غالبًا فيروسي. لا مضادات حيوية. رعاية عرضية." },
-  { "key": "CentorAdvice_2", "en": "Intermediate risk: consider rapid strep test (RADT).", "fr": "Risque intermédiaire : envisager un test streptococcique rapide (TROD).", "ar": "خطر متوسط: النظر في اختبار سريع للبكتيريا العقدية." },
-  { "key": "CentorAdvice_3", "en": "Higher risk: RADT and/or consider empiric antibiotics as per local guidance.", "fr": "Risque plus élevé : TROD et/ou envisager des antibiotiques empiriques selon les recommandations locales.", "ar": "خطر أعلى: اختبار سريع و/أو التفكير في مضادات حيوية تجريبية حسب الإرشادات المحلية." },
-  { "key": "CentorAdvice_4_5", "en": "High risk: consider testing and/or empiric antibiotics per guidelines.", "fr": "Risque élevé : envisager des tests et/ou antibiothérapie empirique selon les recommandations.", "ar": "خطر مرتفع: النظر في الاختبارات و/أو مضادات حيوية تجريبية حسب الإرشادات." },
-  { "key": "PERC", "en": "PERC", "fr": "PERC", "ar": "PERC" },
-  { "key": "PERC_Hemoptysis", "en": "Hemoptysis", "fr": "Hémoptysie", "ar": "نفث الدم" },
-  { "key": "PERC_EstrogenUse", "en": "Estrogen use", "fr": "Usage d'œstrogènes", "ar": "استخدام الإستروجين" },
-  { "key": "PERC_PriorDvtPe", "en": "Prior DVT/PE", "fr": "ATCD TVP/EP", "ar": "سوابق خثار وريدي عميق/انسداد رئوي" },
-  { "key": "PERC_UnilateralLeg", "en": "Unilateral leg swelling", "fr": "Œdème unilatéral d'une jambe", "ar": "تورم أحادي بالساق" },
-  { "key": "PERC_RecentSurgery", "en": "Recent surgery/trauma", "fr": "Chirurgie/traumatisme récents", "ar": "جراحة/رض حديث" },
-  { "key": "PERC_Negative", "en": "PERC negative — PE unlikely if pretest probability is low.", "fr": "PERC négatif — EP peu probable si probabilité pré-test faible.", "ar": "PERC سلبي — احتمال انسداد رئوي منخفض إذا كانت الاحتمالية قبل الاختبار منخفضة." },
-  { "key": "PERC_Positive", "en": "PERC positive — cannot rule out PE; consider further testing if suspicion persists.", "fr": "PERC positif — EP non exclue ; envisager des examens complémentaires si la suspicion persiste.", "ar": "PERC إيجابي — لا يمكن استبعاد الانسداد الرئوي؛ فكر في فحوصات إضافية إذا استمر الاشتباه." },
-    { "key": "Disclaimer", "en": "Educational only. Not medical advice.", "fr": "À des fins éducatives uniquement. Pas un avis médical.", "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية." },
-    { "key": "AiAssistantTitle", "en": "🤖 AI Diagnostic Assistant (Ollama)", "fr": "🤖 Assistant IA de diagnostic (Ollama)", "ar": "🤖 مساعد تشخيص ذكي (Ollama)" },
-    { "key": "AiDiagnose", "en": "🧠 AI Diagnosis", "fr": "🧠 Diagnostic IA", "ar": "🧠 تشخيص ذكي" },
-    { "key": "AiMedications", "en": "💊 AI Medications", "fr": "💊 Médicaments IA", "ar": "💊 أدوية ذكية" },
-    { "key": "AutoAi", "en": "Auto AI", "fr": "IA Auto", "ar": "ذكاء تلقائي" },
-    { "key": "AiNoResults", "en": "Please run a symptom check first.", "fr": "Veuillez d'abord effectuer une analyse de symptômes.", "ar": "يرجى إجراء فحص الأعراض أولاً." },
-    { "key": "AiSelectCondition", "en": "Please select a condition for medication advice.", "fr": "Veuillez sélectionner une affection pour obtenir des conseils médicamenteux.", "ar": "يرجى اختيار حالة للحصول على نصائح دوائية." },
-    { "key": "AiThinking", "en": "🤖 AI is analyzing... please wait...", "fr": "🤖 L'IA analyse... veuillez patienter...", "ar": "🤖 الذكاء الاصطناعي يحلل... يرجى الانتظار..." }
+    {
+      "key": "Title",
+      "en": "Symptom Checker (Educational)",
+      "fr": "Symptom Checker (Éducatif)",
+      "ar": "مدقق الأعراض (تعليمي)"
+    },
+    {
+      "key": "Language",
+      "en": "Language:",
+      "fr": "Langue :",
+      "ar": "اللغة:"
+    },
+    {
+      "key": "Filter",
+      "en": "Filter:",
+      "fr": "Filtre :",
+      "ar": ":تصفية"
+    },
+    {
+      "key": "SelectVisible",
+      "en": "Select Visible",
+      "fr": "Sélectionner visibles",
+      "ar": "تحديد الظاهر"
+    },
+    {
+      "key": "ClearVisible",
+      "en": "Clear Visible",
+      "fr": "Effacer visibles",
+      "ar": "مسح الظاهر"
+    },
+    {
+      "key": "Category",
+      "en": "Category:",
+      "fr": "Catégorie :",
+      "ar": "الفئة:"
+    },
+    {
+      "key": "SelectCategory",
+      "en": "Select Category",
+      "fr": "Sélectionner la catégorie",
+      "ar": "تحديد الفئة"
+    },
+    {
+      "key": "ClearCategory",
+      "en": "Clear Category",
+      "fr": "Effacer la catégorie",
+      "ar": "مسح الفئة"
+    },
+    {
+      "key": "ShowOnlyCategory",
+      "en": "Show only category",
+      "fr": "Afficher seulement la catégorie",
+      "ar": "عرض الفئة فقط"
+    },
+    {
+      "key": "Model",
+      "en": "Model:",
+      "fr": "Modèle :",
+      "ar": ":النموذج"
+    },
+    {
+      "key": "Threshold",
+      "en": "Threshold (%):",
+      "fr": "Seuil (%):",
+      "ar": "(%): العتبة"
+    },
+    {
+      "key": "MinMatch",
+      "en": "Min match:",
+      "fr": "Correspondances min :",
+      "ar": ":أدنى تطابق"
+    },
+    {
+      "key": "TopK",
+      "en": "Top-K:",
+      "fr": "Top-K :",
+      "ar": ":أعلى-K"
+    },
+    {
+      "key": "ApplyWeight",
+      "en": "Apply W",
+      "fr": "Appliquer P",
+      "ar": "تطبيق الوزن"
+    },
+    {
+      "key": "ClearWeights",
+      "en": "Clear W",
+      "fr": "Réinit P",
+      "ar": "مسح الأوزان"
+    },
+    {
+      "key": "NaiveBayesTemp",
+      "en": "NB Temp",
+      "fr": "Temp NB",
+      "ar": "حرارة NB"
+    },
+    {
+      "key": "Check",
+      "en": "Check",
+      "fr": "Vérifier",
+      "ar": "تحقق"
+    },
+    {
+      "key": "Exit",
+      "en": "Exit",
+      "fr": "Quitter",
+      "ar": "خروج"
+    },
+    {
+      "key": "Sync",
+      "en": "Sync",
+      "fr": "Synchroniser",
+      "ar": "مزامنة"
+    },
+    {
+      "key": "Save",
+      "en": "Save",
+      "fr": "Enregistrer",
+      "ar": "حفظ"
+    },
+    {
+      "key": "Load",
+      "en": "Load",
+      "fr": "Charger",
+      "ar": "تحميل"
+    },
+    {
+      "key": "DarkMode",
+      "en": "Dark",
+      "fr": "Sombre",
+      "ar": "داكن"
+    },
+    {
+      "key": "Vitals",
+      "en": "Vitals:",
+      "fr": "Constantes :",
+      "ar": ":العلامات الحيوية"
+    },
+    {
+      "key": "TempC",
+      "en": "Temp (°C):",
+      "fr": "Temp (°C) :",
+      "ar": ":الحرارة (°م)"
+    },
+    {
+      "key": "HeartRate",
+      "en": "HR (bpm):",
+      "fr": "FC (bpm) :",
+      "ar": ":النبض (نبضة/دقيقة)"
+    },
+    {
+      "key": "RespRate",
+      "en": "RR (/min):",
+      "fr": "FR (/min) :",
+      "ar": ":معدل التنفس (/دقيقة)"
+    },
+    {
+      "key": "BP",
+      "en": "BP (SBP/DBP):",
+      "fr": "TA (PAS/PAD) :",
+      "ar": ":الضغط (انقباضي/انبساطي)"
+    },
+    {
+      "key": "SpO2",
+      "en": "SpO₂ (%):",
+      "fr": "SpO₂ (%) :",
+      "ar": ":تشبع الأكسجين (%)"
+    },
+    {
+      "key": "WeightKg",
+      "en": "Weight (kg):",
+      "fr": "Poids (kg) :",
+      "ar": ":الوزن (كغ)"
+    },
+    {
+      "key": "DecisionRules",
+      "en": "Decision rules:",
+      "fr": "Règles décisionnelles :",
+      "ar": ":قواعد القرار"
+    },
+    {
+      "key": "CentorMcIsaac",
+      "en": "Centor/McIsaac",
+      "fr": "Centor/McIsaac",
+      "ar": "سينتور/ماكإيزاك"
+    },
+    {
+      "key": "AgeYears",
+      "en": "Age (years):",
+      "fr": "Âge (années) :",
+      "ar": ":العمر (بالسنوات)"
+    },
+    {
+      "key": "Centor_Fever",
+      "en": "Fever (or Temp ≥38°C)",
+      "fr": "Fièvre (ou Temp ≥38°C)",
+      "ar": "حمّى (أو حرارة ≥38°م)"
+    },
+    {
+      "key": "Centor_Tonsils",
+      "en": "Tonsillar exudates/swelling",
+      "fr": "Exsudat/œdème amygdalien",
+      "ar": "إفرازات/تورّم اللوزتين"
+    },
+    {
+      "key": "Centor_Nodes",
+      "en": "Tender anterior cervical nodes",
+      "fr": "Sensibilité des ganglions cervicaux antérieurs",
+      "ar": "إيلام العقد اللمفاوية الرقبية الأمامية"
+    },
+    {
+      "key": "Centor_NoCough",
+      "en": "Absence of cough",
+      "fr": "Absence de toux",
+      "ar": "غياب السعال"
+    },
+    {
+      "key": "CentorLabel",
+      "en": "Centor:",
+      "fr": "Centor :",
+      "ar": ":سينتور"
+    },
+    {
+      "key": "McIsaacLabel",
+      "en": "McIsaac:",
+      "fr": "McIsaac :",
+      "ar": ":ماكإيزاك"
+    },
+    {
+      "key": "CentorAdvice_0_1",
+      "en": "Low risk: likely viral. No antibiotics. Consider symptomatic care.",
+      "fr": "Risque faible : probablement viral. Pas d'antibiotiques. Soins symptomatiques.",
+      "ar": "خطر منخفض: غالبًا فيروسي. لا مضادات حيوية. رعاية عرضية."
+    },
+    {
+      "key": "CentorAdvice_2",
+      "en": "Intermediate risk: consider rapid strep test (RADT).",
+      "fr": "Risque intermédiaire : envisager un test streptococcique rapide (TROD).",
+      "ar": "خطر متوسط: النظر في اختبار سريع للبكتيريا العقدية."
+    },
+    {
+      "key": "CentorAdvice_3",
+      "en": "Higher risk: RADT and/or consider empiric antibiotics as per local guidance.",
+      "fr": "Risque plus élevé : TROD et/ou envisager des antibiotiques empiriques selon les recommandations locales.",
+      "ar": "خطر أعلى: اختبار سريع و/أو التفكير في مضادات حيوية تجريبية حسب الإرشادات المحلية."
+    },
+    {
+      "key": "CentorAdvice_4_5",
+      "en": "High risk: consider testing and/or empiric antibiotics per guidelines.",
+      "fr": "Risque élevé : envisager des tests et/ou antibiothérapie empirique selon les recommandations.",
+      "ar": "خطر مرتفع: النظر في الاختبارات و/أو مضادات حيوية تجريبية حسب الإرشادات."
+    },
+    {
+      "key": "PERC",
+      "en": "PERC",
+      "fr": "PERC",
+      "ar": "PERC"
+    },
+    {
+      "key": "PERC_Hemoptysis",
+      "en": "Hemoptysis",
+      "fr": "Hémoptysie",
+      "ar": "نفث الدم"
+    },
+    {
+      "key": "PERC_EstrogenUse",
+      "en": "Estrogen use",
+      "fr": "Usage d'œstrogènes",
+      "ar": "استخدام الإستروجين"
+    },
+    {
+      "key": "PERC_PriorDvtPe",
+      "en": "Prior DVT/PE",
+      "fr": "ATCD TVP/EP",
+      "ar": "سوابق خثار وريدي عميق/انسداد رئوي"
+    },
+    {
+      "key": "PERC_UnilateralLeg",
+      "en": "Unilateral leg swelling",
+      "fr": "Œdème unilatéral d'une jambe",
+      "ar": "تورم أحادي بالساق"
+    },
+    {
+      "key": "PERC_RecentSurgery",
+      "en": "Recent surgery/trauma",
+      "fr": "Chirurgie/traumatisme récents",
+      "ar": "جراحة/رض حديث"
+    },
+    {
+      "key": "PERC_Negative",
+      "en": "PERC negative — PE unlikely if pretest probability is low.",
+      "fr": "PERC négatif — EP peu probable si probabilité pré-test faible.",
+      "ar": "PERC سلبي — احتمال انسداد رئوي منخفض إذا كانت الاحتمالية قبل الاختبار منخفضة."
+    },
+    {
+      "key": "PERC_Positive",
+      "en": "PERC positive — cannot rule out PE; consider further testing if suspicion persists.",
+      "fr": "PERC positif — EP non exclue ; envisager des examens complémentaires si la suspicion persiste.",
+      "ar": "PERC إيجابي — لا يمكن استبعاد الانسداد الرئوي؛ فكر في فحوصات إضافية إذا استمر الاشتباه."
+    },
+    {
+      "key": "Disclaimer",
+      "en": "Educational only. Not medical advice.",
+      "fr": "À des fins éducatives uniquement. Pas un avis médical.",
+      "ar": "لأغراض تعليمية فقط. ليست نصيحة طبية."
+    },
+    {
+      "key": "AiAssistantTitle",
+      "en": "🤖 AI Diagnostic Assistant (Ollama)",
+      "fr": "🤖 Assistant IA de diagnostic (Ollama)",
+      "ar": "🤖 مساعد تشخيص ذكي (Ollama)"
+    },
+    {
+      "key": "AiDiagnose",
+      "en": "🧠 AI Diagnosis",
+      "fr": "🧠 Diagnostic IA",
+      "ar": "🧠 تشخيص ذكي"
+    },
+    {
+      "key": "AiMedications",
+      "en": "💊 AI Medications",
+      "fr": "💊 Médicaments IA",
+      "ar": "💊 أدوية ذكية"
+    },
+    {
+      "key": "AutoAi",
+      "en": "Auto AI",
+      "fr": "IA Auto",
+      "ar": "ذكاء تلقائي"
+    },
+    {
+      "key": "AiNoResults",
+      "en": "Please run a symptom check first.",
+      "fr": "Veuillez d'abord effectuer une analyse de symptômes.",
+      "ar": "يرجى إجراء فحص الأعراض أولاً."
+    },
+    {
+      "key": "AiSelectCondition",
+      "en": "Please select a condition for medication advice.",
+      "fr": "Veuillez sélectionner une affection pour obtenir des conseils médicamenteux.",
+      "ar": "يرجى اختيار حالة للحصول على نصائح دوائية."
+    },
+    {
+      "key": "AiThinking",
+      "en": "🤖 AI is analyzing... please wait...",
+      "fr": "🤖 L'IA analyse... veuillez patienter...",
+      "ar": "🤖 الذكاء الاصطناعي يحلل... يرجى الانتظار..."
+    },
+    {
+      "key": "Mode_Title",
+      "en": "Choose how you'd like to use Symptom Checker",
+      "fr": "Choisissez votre mode d'utilisation",
+      "ar": "اختر طريقة الاستخدام"
+    },
+    {
+      "key": "Mode_Subtitle",
+      "en": "Educational only — always consult a healthcare professional.",
+      "fr": "Outil éducatif uniquement — consultez toujours un professionnel de santé.",
+      "ar": "أداة تعليمية فقط — استشر دائمًا متخصصًا في الرعاية الصحية."
+    },
+    {
+      "key": "Mode_Patient",
+      "en": "Patient (guided)",
+      "fr": "Patient (guidé)",
+      "ar": "مريض (موجَّه)"
+    },
+    {
+      "key": "Mode_Patient_Description",
+      "en": "A simple step-by-step assistant to explore possible educational explanations for your symptoms.",
+      "fr": "Un assistant simple, étape par étape, pour explorer des explications éducatives possibles.",
+      "ar": "مساعد بسيط خطوة بخطوة لاستكشاف تفسيرات تعليمية ممكنة."
+    },
+    {
+      "key": "Mode_Professional",
+      "en": "Professional (advanced)",
+      "fr": "Professionnel (avancé)",
+      "ar": "محترف (متقدم)"
+    },
+    {
+      "key": "Mode_Professional_Description",
+      "en": "Full controls: detection model, thresholds, decision rules, vitals, AI modules.",
+      "fr": "Contrôles complets : modèle, seuils, règles décisionnelles, constantes, modules IA.",
+      "ar": "تحكم كامل: النموذج، العتبات، قواعد القرار، العلامات الحيوية، وحدات الذكاء الاصطناعي."
+    },
+    {
+      "key": "Mode_Switch_Hint",
+      "en": "You can switch mode anytime (Ctrl+M).",
+      "fr": "Vous pouvez changer de mode à tout moment (Ctrl+M).",
+      "ar": "يمكنك تغيير الوضع في أي وقت (Ctrl+M)."
+    },
+    {
+      "key": "Mode_Switch_Button",
+      "en": "Switch mode",
+      "fr": "Changer de mode",
+      "ar": "تغيير الوضع"
+    },
+    {
+      "key": "Patient_Wizard_Subtitle",
+      "en": "Educational only — this assistant cannot replace professional medical advice.",
+      "fr": "Outil éducatif uniquement — cet assistant ne remplace pas un avis médical professionnel.",
+      "ar": "أداة تعليمية فقط — هذا المساعد لا يحل محل المشورة الطبية المتخصصة."
+    },
+    {
+      "key": "Patient_Progress",
+      "en": "Step {0} of 4",
+      "fr": "Étape {0} sur 4",
+      "ar": "الخطوة {0} من 4"
+    },
+    {
+      "key": "Patient_Step1_Title",
+      "en": "Choose the body area or symptom family",
+      "fr": "Choisissez la zone du corps ou la famille de symptômes",
+      "ar": "اختر منطقة الجسم أو فئة الأعراض"
+    },
+    {
+      "key": "Patient_Step1_Subtitle",
+      "en": "Start with the area that best matches your main concern.",
+      "fr": "Commencez par la zone qui correspond le mieux à votre problème principal.",
+      "ar": "ابدأ بالمنطقة التي تطابق بشكل أفضل المشكلة الرئيسية لديك."
+    },
+    {
+      "key": "Patient_Step2_Title",
+      "en": "Select the symptoms that apply",
+      "fr": "Sélectionnez les symptômes qui s'appliquent",
+      "ar": "حدد الأعراض التي تنطبق عليك"
+    },
+    {
+      "key": "Patient_Step2_Subtitle",
+      "en": "Choose one or more symptoms so the assistant can narrow down the list.",
+      "fr": "Choisissez un ou plusieurs symptômes pour que l'assistant réduise la liste.",
+      "ar": "اختر عرضًا واحدًا أو أكثر حتى يتمكن المساعد من تقليص القائمة."
+    },
+    {
+      "key": "Patient_Step2_Empty",
+      "en": "Select at least one symptom to continue.",
+      "fr": "Sélectionnez au moins un symptôme pour continuer.",
+      "ar": "حدد عرضًا واحدًا على الأقل للمتابعة."
+    },
+    {
+      "key": "Patient_SelectedCount",
+      "en": "{0} symptom(s) selected",
+      "fr": "{0} symptôme(s) sélectionné(s)",
+      "ar": "تم تحديد {0} عرض/أعراض"
+    },
+    {
+      "key": "Patient_Step3_Title",
+      "en": "Add optional safety details",
+      "fr": "Ajoutez des informations de sécurité optionnelles",
+      "ar": "أضف معلومات أمان اختيارية"
+    },
+    {
+      "key": "Patient_Step3_Subtitle",
+      "en": "A few health details and safety questions can highlight warning signs, but the tool remains educational only.",
+      "fr": "Quelques informations de santé et questions de sécurité peuvent mettre en avant des signes d'alerte, mais l'outil reste éducatif.",
+      "ar": "يمكن لبعض المعلومات الصحية وأسئلة السلامة إبراز علامات التحذير، لكن الأداة تظل تعليمية فقط."
+    },
+    {
+      "key": "Patient_Step4_Title",
+      "en": "Review educational results",
+      "fr": "Consultez les résultats éducatifs",
+      "ar": "راجع النتائج التعليمية"
+    },
+    {
+      "key": "Patient_Step4_Subtitle",
+      "en": "Use these cards as a conversation starter with a qualified healthcare professional.",
+      "fr": "Utilisez ces cartes comme point de départ d'une discussion avec un professionnel de santé qualifié.",
+      "ar": "استخدم هذه البطاقات كنقطة انطلاق للنقاش مع متخصص صحي مؤهل."
+    },
+    {
+      "key": "Patient_Next",
+      "en": "Next",
+      "fr": "Suivant",
+      "ar": "التالي"
+    },
+    {
+      "key": "Patient_Back",
+      "en": "Back",
+      "fr": "Retour",
+      "ar": "رجوع"
+    },
+    {
+      "key": "Patient_RunCheck",
+      "en": "Show results",
+      "fr": "Afficher les résultats",
+      "ar": "إظهار النتائج"
+    },
+    {
+      "key": "Patient_Restart",
+      "en": "Start over",
+      "fr": "Recommencer",
+      "ar": "ابدأ من جديد"
+    },
+    {
+      "key": "Patient_CategoryCount",
+      "en": "{0} related symptoms",
+      "fr": "{0} symptômes associés",
+      "ar": "{0} أعراض مرتبطة"
+    },
+    {
+      "key": "Patient_Field_Age",
+      "en": "Age",
+      "fr": "Âge",
+      "ar": "العمر"
+    },
+    {
+      "key": "Patient_Field_Temp",
+      "en": "Temperature (C)",
+      "fr": "Température (C)",
+      "ar": "الحرارة (م)"
+    },
+    {
+      "key": "Patient_Field_HeartRate",
+      "en": "Heart rate",
+      "fr": "Fréquence cardiaque",
+      "ar": "معدل ضربات القلب"
+    },
+    {
+      "key": "Patient_Field_RespRate",
+      "en": "Breathing rate",
+      "fr": "Fréquence respiratoire",
+      "ar": "معدل التنفس"
+    },
+    {
+      "key": "Patient_Field_BloodPressure",
+      "en": "Blood pressure",
+      "fr": "Tension artérielle",
+      "ar": "ضغط الدم"
+    },
+    {
+      "key": "Patient_Field_SpO2",
+      "en": "Oxygen saturation",
+      "fr": "Saturation en oxygène",
+      "ar": "تشبع الأكسجين"
+    },
+    {
+      "key": "Patient_RiskFactors_Title",
+      "en": "Helpful safety questions",
+      "fr": "Questions de sécurité utiles",
+      "ar": "أسئلة أمان مفيدة"
+    },
+    {
+      "key": "Patient_Risk_Hemoptysis",
+      "en": "I am coughing up blood",
+      "fr": "Je crache du sang",
+      "ar": "أعاني من سعال مصحوب بالدم"
+    },
+    {
+      "key": "Patient_Risk_Estrogen",
+      "en": "I use estrogen or hormone treatment",
+      "fr": "J'utilise un traitement hormonal ou des œstrogènes",
+      "ar": "أستخدم الإستروجين أو علاجًا هرمونيًا"
+    },
+    {
+      "key": "Patient_Risk_PriorClot",
+      "en": "I had a blood clot before",
+      "fr": "J'ai déjà eu un caillot sanguin",
+      "ar": "أصبت بجلطة دموية من قبل"
+    },
+    {
+      "key": "Patient_Risk_UnilateralLeg",
+      "en": "One leg is more swollen than the other",
+      "fr": "Une jambe est plus enflée que l'autre",
+      "ar": "إحدى الساقين أكثر تورمًا من الأخرى"
+    },
+    {
+      "key": "Patient_Risk_RecentSurgery",
+      "en": "I had recent surgery or a significant injury",
+      "fr": "J'ai eu une chirurgie récente ou un traumatisme important",
+      "ar": "خضعت لجراحة حديثة أو تعرضت لإصابة كبيرة"
+    },
+    {
+      "key": "Patient_Results_Summary",
+      "en": "Here are {0} possible educational explanations based on what you selected.",
+      "fr": "Voici {0} explication(s) éducative(s) possibles à partir de votre sélection.",
+      "ar": "إليك {0} تفسيرًا تعليميًا ممكنًا بناءً على ما حددته."
+    },
+    {
+      "key": "Patient_NoResults",
+      "en": "No educational match was found for the current selection.",
+      "fr": "Aucune correspondance éducative n'a été trouvée pour la sélection actuelle.",
+      "ar": "لم يتم العثور على نتيجة تعليمية مطابقة للاختيار الحالي."
+    },
+    {
+      "key": "Patient_Disclaimer",
+      "en": "Educational support only. Do not self-diagnose or self-treat based on this screen alone. Contact a qualified healthcare professional for diagnosis, treatment, or urgent symptoms.",
+      "fr": "Support éducatif uniquement. Ne vous auto-diagnostiquez pas et ne vous auto-traitez pas sur la seule base de cet écran. Contactez un professionnel de santé qualifié pour un diagnostic, un traitement ou des symptômes urgents.",
+      "ar": "دعم تعليمي فقط. لا تقم بالتشخيص الذاتي أو العلاج الذاتي بناءً على هذه الشاشة وحدها. تواصل مع متخصص صحي مؤهل للتشخيص أو العلاج أو عند وجود أعراض عاجلة."
+    },
+    {
+      "key": "Pro_Section_Model",
+      "en": "Professional section: model and settings",
+      "fr": "Section professionnelle : modèle et réglages",
+      "ar": "القسم الاحترافي: النموذج والإعدادات"
+    },
+    {
+      "key": "Pro_Section_Symptoms",
+      "en": "Professional section: symptom selection",
+      "fr": "Section professionnelle : sélection des symptômes",
+      "ar": "القسم الاحترافي: اختيار الأعراض"
+    },
+    {
+      "key": "Pro_Section_Vitals",
+      "en": "Professional section: vitals",
+      "fr": "Section professionnelle : constantes",
+      "ar": "القسم الاحترافي: العلامات الحيوية"
+    },
+    {
+      "key": "Pro_Section_Rules",
+      "en": "Professional section: decision rules",
+      "fr": "Section professionnelle : règles décisionnelles",
+      "ar": "القسم الاحترافي: قواعد القرار"
+    },
+    {
+      "key": "Pro_Section_Results",
+      "en": "Professional section: results",
+      "fr": "Section professionnelle : résultats",
+      "ar": "القسم الاحترافي: النتائج"
+    },
+    {
+      "key": "Pro_Section_Ai",
+      "en": "Professional section: AI tools",
+      "fr": "Section professionnelle : outils IA",
+      "ar": "القسم الاحترافي: أدوات الذكاء الاصطناعي"
+    },
+    {
+      "key": "Card_HomeCare",
+      "en": "Home care (educational)",
+      "fr": "Soins maison (éducatif)",
+      "ar": "العناية المنزلية (تعليمي)"
+    },
+    {
+      "key": "Card_OTC",
+      "en": "Over-the-counter medication examples (educational)",
+      "fr": "Exemples de médicaments en vente libre (éducatif)",
+      "ar": "أمثلة على أدوية بدون وصفة (تعليمي)"
+    },
+    {
+      "key": "Card_WhenToSeek",
+      "en": "When to seek care",
+      "fr": "Quand consulter",
+      "ar": "متى تطلب الرعاية"
+    },
+    {
+      "key": "Card_NoMedications",
+      "en": "No over-the-counter medication listed — consult a healthcare professional.",
+      "fr": "Aucun médicament en vente libre listé — consultez un professionnel de santé.",
+      "ar": "لا توجد أدوية بدون وصفة مذكورة — استشر متخصصًا في الرعاية الصحية."
+    },
+    {
+      "key": "Card_Important",
+      "en": "⚠️ Important",
+      "fr": "⚠️ Important",
+      "ar": "⚠️ تنبيه مهم"
+    },
+    {
+      "key": "Card_AlwaysConsult",
+      "en": "Educational tool only. Always consult a qualified healthcare professional for diagnosis or treatment.",
+      "fr": "Outil éducatif uniquement. Consultez toujours un professionnel de santé qualifié pour tout diagnostic ou traitement.",
+      "ar": "أداة تعليمية فقط. استشر دائمًا متخصصًا مؤهلاً للتشخيص أو العلاج."
+    },
+    {
+      "key": "Card_MatchCount",
+      "en": "Matching symptoms:",
+      "fr": "Symptômes correspondants :",
+      "ar": "الأعراض المتطابقة:"
+    },
+    {
+      "key": "Confidence_Low",
+      "en": "Low confidence",
+      "fr": "Confiance faible",
+      "ar": "ثقة منخفضة"
+    },
+    {
+      "key": "Confidence_Moderate",
+      "en": "Moderate confidence",
+      "fr": "Confiance modérée",
+      "ar": "ثقة متوسطة"
+    },
+    {
+      "key": "Confidence_High",
+      "en": "High confidence",
+      "fr": "Confiance élevée",
+      "ar": "ثقة عالية"
+    },
+    {
+      "key": "Confidence_Tooltip",
+      "en": "Educational confidence band — not a clinical diagnosis.",
+      "fr": "Niveau de confiance éducatif — pas un diagnostic clinique.",
+      "ar": "نطاق ثقة تعليمي — ليس تشخيصًا سريريًا."
+    },
+    {
+      "key": "RedFlag_Banner_Title",
+      "en": "🚨 Possible urgent symptoms — seek care now",
+      "fr": "🚨 Symptômes possiblement urgents — consultez immédiatement",
+      "ar": "🚨 أعراض قد تكون عاجلة — اطلب الرعاية فورًا"
+    },
+    {
+      "key": "RedFlag_WhenToCall_Button",
+      "en": "When to call emergency services",
+      "fr": "Quand appeler les urgences",
+      "ar": "متى تتصل بالطوارئ"
+    },
+    {
+      "key": "RedFlag_WhenToCall_Body",
+      "en": "If you have chest pain that doesn't stop, severe shortness of breath, fainting, confusion, very low blood oxygen, very high fever, or any symptom that feels life-threatening, call your local emergency number immediately or go to the nearest emergency department. This educational tool cannot replace emergency care.",
+      "fr": "Si vous avez une douleur thoracique qui ne s'arrête pas, un essoufflement sévère, une perte de connaissance, une confusion, une saturation en oxygène très basse, une fièvre très élevée, ou tout symptôme qui semble engager le pronostic vital, appelez immédiatement votre numéro local d'urgence ou rendez-vous aux urgences les plus proches. Cet outil éducatif ne remplace pas les soins d'urgence.",
+      "ar": "إذا كان لديك ألم في الصدر لا يتوقف، أو ضيق شديد في التنفس، أو فقدان وعي، أو ارتباك، أو مستوى أكسجين منخفض جدًا، أو حمى مرتفعة جدًا، أو أي عرض يهدد الحياة، فاتصل بالرقم المحلي للطوارئ على الفور أو توجه إلى أقرب قسم طوارئ. لا تحل هذه الأداة التعليمية محل الرعاية الطارئة."
+    },
+    {
+      "key": "RedFlag_Spo2_Low",
+      "en": "Oxygen saturation looks very low (SpO₂ < 92%).",
+      "fr": "La saturation en oxygène semble très basse (SpO₂ < 92 %).",
+      "ar": "يبدو تشبع الأكسجين منخفضًا جدًا (SpO₂ < 92%)."
+    },
+    {
+      "key": "RedFlag_Sbp_Low",
+      "en": "Systolic blood pressure looks very low (< 90 mmHg).",
+      "fr": "La pression systolique semble très basse (< 90 mmHg).",
+      "ar": "ضغط الدم الانقباضي يبدو منخفضًا جدًا (< 90 ملم زئبق)."
+    },
+    {
+      "key": "RedFlag_Sbp_High",
+      "en": "Severely high blood pressure (SBP ≥ 180 or DBP ≥ 120).",
+      "fr": "Pression artérielle très élevée (PAS ≥ 180 ou PAD ≥ 120).",
+      "ar": "ارتفاع شديد في ضغط الدم (انقباضي ≥ 180 أو انبساطي ≥ 120)."
+    },
+    {
+      "key": "RedFlag_Hr_High",
+      "en": "Heart rate very high (≥ 120 bpm).",
+      "fr": "Fréquence cardiaque très élevée (≥ 120 bpm).",
+      "ar": "معدل ضربات القلب مرتفع جدًا (≥ 120 نبضة/دقيقة)."
+    },
+    {
+      "key": "RedFlag_Rr_High",
+      "en": "Breathing rate very high (≥ 30 /min).",
+      "fr": "Fréquence respiratoire très élevée (≥ 30 /min).",
+      "ar": "معدل التنفس مرتفع جدًا (≥ 30 /دقيقة)."
+    },
+    {
+      "key": "RedFlag_Temp_High",
+      "en": "Very high fever (≥ 40 °C).",
+      "fr": "Fièvre très élevée (≥ 40 °C).",
+      "ar": "حمى مرتفعة جدًا (≥ 40 °م)."
+    },
+    {
+      "key": "RedFlag_Perc_Chest",
+      "en": "PERC positive with chest pain or shortness of breath — pulmonary embolism cannot be ruled out educationally.",
+      "fr": "PERC positif avec douleur thoracique ou essoufflement — embolie pulmonaire non écartable sur le plan éducatif.",
+      "ar": "PERC إيجابي مع ألم صدري أو ضيق تنفس — لا يمكن استبعاد الانصمام الرئوي تعليميًا."
+    },
+    {
+      "key": "RedFlag_ChestPain_Sob",
+      "en": "Chest pain with shortness of breath.",
+      "fr": "Douleur thoracique avec essoufflement.",
+      "ar": "ألم صدري مع ضيق تنفس."
+    },
+    {
+      "key": "RedFlag_Fainting_ChestPain",
+      "en": "Fainting with chest pain.",
+      "fr": "Évanouissement avec douleur thoracique.",
+      "ar": "إغماء مع ألم صدري."
+    },
+    {
+      "key": "RedFlag_Meningitis_Like",
+      "en": "Fever with neck stiffness or light sensitivity (possible meningitis).",
+      "fr": "Fièvre avec raideur de la nuque ou photosensibilité (méningite possible).",
+      "ar": "حمى مع تيبس الرقبة أو حساسية للضوء (التهاب سحايا محتمل)."
+    },
+    {
+      "key": "RedFlag_SevereCough_Sob",
+      "en": "Severe cough with shortness of breath.",
+      "fr": "Toux sévère avec essoufflement.",
+      "ar": "سعال شديد مع ضيق تنفس."
+    },
+    {
+      "key": "RedFlag_Blood_Stool",
+      "en": "Blood in stool.",
+      "fr": "Sang dans les selles.",
+      "ar": "دم في البراز."
+    },
+    {
+      "key": "RedFlag_Blood_Urine",
+      "en": "Blood in urine.",
+      "fr": "Sang dans les urines.",
+      "ar": "دم في البول."
+    },
+    {
+      "key": "RedFlag_Confusion",
+      "en": "New confusion or change in mental status.",
+      "fr": "Confusion récente ou changement de l'état mental.",
+      "ar": "ارتباك حديث أو تغير في الحالة الذهنية."
+    },
+    {
+      "key": "RedFlag_Testicular_Pain",
+      "en": "Acute testicular pain.",
+      "fr": "Douleur testiculaire aiguë.",
+      "ar": "ألم خصوي حاد."
+    },
+    {
+      "key": "RedFlag_Generic",
+      "en": "Possible urgent finding — seek care.",
+      "fr": "Constat possiblement urgent — consultez.",
+      "ar": "نتيجة قد تكون عاجلة — اطلب الرعاية."
+    },
+    {
+      "key": "Export_Disclaimer",
+      "en": "EDUCATIONAL TOOL ONLY — NOT A DIAGNOSIS. Always consult a qualified healthcare professional. Generated on {0}.",
+      "fr": "OUTIL ÉDUCATIF UNIQUEMENT — PAS UN DIAGNOSTIC. Consultez toujours un professionnel de santé qualifié. Généré le {0}.",
+      "ar": "أداة تعليمية فقط — ليست تشخيصًا. استشر دائمًا متخصصًا مؤهلاً. تم الإنشاء بتاريخ {0}."
+    }
   ],
   "messages": [
-    { "key": "NoMatches", "en": "No matching conditions found based on the current selection.", "fr": "Aucune affection correspondante trouvée selon la sélection actuelle.", "ar": "لم يتم العثور على حالات مطابقة بناءً على الاختيار الحالي." },
-    { "key": "Score", "en": "Score:", "fr": "Score :", "ar": ":النتيجة" },
-    { "key": "Matches", "en": "matches:", "fr": "correspondances :", "ar": ":التطابقات" },
-    { "key": "MatchedSymptoms", "en": "Matched symptoms:", "fr": "Symptômes correspondants :", "ar": ":الأعراض المتطابقة" },
-    { "key": "SymptomsLabel", "en": "Symptoms:", "fr": "Symptômes :", "ar": ":الأعراض" },
-    { "key": "DetailsTitle", "en": "Condition Details", "fr": "Détails de l'affection", "ar": "تفاصيل الحالة" },
-  { "key": "ExplainabilityHeader", "en": "How this score was computed:", "fr": "Comment ce score a été calculé :", "ar": ":كيف تم حساب هذه الدرجة" },
-  { "key": "Explain_MatchedOverlap", "en": "Matched overlap", "fr": "Chevauchement correspondant", "ar": "تداخل متطابق" },
-  { "key": "Explain_Similarity", "en": "Similarity", "fr": "Similarité", "ar": "تشابه" },
-  { "key": "Explain_Prob", "en": "Estimated probability", "fr": "Probabilité estimée", "ar": "احتمال مُقدَّر" },
-    { "key": "MergedAddedFmt", "en": "Merged/added {0} conditions.", "fr": "{0} affections fusionnées/ajoutées.", "ar": "تم دمج/إضافة {0} حالات." },
-    { "key": "NoChangesDetected", "en": "No changes detected.", "fr": "Aucun changement détecté.", "ar": "لم يتم اكتشاف تغييرات." },
-    { "key": "SyncCompleteTitle", "en": "Sync complete", "fr": "Synchronisation terminée", "ar": "اكتملت المزامنة" },
-    { "key": "SyncFailed", "en": "Sync failed", "fr": "Échec de la synchronisation", "ar": "فشلت المزامنة" },
-    { "key": "Error", "en": "Error", "fr": "Erreur", "ar": "خطأ" },
-  { "key": "MissingTranslationsTitle", "en": "Missing Translations", "fr": "Traductions manquantes", "ar": "ترجمات مفقودة" },
-  { "key": "NoMissingTranslations", "en": "No missing translations detected.", "fr": "Aucune traduction manquante détectée.", "ar": "لا توجد ترجمات مفقودة." },
-  { "key": "ExportReport", "en": "Export", "fr": "Exporter", "ar": "تصدير" },
-  { "key": "Copy", "en": "Copy", "fr": "Copier", "ar": "نسخ" },
-  { "key": "Close", "en": "Close", "fr": "Fermer", "ar": "إغلاق" },
-  { "key": "DoubleClickHint", "en": "Tip: Double‑click a result to see details (treatments, OTC examples, self‑care).", "fr": "Astuce : double‑cliquez sur un résultat pour voir les détails (traitements, exemples OTC, auto‑soins).", "ar": "تلميح: انقر نقرًا مزدوجًا على النتيجة لعرض التفاصيل (العلاجات، أمثلة الأدوية بدون وصفة، العناية الذاتية)." },
-  { "key": "CopyDetails", "en": "Copy Details", "fr": "Copier les détails", "ar": "نسخ التفاصيل" },
-  { "key": "PrintDetails", "en": "Print Details", "fr": "Imprimer les détails", "ar": "طباعة التفاصيل" },
-  { "key": "ExportCsv", "en": "Export Results (CSV)", "fr": "Exporter les résultats (CSV)", "ar": "تصدير النتائج (CSV)" },
-  { "key": "ExportMarkdown", "en": "Export Results (Markdown)", "fr": "Exporter les résultats (Markdown)", "ar": "تصدير النتائج (Markdown)" },
-  { "key": "ExportHeader_Condition", "en": "Condition", "fr": "Affection", "ar": "الحالة" },
-  { "key": "ExportHeader_Score", "en": "Score", "fr": "Score", "ar": "النتيجة" },
-  { "key": "ExportHeader_Matches", "en": "Matches", "fr": "Correspondances", "ar": "التطابقات" },
-  { "key": "ExportHeader_Category", "en": "Category", "fr": "Catégorie", "ar": "الفئة" },
-  { "key": "Help", "en": "Help", "fr": "Aide", "ar": "مساعدة" },
-  { "key": "Help_Title", "en": "About & Help", "fr": "À propos & Aide", "ar": "حول & مساعدة" },
-  { "key": "Help_Header", "en": "Symptom Checker (Educational)", "fr": "Symptom Checker (Éducatif)", "ar": "مدقق الأعراض (تعليمي)" },
-  { "key": "Help_WhatItDoes", "en": "Select symptoms from a list to see suggested conditions. No free text.", "fr": "Sélectionnez des symptômes dans une liste pour voir des affections suggérées. Pas de texte libre.", "ar": "اختر الأعراض من قائمة لعرض الحالات المقترحة. لا يوجد إدخال نصي حر." },
-  { "key": "Help_Models", "en": "Models: Jaccard, Cosine (binary), Naive Bayes (Bernoulli).", "fr": "Modèles : Jaccard, Cosinus (binaire), Naïf Bayésien (Bernoulli).", "ar": "النماذج: جاكارد، جيب التمام (ثنائي)، بايز الساذج (بيرنولي)." },
-  { "key": "Help_Params", "en": "Parameters: Threshold (%), Min Match, Top‑K.", "fr": "Paramètres : Seuil (%), Correspondances min, Top‑K.", "ar": "المعلمات: العتبة (%), الحد الأدنى للتطابق، أعلى‑K." },
-  { "key": "Help_VitalsRules", "en": "Vitals and decision rules are educational approximations (Centor/McIsaac, PERC).", "fr": "Les constantes et règles décisionnelles sont des approximations éducatives (Centor/McIsaac, PERC).", "ar": "العلامات الحيوية وقواعد القرار هي تقريبات تعليمية (سينتور/ماك إيزاك، PERC)." },
-  { "key": "Help_TriageV2", "en": "Triage v2 highlights possible red flags using symptoms + vitals + PERC context.", "fr": "Le triage v2 met en évidence des signes d'alerte possibles en utilisant symptômes + constantes + contexte PERC.", "ar": "الفرز (v2) يبرز علامات الإنذار المحتملة باستخدام الأعراض + العلامات الحيوية + سياق PERC." },
-  { "key": "Help_TriageThresholds", "en": "Thresholds: SpO₂ < 92, SBP < 90 or ≥ 180 / DBP ≥ 120, HR ≥ 120, RR ≥ 30, Temp ≥ 40°C.", "fr": "Seuils : SpO₂ < 92, PAS < 90 ou ≥ 180 / PAD ≥ 120, FC ≥ 120, FR ≥ 30, Temp ≥ 40°C.", "ar": "العتبات: SpO₂ < 92، الضغط الانقباضي < 90 أو ≥ 180 / الانبساطي ≥ 120، النبض ≥ 120، معدل التنفس ≥ 30، الحرارة ≥ 40°م." },
-  { "key": "Help_DataFiles", "en": "Data files in data/: conditions.json, categories.json, translations.json, synonyms.json.", "fr": "Fichiers de données dans data/ : conditions.json, categories.json, translations.json, synonyms.json.", "ar": "ملفات البيانات في data/: conditions.json, categories.json, translations.json, synonyms.json." },
-  { "key": "Help_Translations", "en": "Use 'Missing Translations' to review absent keys and export a report.", "fr": "Utilisez 'Traductions manquantes' pour revoir les clés absentes et exporter un rapport.", "ar": "استخدم 'الترجمات المفقودة' لمراجعة المفاتيح الناقصة وتصدير تقرير." }
-  ,
-    { "key": "RedFlagsHeader", "en": "Possible red flags:", "fr": "Signes d’alerte possibles :", "ar": "علامات إنذار محتملة:" },
-    { "key": "SeekCareDisclaimer", "en": "If these apply, consider seeking urgent medical attention. This tool is educational, not medical advice.", "fr": "Si cela s’applique, envisagez de consulter en urgence. Cet outil est éducatif, pas un avis médical.", "ar": "إذا انطبق أي منها، فكّر في طلب رعاية طبية عاجلة. هذه أداة تعليمية وليست نصيحة طبية." },
-    { "key": "RF_ChestPain_SOB", "en": "Chest pain with shortness of breath can be serious.", "fr": "Douleur thoracique avec essoufflement peut être grave.", "ar": "ألم صدري مع ضيق تنفس قد يكون خطيرًا." },
-    { "key": "RF_Fainting_ChestPain", "en": "Fainting with chest pain requires urgent assessment.", "fr": "Évanouissement avec douleur thoracique nécessite une évaluation urgente.", "ar": "الإغماء مع ألم صدري يحتاج إلى تقييم عاجل." },
-    { "key": "RF_Fever_NeckPain_Light", "en": "Fever with neck pain or light sensitivity can signal meningitis.", "fr": "Fièvre avec douleur cervicale ou photophobie peut évoquer une méningite.", "ar": "حمّى مع ألم الرقبة أو حساسية للضوء قد تشير إلى التهاب السحايا." },
-    { "key": "RF_BloodInStool", "en": "Blood in stool should be promptly evaluated.", "fr": "Sang dans les selles doit être évalué rapidement.", "ar": "وجود دم في البراز يستلزم التقييم سريعًا." },
-    { "key": "RF_BloodInUrine", "en": "Blood in urine should be promptly evaluated.", "fr": "Sang dans les urines doit être évalué rapidement.", "ar": "وجود دم في البول يستلزم التقييم سريعًا." },
-    { "key": "RF_SevereCough_SOB", "en": "Severe cough with shortness of breath can indicate breathing problems.", "fr": "Toux sévère avec essoufflement peut indiquer un problème respiratoire.", "ar": "سعال شديد مع ضيق تنفس قد يدل على مشكلة تنفسية." },
-    { "key": "RF_TesticularPain", "en": "Sudden testicular pain can be an emergency.", "fr": "Douleur testiculaire soudaine peut être une urgence.", "ar": "ألم مفاجئ في الخصية قد يكون حالة طارئة." },
-    { "key": "RF_Confusion", "en": "New confusion or disorientation is concerning.", "fr": "Confusion ou désorientation récente est préoccupante.", "ar": "الارتباك أو التشوش حديث الظهور أمر مقلق." },
-    { "key": "RF_Hypoxia", "en": "Low oxygen level (SpO₂) can be dangerous.", "fr": "Une faible saturation en oxygène (SpO₂) peut être dangereuse.", "ar": "انخفاض مستوى الأكسجين (SpO₂) قد يكون خطيرًا." },
-    { "key": "RF_Hypotension", "en": "Very low blood pressure can be life‑threatening.", "fr": "Une pression artérielle très basse peut engager le pronostic vital.", "ar": "انخفاض شديد في ضغط الدم قد يهدد الحياة." },
-    { "key": "RF_SevereHypertension", "en": "Severely high blood pressure needs urgent assessment.", "fr": "Une hypertension artérielle sévère nécessite une évaluation urgente.", "ar": "ارتفاع شديد في ضغط الدم يحتاج إلى تقييم عاجل." },
-    { "key": "RF_Tachycardia", "en": "Very fast heart rate can be concerning.", "fr": "Un rythme cardiaque très élevé peut être préoccupant.", "ar": "معدل ضربات قلب مرتفع جدًا قد يكون مقلقًا." },
-    { "key": "RF_Tachypnea", "en": "Very fast breathing can be concerning.", "fr": "Une respiration très rapide peut être préoccupante.", "ar": "تنفس سريع جدًا قد يكون مقلقًا." },
-    { "key": "RF_HighFever", "en": "Very high fever may require urgent care.", "fr": "Une fièvre très élevée peut nécessiter des soins urgents.", "ar": "حمّى مرتفعة جدًا قد تتطلب رعاية عاجلة." },
-    { "key": "RF_PERC_Positive", "en": "PERC positive with chest symptoms — cannot rule out PE.", "fr": "PERC positif avec symptômes thoraciques — EP non exclue.", "ar": "PERC إيجابي مع أعراض صدرية — لا يمكن استبعاد الانصمام الرئوي." }
+    {
+      "key": "NoMatches",
+      "en": "No matching conditions found based on the current selection.",
+      "fr": "Aucune affection correspondante trouvée selon la sélection actuelle.",
+      "ar": "لم يتم العثور على حالات مطابقة بناءً على الاختيار الحالي."
+    },
+    {
+      "key": "Score",
+      "en": "Score:",
+      "fr": "Score :",
+      "ar": ":النتيجة"
+    },
+    {
+      "key": "Matches",
+      "en": "matches:",
+      "fr": "correspondances :",
+      "ar": ":التطابقات"
+    },
+    {
+      "key": "MatchedSymptoms",
+      "en": "Matched symptoms:",
+      "fr": "Symptômes correspondants :",
+      "ar": ":الأعراض المتطابقة"
+    },
+    {
+      "key": "SymptomsLabel",
+      "en": "Symptoms:",
+      "fr": "Symptômes :",
+      "ar": ":الأعراض"
+    },
+    {
+      "key": "DetailsTitle",
+      "en": "Condition Details",
+      "fr": "Détails de l'affection",
+      "ar": "تفاصيل الحالة"
+    },
+    {
+      "key": "ExplainabilityHeader",
+      "en": "How this score was computed:",
+      "fr": "Comment ce score a été calculé :",
+      "ar": ":كيف تم حساب هذه الدرجة"
+    },
+    {
+      "key": "Explain_MatchedOverlap",
+      "en": "Matched overlap",
+      "fr": "Chevauchement correspondant",
+      "ar": "تداخل متطابق"
+    },
+    {
+      "key": "Explain_Similarity",
+      "en": "Similarity",
+      "fr": "Similarité",
+      "ar": "تشابه"
+    },
+    {
+      "key": "Explain_Prob",
+      "en": "Estimated probability",
+      "fr": "Probabilité estimée",
+      "ar": "احتمال مُقدَّر"
+    },
+    {
+      "key": "MergedAddedFmt",
+      "en": "Merged/added {0} conditions.",
+      "fr": "{0} affections fusionnées/ajoutées.",
+      "ar": "تم دمج/إضافة {0} حالات."
+    },
+    {
+      "key": "NoChangesDetected",
+      "en": "No changes detected.",
+      "fr": "Aucun changement détecté.",
+      "ar": "لم يتم اكتشاف تغييرات."
+    },
+    {
+      "key": "SyncCompleteTitle",
+      "en": "Sync complete",
+      "fr": "Synchronisation terminée",
+      "ar": "اكتملت المزامنة"
+    },
+    {
+      "key": "SyncFailed",
+      "en": "Sync failed",
+      "fr": "Échec de la synchronisation",
+      "ar": "فشلت المزامنة"
+    },
+    {
+      "key": "Error",
+      "en": "Error",
+      "fr": "Erreur",
+      "ar": "خطأ"
+    },
+    {
+      "key": "MissingTranslationsTitle",
+      "en": "Missing Translations",
+      "fr": "Traductions manquantes",
+      "ar": "ترجمات مفقودة"
+    },
+    {
+      "key": "NoMissingTranslations",
+      "en": "No missing translations detected.",
+      "fr": "Aucune traduction manquante détectée.",
+      "ar": "لا توجد ترجمات مفقودة."
+    },
+    {
+      "key": "ExportReport",
+      "en": "Export",
+      "fr": "Exporter",
+      "ar": "تصدير"
+    },
+    {
+      "key": "Copy",
+      "en": "Copy",
+      "fr": "Copier",
+      "ar": "نسخ"
+    },
+    {
+      "key": "Close",
+      "en": "Close",
+      "fr": "Fermer",
+      "ar": "إغلاق"
+    },
+    {
+      "key": "DoubleClickHint",
+      "en": "Tip: Double‑click a result to see details (treatments, OTC examples, self‑care).",
+      "fr": "Astuce : double‑cliquez sur un résultat pour voir les détails (traitements, exemples OTC, auto‑soins).",
+      "ar": "تلميح: انقر نقرًا مزدوجًا على النتيجة لعرض التفاصيل (العلاجات، أمثلة الأدوية بدون وصفة، العناية الذاتية)."
+    },
+    {
+      "key": "CopyDetails",
+      "en": "Copy Details",
+      "fr": "Copier les détails",
+      "ar": "نسخ التفاصيل"
+    },
+    {
+      "key": "PrintDetails",
+      "en": "Print Details",
+      "fr": "Imprimer les détails",
+      "ar": "طباعة التفاصيل"
+    },
+    {
+      "key": "ExportCsv",
+      "en": "Export Results (CSV)",
+      "fr": "Exporter les résultats (CSV)",
+      "ar": "تصدير النتائج (CSV)"
+    },
+    {
+      "key": "ExportMarkdown",
+      "en": "Export Results (Markdown)",
+      "fr": "Exporter les résultats (Markdown)",
+      "ar": "تصدير النتائج (Markdown)"
+    },
+    {
+      "key": "ExportHeader_Condition",
+      "en": "Condition",
+      "fr": "Affection",
+      "ar": "الحالة"
+    },
+    {
+      "key": "ExportHeader_Score",
+      "en": "Score",
+      "fr": "Score",
+      "ar": "النتيجة"
+    },
+    {
+      "key": "ExportHeader_Matches",
+      "en": "Matches",
+      "fr": "Correspondances",
+      "ar": "التطابقات"
+    },
+    {
+      "key": "ExportHeader_Category",
+      "en": "Category",
+      "fr": "Catégorie",
+      "ar": "الفئة"
+    },
+    {
+      "key": "Help",
+      "en": "Help",
+      "fr": "Aide",
+      "ar": "مساعدة"
+    },
+    {
+      "key": "Help_Title",
+      "en": "About & Help",
+      "fr": "À propos & Aide",
+      "ar": "حول & مساعدة"
+    },
+    {
+      "key": "Help_Header",
+      "en": "Symptom Checker (Educational)",
+      "fr": "Symptom Checker (Éducatif)",
+      "ar": "مدقق الأعراض (تعليمي)"
+    },
+    {
+      "key": "Help_WhatItDoes",
+      "en": "Select symptoms from a list to see suggested conditions. No free text.",
+      "fr": "Sélectionnez des symptômes dans une liste pour voir des affections suggérées. Pas de texte libre.",
+      "ar": "اختر الأعراض من قائمة لعرض الحالات المقترحة. لا يوجد إدخال نصي حر."
+    },
+    {
+      "key": "Help_Models",
+      "en": "Models: Jaccard, Cosine (binary), Naive Bayes (Bernoulli).",
+      "fr": "Modèles : Jaccard, Cosinus (binaire), Naïf Bayésien (Bernoulli).",
+      "ar": "النماذج: جاكارد، جيب التمام (ثنائي)، بايز الساذج (بيرنولي)."
+    },
+    {
+      "key": "Help_Params",
+      "en": "Parameters: Threshold (%), Min Match, Top‑K.",
+      "fr": "Paramètres : Seuil (%), Correspondances min, Top‑K.",
+      "ar": "المعلمات: العتبة (%), الحد الأدنى للتطابق، أعلى‑K."
+    },
+    {
+      "key": "Help_VitalsRules",
+      "en": "Vitals and decision rules are educational approximations (Centor/McIsaac, PERC).",
+      "fr": "Les constantes et règles décisionnelles sont des approximations éducatives (Centor/McIsaac, PERC).",
+      "ar": "العلامات الحيوية وقواعد القرار هي تقريبات تعليمية (سينتور/ماك إيزاك، PERC)."
+    },
+    {
+      "key": "Help_TriageV2",
+      "en": "Triage v2 highlights possible red flags using symptoms + vitals + PERC context.",
+      "fr": "Le triage v2 met en évidence des signes d'alerte possibles en utilisant symptômes + constantes + contexte PERC.",
+      "ar": "الفرز (v2) يبرز علامات الإنذار المحتملة باستخدام الأعراض + العلامات الحيوية + سياق PERC."
+    },
+    {
+      "key": "Help_TriageThresholds",
+      "en": "Thresholds: SpO₂ < 92, SBP < 90 or ≥ 180 / DBP ≥ 120, HR ≥ 120, RR ≥ 30, Temp ≥ 40°C.",
+      "fr": "Seuils : SpO₂ < 92, PAS < 90 ou ≥ 180 / PAD ≥ 120, FC ≥ 120, FR ≥ 30, Temp ≥ 40°C.",
+      "ar": "العتبات: SpO₂ < 92، الضغط الانقباضي < 90 أو ≥ 180 / الانبساطي ≥ 120، النبض ≥ 120، معدل التنفس ≥ 30، الحرارة ≥ 40°م."
+    },
+    {
+      "key": "Help_DataFiles",
+      "en": "Data files in data/: conditions.json, categories.json, translations.json, synonyms.json.",
+      "fr": "Fichiers de données dans data/ : conditions.json, categories.json, translations.json, synonyms.json.",
+      "ar": "ملفات البيانات في data/: conditions.json, categories.json, translations.json, synonyms.json."
+    },
+    {
+      "key": "Help_Translations",
+      "en": "Use 'Missing Translations' to review absent keys and export a report.",
+      "fr": "Utilisez 'Traductions manquantes' pour revoir les clés absentes et exporter un rapport.",
+      "ar": "استخدم 'الترجمات المفقودة' لمراجعة المفاتيح الناقصة وتصدير تقرير."
+    },
+    {
+      "key": "RedFlagsHeader",
+      "en": "Possible red flags:",
+      "fr": "Signes d’alerte possibles :",
+      "ar": "علامات إنذار محتملة:"
+    },
+    {
+      "key": "SeekCareDisclaimer",
+      "en": "If these apply, consider seeking urgent medical attention. This tool is educational, not medical advice.",
+      "fr": "Si cela s’applique, envisagez de consulter en urgence. Cet outil est éducatif, pas un avis médical.",
+      "ar": "إذا انطبق أي منها، فكّر في طلب رعاية طبية عاجلة. هذه أداة تعليمية وليست نصيحة طبية."
+    },
+    {
+      "key": "RF_ChestPain_SOB",
+      "en": "Chest pain with shortness of breath can be serious.",
+      "fr": "Douleur thoracique avec essoufflement peut être grave.",
+      "ar": "ألم صدري مع ضيق تنفس قد يكون خطيرًا."
+    },
+    {
+      "key": "RF_Fainting_ChestPain",
+      "en": "Fainting with chest pain requires urgent assessment.",
+      "fr": "Évanouissement avec douleur thoracique nécessite une évaluation urgente.",
+      "ar": "الإغماء مع ألم صدري يحتاج إلى تقييم عاجل."
+    },
+    {
+      "key": "RF_Fever_NeckPain_Light",
+      "en": "Fever with neck pain or light sensitivity can signal meningitis.",
+      "fr": "Fièvre avec douleur cervicale ou photophobie peut évoquer une méningite.",
+      "ar": "حمّى مع ألم الرقبة أو حساسية للضوء قد تشير إلى التهاب السحايا."
+    },
+    {
+      "key": "RF_BloodInStool",
+      "en": "Blood in stool should be promptly evaluated.",
+      "fr": "Sang dans les selles doit être évalué rapidement.",
+      "ar": "وجود دم في البراز يستلزم التقييم سريعًا."
+    },
+    {
+      "key": "RF_BloodInUrine",
+      "en": "Blood in urine should be promptly evaluated.",
+      "fr": "Sang dans les urines doit être évalué rapidement.",
+      "ar": "وجود دم في البول يستلزم التقييم سريعًا."
+    },
+    {
+      "key": "RF_SevereCough_SOB",
+      "en": "Severe cough with shortness of breath can indicate breathing problems.",
+      "fr": "Toux sévère avec essoufflement peut indiquer un problème respiratoire.",
+      "ar": "سعال شديد مع ضيق تنفس قد يدل على مشكلة تنفسية."
+    },
+    {
+      "key": "RF_TesticularPain",
+      "en": "Sudden testicular pain can be an emergency.",
+      "fr": "Douleur testiculaire soudaine peut être une urgence.",
+      "ar": "ألم مفاجئ في الخصية قد يكون حالة طارئة."
+    },
+    {
+      "key": "RF_Confusion",
+      "en": "New confusion or disorientation is concerning.",
+      "fr": "Confusion ou désorientation récente est préoccupante.",
+      "ar": "الارتباك أو التشوش حديث الظهور أمر مقلق."
+    },
+    {
+      "key": "RF_Hypoxia",
+      "en": "Low oxygen level (SpO₂) can be dangerous.",
+      "fr": "Une faible saturation en oxygène (SpO₂) peut être dangereuse.",
+      "ar": "انخفاض مستوى الأكسجين (SpO₂) قد يكون خطيرًا."
+    },
+    {
+      "key": "RF_Hypotension",
+      "en": "Very low blood pressure can be life‑threatening.",
+      "fr": "Une pression artérielle très basse peut engager le pronostic vital.",
+      "ar": "انخفاض شديد في ضغط الدم قد يهدد الحياة."
+    },
+    {
+      "key": "RF_SevereHypertension",
+      "en": "Severely high blood pressure needs urgent assessment.",
+      "fr": "Une hypertension artérielle sévère nécessite une évaluation urgente.",
+      "ar": "ارتفاع شديد في ضغط الدم يحتاج إلى تقييم عاجل."
+    },
+    {
+      "key": "RF_Tachycardia",
+      "en": "Very fast heart rate can be concerning.",
+      "fr": "Un rythme cardiaque très élevé peut être préoccupant.",
+      "ar": "معدل ضربات قلب مرتفع جدًا قد يكون مقلقًا."
+    },
+    {
+      "key": "RF_Tachypnea",
+      "en": "Very fast breathing can be concerning.",
+      "fr": "Une respiration très rapide peut être préoccupante.",
+      "ar": "تنفس سريع جدًا قد يكون مقلقًا."
+    },
+    {
+      "key": "RF_HighFever",
+      "en": "Very high fever may require urgent care.",
+      "fr": "Une fièvre très élevée peut nécessiter des soins urgents.",
+      "ar": "حمّى مرتفعة جدًا قد تتطلب رعاية عاجلة."
+    },
+    {
+      "key": "RF_PERC_Positive",
+      "en": "PERC positive with chest symptoms — cannot rule out PE.",
+      "fr": "PERC positif avec symptômes thoraciques — EP non exclue.",
+      "ar": "PERC إيجابي مع أعراض صدرية — لا يمكن استبعاد الانصمام الرئوي."
+    }
   ],
   "ui_details": [
-    { "key": "Treatments", "en": "Possible treatments (educational):", "fr": "Traitements possibles (éducatif) :", "ar": ":علاجات محتملة (تعليمي)" },
-    { "key": "Medications", "en": "Over‑the‑counter examples (educational):", "fr": "Exemples en vente libre (éducatif) :", "ar": ":أمثلة أدوية بدون وصفة (تعليمي)" },
-    { "key": "CareAdvice", "en": "Self‑care advice (educational):", "fr": "Conseils d’auto‑soins (éducatif) :", "ar": ":نصائح للعناية الذاتية (تعليمي)" }
+    {
+      "key": "Treatments",
+      "en": "Possible treatments (educational):",
+      "fr": "Traitements possibles (éducatif) :",
+      "ar": ":علاجات محتملة (تعليمي)"
+    },
+    {
+      "key": "Medications",
+      "en": "Over‑the‑counter examples (educational):",
+      "fr": "Exemples en vente libre (éducatif) :",
+      "ar": ":أمثلة أدوية بدون وصفة (تعليمي)"
+    },
+    {
+      "key": "CareAdvice",
+      "en": "Self‑care advice (educational):",
+      "fr": "Conseils d’auto‑soins (éducatif) :",
+      "ar": ":نصائح للعناية الذاتية (تعليمي)"
+    }
   ],
   "symptoms": [
-    { "key": "Fever", "fr": "Fièvre", "ar": "حمّى" },
-    { "key": "Cough", "fr": "Toux", "ar": "سعال" },
-    { "key": "Fatigue", "fr": "Fatigue", "ar": "إرهاق" },
-    { "key": "Abdominal Pain", "fr": "Douleur abdominale", "ar": "ألم بطني" },
-    { "key": "Right Upper Abdominal Pain", "fr": "Douleur hypochondre droit", "ar": "ألم الربع العلوي الأيمن" },
-    { "key": "Jaundice", "fr": "Ictère", "ar": "يرقان" },
-    { "key": "Dark Urine", "fr": "Urines foncées", "ar": "بول داكن" },
-    { "key": "Pale Stools", "fr": "Selles pâles", "ar": "براز فاتح" },
-    { "key": "Urinary Burning", "fr": "Brûlure urinaire", "ar": "حرقان عند التبول" },
-    { "key": "Genital Discharge", "fr": "Écoulement génital", "ar": "إفرازات تناسلية" },
-    { "key": "Pelvic Pain", "fr": "Douleur pelvienne", "ar": "ألم حوض" },
-    { "key": "Pain During Sex", "fr": "Douleur pendant les rapports", "ar": "ألم أثناء الجماع" },
-    { "key": "Headache", "fr": "Céphalée", "ar": "صداع" },
-    { "key": "Nausea", "fr": "Nausées", "ar": "غثيان" },
-    { "key": "Vomiting", "fr": "Vomissements", "ar": "قيء" },
-    { "key": "Diarrhea", "fr": "Diarrhée", "ar": "إسهال" },
-    { "key": "Runny Nose", "fr": "Nez qui coule", "ar": "سيلان الأنف" },
-    { "key": "Sore Throat", "fr": "Maux de gorge", "ar": "التهاب الحلق" },
-    { "key": "Shortness of Breath", "fr": "Essoufflement", "ar": "ضيق التنفس" },
-    { "key": "Wheezing", "fr": "Sifflements", "ar": "أزيز" },
-    { "key": "Rash", "fr": "Éruption cutanée", "ar": "طفح جلدي" },
-    { "key": "Itching", "fr": "Démangeaisons", "ar": "حكّة" },
-    { "key": "Swollen Lymph Nodes", "fr": "Ganglions enflés", "ar": "تضخم العقد اللمفاوية" },
-    { "key": "Chest Pain", "fr": "Douleur thoracique", "ar": "ألم صدري" },
-    { "key": "Back Pain", "fr": "Mal de dos", "ar": "ألم الظهر" },
-    { "key": "Joint Pain", "fr": "Douleur articulaire", "ar": "ألم المفاصل" },
-    { "key": "Body Aches", "fr": "Courbatures", "ar": "آلام الجسم" },
-    { "key": "Chills", "fr": "Frissons", "ar": "قشعريرة" },
-    { "key": "Sneezing", "fr": "Éternuements", "ar": "عطاس" },
-    { "key": "Sensitivity to Light", "fr": "Sensibilité à la lumière", "ar": "حساسية للضوء" },
-    { "key": "Sensitivity to Sound", "fr": "Sensibilité au son", "ar": "حساسية للصوت" },
-    { "key": "Neck Pain", "fr": "Douleur cervicale", "ar": "ألم الرقبة" },
-    { "key": "Eye Redness", "fr": "Rougeur oculaire", "ar": "احمرار العين" },
-    { "key": "Nasal Congestion", "fr": "Congestion nasale", "ar": "احتقان الأنف" },
-    { "key": "Facial Pain", "fr": "Douleur faciale", "ar": "ألم الوجه" },
-    { "key": "Loss of Taste", "fr": "Perte du goût", "ar": "فقدان حاسة التذوق" },
-    { "key": "Loss of Smell", "fr": "Perte de l'odorat", "ar": "فقدان حاسة الشم" },
-    { "key": "Bloating", "fr": "Ballonnements", "ar": "انتفاخ" },
-    { "key": "Constipation", "fr": "Constipation", "ar": "إمساك" },
-    { "key": "Heartburn", "fr": "Brûlures d'estomac", "ar": "حرقة المعدة" },
-    { "key": "Regurgitation", "fr": "Régurgitation", "ar": "ارتجاع" },
-    { "key": "Back Pain", "fr": "Mal de dos", "ar": "ألم الظهر" },
-    { "key": "Frequent Urination", "fr": "Mictions fréquentes", "ar": "تكرار التبول" },
-    { "key": "Lower Abdominal Pain", "fr": "Douleur abdominale basse", "ar": "ألم أسفل البطن" },
-    { "key": "Flank Pain", "fr": "Douleur au flanc", "ar": "ألم الخاصرة" },
-    { "key": "Blood in Urine", "fr": "Sang dans les urines", "ar": "دم في البول" },
-    { "key": "Ear Pain", "fr": "Douleur d'oreille", "ar": "ألم الأذن" },
-    { "key": "Tearing", "fr": "Larmoiement", "ar": "دموع" },
-    { "key": "Discharge", "fr": "Écoulement", "ar": "إفرازات" },
-    { "key": "Pain", "fr": "Douleur", "ar": "ألم" },
-    { "key": "Swelling", "fr": "Gonflement", "ar": "تورّم" },
-    { "key": "Skin Redness", "fr": "Rougeur cutanée", "ar": "احمرار الجلد" },
-    { "key": "Warmth", "fr": "Chaleur", "ar": "سخونة" },
-    { "key": "Watery Eyes", "fr": "Yeux larmoyants", "ar": "عيون دامعة" },
-    { "key": "Chest Tightness", "fr": "Oppression thoracique", "ar": "ضيق الصدر" },
-    { "key": "Palpitations", "fr": "Palpitations", "ar": "خفقان" },
-    { "key": "Dizziness", "fr": "Vertiges", "ar": "دوخة" },
-    { "key": "Low Mood", "fr": "Humeur dépressive", "ar": "مزاج منخفض" },
-    { "key": "Loss of Interest", "fr": "Perte d'intérêt", "ar": "فقدان الاهتمام" },
-    { "key": "Sleep Changes", "fr": "Changements du sommeil", "ar": "تغيّرات في النوم" },
-    { "key": "Irritability", "fr": "Irritabilité", "ar": "عصبية" },
-    { "key": "Poor Concentration", "fr": "Concentration faible", "ar": "ضعف التركيز" },
-    { "key": "Thirst", "fr": "Soif", "ar": "عطش" },
-    { "key": "Dry Mouth", "fr": "Bouche sèche", "ar": "جفاف الفم" },
-    { "key": "Confusion", "fr": "Confusion", "ar": "تشوش" },
-    { "key": "Dry Skin", "fr": "Peau sèche", "ar": "جفاف الجلد" },
-    { "key": "Pale Skin", "fr": "Pâleur", "ar": "شحوب الجلد" },
-    { "key": "Weakness", "fr": "Faiblesse", "ar": "ضعف" },
-    { "key": "Bone Pain", "fr": "Douleur osseuse", "ar": "ألم العظام" },
-    { "key": "Muscle Weakness", "fr": "Faiblesse musculaire", "ar": "ضعف العضلات" },
-    { "key": "Weight Gain", "fr": "Prise de poids", "ar": "زيادة الوزن" },
-    { "key": "Cold Intolerance", "fr": "Intolérance au froid", "ar": "عدم تحمّل البرد" },
-    { "key": "Weight Loss", "fr": "Perte de poids", "ar": "نقص الوزن" },
-    { "key": "Heat Intolerance", "fr": "Intolérance à la chaleur", "ar": "عدم تحمّل الحرارة" },
-    { "key": "Increased Thirst", "fr": "Soif augmentée", "ar": "زيادة العطش" },
-    { "key": "Blurred Vision", "fr": "Vision floue", "ar": "رؤية ضبابية" },
-    { "key": "Fainting", "fr": "Évanouissement", "ar": "إغماء" },
-    { "key": "Night Sweats", "fr": "Sueurs nocturnes", "ar": "تعرّق ليلي" },
-    { "key": "Redness", "fr": "Rougeur", "ar": "احمرار" },
-    { "key": "Stiffness", "fr": "Raideur", "ar": "تيبّس" },
-    { "key": "Reduced Mobility", "fr": "Mobilité réduite", "ar": "محدودية الحركة" },
-    { "key": "Morning Stiffness", "fr": "Raideur matinale", "ar": "تيبّس صباحي" },
-    { "key": "Leg Pain", "fr": "Douleur à la jambe", "ar": "ألم الساق" },
-    { "key": "Numbness", "fr": "Engourdissement", "ar": "خدر" },
-    { "key": "Muscle Spasm", "fr": "Spasme musculaire", "ar": "تشنج عضلي" },
-    { "key": "Limited Range of Motion", "fr": "Amplitude réduite", "ar": "محدودية مدى الحركة" },
-    { "key": "Hand Numbness", "fr": "Engourdissement de la main", "ar": "خدر اليد" },
-    { "key": "Wrist Pain", "fr": "Douleur du poignet", "ar": "ألم المعصم" },
-    { "key": "Weak Grip", "fr": "Poigne faible", "ar": "ضعف القبضة" },
-    { "key": "Scaling", "fr": "Desquamation", "ar": "تقشّر" },
-    { "key": "Pimples", "fr": "Boutons", "ar": "بثور" },
-    { "key": "Oily Skin", "fr": "Peau grasse", "ar": "بشرة دهنية" },
-    { "key": "Blackheads", "fr": "Points noirs", "ar": "رؤوس سوداء" },
-    { "key": "Facial Redness", "fr": "Rougeur du visage", "ar": "احمرار الوجه" },
-    { "key": "Flushing", "fr": "Bouffées vasomotrices", "ar": "احمرار مفاجئ" },
-    { "key": "Visible Blood Vessels", "fr": "Vaisseaux visibles", "ar": "أوعية دموية ظاهرة" },
-    { "key": "Tooth Pain", "fr": "Douleur dentaire", "ar": "ألم الأسنان" },
-    { "key": "Muscle Pain", "fr": "Douleur musculaire", "ar": "ألم العضلات" },
-    { "key": "Tenderness", "fr": "Sensibilité à la palpation", "ar": "إيلام" },
-    { "key": "Tingling", "fr": "Fourmillements", "ar": "وخز" },
-    { "key": "Burning Sensation", "fr": "Sensation de brûlure", "ar": "إحساس بالحرقان" },
-    { "key": "Balance Problems", "fr": "Troubles de l'équilibre", "ar": "مشاكل التوازن" },
-    { "key": "Hearing Loss", "fr": "Perte auditive", "ar": "ضعف السمع" },
-    { "key": "Tinnitus", "fr": "Acouphènes", "ar": "طنين الأذن" },
-    { "key": "Ear Fullness", "fr": "Sensation d'oreille pleine", "ar": "امتلاء الأذن" },
-    { "key": "Ringing in Ears", "fr": "Bourdonnements", "ar": "رنين في الأذن" },
-    { "key": "Hearing Difficulty", "fr": "Difficulté à entendre", "ar": "صعوبة السمع" },
-    { "key": "Eye Dryness", "fr": "Sécheresse oculaire", "ar": "جفاف العين" },
-    { "key": "Irritation", "fr": "Irritation", "ar": "تهيّج" },
-    { "key": "Mouth Sores", "fr": "Ulcérations buccales", "ar": "تقرّحات الفم" },
-    { "key": "Severe Cough", "fr": "Toux sévère", "ar": "سعال شديد" },
-    { "key": "Gas", "fr": "Gaz", "ar": "غازات" },
-    { "key": "Blood in Stool", "fr": "Sang dans les selles", "ar": "دم في البراز" },
-    { "key": "Abdominal Cramps", "fr": "Crampes abdominales", "ar": "تقلّصات بطنية" },
-    { "key": "Genital Ulcer", "fr": "Ulcère génital", "ar": "قرحة تناسلية" },
-    { "key": "Genital Sores", "fr": "Plaies génitales", "ar": "تقرّحات تناسلية" },
-    { "key": "Genital Warts", "fr": "Verrues génitales", "ar": "ثآليل تناسلية" },
-    { "key": "Genital Discomfort", "fr": "Gêne génitale", "ar": "انزعاج تناسلي" },
-    { "key": "Testicular Pain", "fr": "Douleur testiculaire", "ar": "ألم الخصية" },
-    { "key": "Anxiety", "fr": "Anxiété", "ar": "قلق" },
-    { "key": "Sweating", "fr": "Transpiration", "ar": "تعرق" },
-    { "key": "Loss of Appetite", "fr": "Perte d'appétit", "ar": "فقدان الشهية" },
-    { "key": "Insomnia", "fr": "Insomnie", "ar": "أرق" },
-    { "key": "Crusting", "fr": "Croûtes", "ar": "تكوّن قشور" },
-    { "key": "Low Hemoglobin", "fr": "Hémoglobine basse", "ar": "انخفاض الهيموغلوبين" },
-    { "key": "Low Hematocrit", "fr": "Hématocrite bas", "ar": "انخفاض الهيماتوكريت" },
-    { "key": "Low Ferritin", "fr": "Ferritine basse", "ar": "انخفاض الفيريتين" },
-    { "key": "High WBC", "fr": "Leucocytose", "ar": "ارتفاع كريات الدم البيضاء" },
-    { "key": "High CRP", "fr": "CRP élevée", "ar": "ارتفاع البروتين المتفاعل C" },
-    { "key": "High ESR", "fr": "VS élevée", "ar": "ارتفاع سرعة الترسيب" },
-    { "key": "Elevated ALT", "fr": "ALAT élevée", "ar": "ارتفاع ALT (ألانين ترانسفيراز)" },
-    { "key": "Elevated AST", "fr": "ASAT élevée", "ar": "ارتفاع AST (أسبارتات ترانسفيراز)" },
-    { "key": "Elevated Bilirubin", "fr": "Bilirubine élevée", "ar": "ارتفاع البيليروبين" },
-    { "key": "Elevated ALP", "fr": "Phosphatase alcaline élevée", "ar": "ارتفاع الفوسفاتاز القلوي" },
-    { "key": "Elevated Amylase", "fr": "Amylase élevée", "ar": "ارتفاع الأميلاز" },
-    { "key": "Elevated Lipase", "fr": "Lipase élevée", "ar": "ارتفاع الليباز" },
-    { "key": "High Fasting Glucose", "fr": "Glycémie à jeun élevée", "ar": "ارتفاع سكر الدم الصائم" },
-    { "key": "High HbA1c", "fr": "Hémoglobine glyquée (HbA1c) élevée", "ar": "ارتفاع الهيموغلوبين السكري (HbA1c)" },
-    { "key": "High TSH", "fr": "TSH élevée", "ar": "ارتفاع TSH" },
-    { "key": "Low TSH", "fr": "TSH basse", "ar": "انخفاض TSH" },
-    { "key": "Low Free T4", "fr": "T4 libre basse", "ar": "انخفاض T4 الحر" },
-    { "key": "High Free T4", "fr": "T4 libre élevée", "ar": "ارتفاع T4 الحر" },
-    { "key": "Low Vitamin D", "fr": "Vitamine D basse", "ar": "انخفاض فيتامين د" }
+    {
+      "key": "Fever",
+      "fr": "Fièvre",
+      "ar": "حمّى"
+    },
+    {
+      "key": "Cough",
+      "fr": "Toux",
+      "ar": "سعال"
+    },
+    {
+      "key": "Fatigue",
+      "fr": "Fatigue",
+      "ar": "إرهاق"
+    },
+    {
+      "key": "Abdominal Pain",
+      "fr": "Douleur abdominale",
+      "ar": "ألم بطني"
+    },
+    {
+      "key": "Right Upper Abdominal Pain",
+      "fr": "Douleur hypochondre droit",
+      "ar": "ألم الربع العلوي الأيمن"
+    },
+    {
+      "key": "Jaundice",
+      "fr": "Ictère",
+      "ar": "يرقان"
+    },
+    {
+      "key": "Dark Urine",
+      "fr": "Urines foncées",
+      "ar": "بول داكن"
+    },
+    {
+      "key": "Pale Stools",
+      "fr": "Selles pâles",
+      "ar": "براز فاتح"
+    },
+    {
+      "key": "Urinary Burning",
+      "fr": "Brûlure urinaire",
+      "ar": "حرقان عند التبول"
+    },
+    {
+      "key": "Genital Discharge",
+      "fr": "Écoulement génital",
+      "ar": "إفرازات تناسلية"
+    },
+    {
+      "key": "Pelvic Pain",
+      "fr": "Douleur pelvienne",
+      "ar": "ألم حوض"
+    },
+    {
+      "key": "Pain During Sex",
+      "fr": "Douleur pendant les rapports",
+      "ar": "ألم أثناء الجماع"
+    },
+    {
+      "key": "Headache",
+      "fr": "Céphalée",
+      "ar": "صداع"
+    },
+    {
+      "key": "Nausea",
+      "fr": "Nausées",
+      "ar": "غثيان"
+    },
+    {
+      "key": "Vomiting",
+      "fr": "Vomissements",
+      "ar": "قيء"
+    },
+    {
+      "key": "Diarrhea",
+      "fr": "Diarrhée",
+      "ar": "إسهال"
+    },
+    {
+      "key": "Runny Nose",
+      "fr": "Nez qui coule",
+      "ar": "سيلان الأنف"
+    },
+    {
+      "key": "Sore Throat",
+      "fr": "Maux de gorge",
+      "ar": "التهاب الحلق"
+    },
+    {
+      "key": "Shortness of Breath",
+      "fr": "Essoufflement",
+      "ar": "ضيق التنفس"
+    },
+    {
+      "key": "Wheezing",
+      "fr": "Sifflements",
+      "ar": "أزيز"
+    },
+    {
+      "key": "Rash",
+      "fr": "Éruption cutanée",
+      "ar": "طفح جلدي"
+    },
+    {
+      "key": "Itching",
+      "fr": "Démangeaisons",
+      "ar": "حكّة"
+    },
+    {
+      "key": "Swollen Lymph Nodes",
+      "fr": "Ganglions enflés",
+      "ar": "تضخم العقد اللمفاوية"
+    },
+    {
+      "key": "Chest Pain",
+      "fr": "Douleur thoracique",
+      "ar": "ألم صدري"
+    },
+    {
+      "key": "Back Pain",
+      "fr": "Mal de dos",
+      "ar": "ألم الظهر"
+    },
+    {
+      "key": "Joint Pain",
+      "fr": "Douleur articulaire",
+      "ar": "ألم المفاصل"
+    },
+    {
+      "key": "Body Aches",
+      "fr": "Courbatures",
+      "ar": "آلام الجسم"
+    },
+    {
+      "key": "Chills",
+      "fr": "Frissons",
+      "ar": "قشعريرة"
+    },
+    {
+      "key": "Sneezing",
+      "fr": "Éternuements",
+      "ar": "عطاس"
+    },
+    {
+      "key": "Sensitivity to Light",
+      "fr": "Sensibilité à la lumière",
+      "ar": "حساسية للضوء"
+    },
+    {
+      "key": "Sensitivity to Sound",
+      "fr": "Sensibilité au son",
+      "ar": "حساسية للصوت"
+    },
+    {
+      "key": "Neck Pain",
+      "fr": "Douleur cervicale",
+      "ar": "ألم الرقبة"
+    },
+    {
+      "key": "Eye Redness",
+      "fr": "Rougeur oculaire",
+      "ar": "احمرار العين"
+    },
+    {
+      "key": "Nasal Congestion",
+      "fr": "Congestion nasale",
+      "ar": "احتقان الأنف"
+    },
+    {
+      "key": "Facial Pain",
+      "fr": "Douleur faciale",
+      "ar": "ألم الوجه"
+    },
+    {
+      "key": "Loss of Taste",
+      "fr": "Perte du goût",
+      "ar": "فقدان حاسة التذوق"
+    },
+    {
+      "key": "Loss of Smell",
+      "fr": "Perte de l'odorat",
+      "ar": "فقدان حاسة الشم"
+    },
+    {
+      "key": "Bloating",
+      "fr": "Ballonnements",
+      "ar": "انتفاخ"
+    },
+    {
+      "key": "Constipation",
+      "fr": "Constipation",
+      "ar": "إمساك"
+    },
+    {
+      "key": "Heartburn",
+      "fr": "Brûlures d'estomac",
+      "ar": "حرقة المعدة"
+    },
+    {
+      "key": "Regurgitation",
+      "fr": "Régurgitation",
+      "ar": "ارتجاع"
+    },
+    {
+      "key": "Back Pain",
+      "fr": "Mal de dos",
+      "ar": "ألم الظهر"
+    },
+    {
+      "key": "Frequent Urination",
+      "fr": "Mictions fréquentes",
+      "ar": "تكرار التبول"
+    },
+    {
+      "key": "Lower Abdominal Pain",
+      "fr": "Douleur abdominale basse",
+      "ar": "ألم أسفل البطن"
+    },
+    {
+      "key": "Flank Pain",
+      "fr": "Douleur au flanc",
+      "ar": "ألم الخاصرة"
+    },
+    {
+      "key": "Blood in Urine",
+      "fr": "Sang dans les urines",
+      "ar": "دم في البول"
+    },
+    {
+      "key": "Ear Pain",
+      "fr": "Douleur d'oreille",
+      "ar": "ألم الأذن"
+    },
+    {
+      "key": "Tearing",
+      "fr": "Larmoiement",
+      "ar": "دموع"
+    },
+    {
+      "key": "Discharge",
+      "fr": "Écoulement",
+      "ar": "إفرازات"
+    },
+    {
+      "key": "Pain",
+      "fr": "Douleur",
+      "ar": "ألم"
+    },
+    {
+      "key": "Swelling",
+      "fr": "Gonflement",
+      "ar": "تورّم"
+    },
+    {
+      "key": "Skin Redness",
+      "fr": "Rougeur cutanée",
+      "ar": "احمرار الجلد"
+    },
+    {
+      "key": "Warmth",
+      "fr": "Chaleur",
+      "ar": "سخونة"
+    },
+    {
+      "key": "Watery Eyes",
+      "fr": "Yeux larmoyants",
+      "ar": "عيون دامعة"
+    },
+    {
+      "key": "Chest Tightness",
+      "fr": "Oppression thoracique",
+      "ar": "ضيق الصدر"
+    },
+    {
+      "key": "Palpitations",
+      "fr": "Palpitations",
+      "ar": "خفقان"
+    },
+    {
+      "key": "Dizziness",
+      "fr": "Vertiges",
+      "ar": "دوخة"
+    },
+    {
+      "key": "Low Mood",
+      "fr": "Humeur dépressive",
+      "ar": "مزاج منخفض"
+    },
+    {
+      "key": "Loss of Interest",
+      "fr": "Perte d'intérêt",
+      "ar": "فقدان الاهتمام"
+    },
+    {
+      "key": "Sleep Changes",
+      "fr": "Changements du sommeil",
+      "ar": "تغيّرات في النوم"
+    },
+    {
+      "key": "Irritability",
+      "fr": "Irritabilité",
+      "ar": "عصبية"
+    },
+    {
+      "key": "Poor Concentration",
+      "fr": "Concentration faible",
+      "ar": "ضعف التركيز"
+    },
+    {
+      "key": "Thirst",
+      "fr": "Soif",
+      "ar": "عطش"
+    },
+    {
+      "key": "Dry Mouth",
+      "fr": "Bouche sèche",
+      "ar": "جفاف الفم"
+    },
+    {
+      "key": "Confusion",
+      "fr": "Confusion",
+      "ar": "تشوش"
+    },
+    {
+      "key": "Dry Skin",
+      "fr": "Peau sèche",
+      "ar": "جفاف الجلد"
+    },
+    {
+      "key": "Pale Skin",
+      "fr": "Pâleur",
+      "ar": "شحوب الجلد"
+    },
+    {
+      "key": "Weakness",
+      "fr": "Faiblesse",
+      "ar": "ضعف"
+    },
+    {
+      "key": "Bone Pain",
+      "fr": "Douleur osseuse",
+      "ar": "ألم العظام"
+    },
+    {
+      "key": "Muscle Weakness",
+      "fr": "Faiblesse musculaire",
+      "ar": "ضعف العضلات"
+    },
+    {
+      "key": "Weight Gain",
+      "fr": "Prise de poids",
+      "ar": "زيادة الوزن"
+    },
+    {
+      "key": "Cold Intolerance",
+      "fr": "Intolérance au froid",
+      "ar": "عدم تحمّل البرد"
+    },
+    {
+      "key": "Weight Loss",
+      "fr": "Perte de poids",
+      "ar": "نقص الوزن"
+    },
+    {
+      "key": "Heat Intolerance",
+      "fr": "Intolérance à la chaleur",
+      "ar": "عدم تحمّل الحرارة"
+    },
+    {
+      "key": "Increased Thirst",
+      "fr": "Soif augmentée",
+      "ar": "زيادة العطش"
+    },
+    {
+      "key": "Blurred Vision",
+      "fr": "Vision floue",
+      "ar": "رؤية ضبابية"
+    },
+    {
+      "key": "Fainting",
+      "fr": "Évanouissement",
+      "ar": "إغماء"
+    },
+    {
+      "key": "Night Sweats",
+      "fr": "Sueurs nocturnes",
+      "ar": "تعرّق ليلي"
+    },
+    {
+      "key": "Redness",
+      "fr": "Rougeur",
+      "ar": "احمرار"
+    },
+    {
+      "key": "Stiffness",
+      "fr": "Raideur",
+      "ar": "تيبّس"
+    },
+    {
+      "key": "Reduced Mobility",
+      "fr": "Mobilité réduite",
+      "ar": "محدودية الحركة"
+    },
+    {
+      "key": "Morning Stiffness",
+      "fr": "Raideur matinale",
+      "ar": "تيبّس صباحي"
+    },
+    {
+      "key": "Leg Pain",
+      "fr": "Douleur à la jambe",
+      "ar": "ألم الساق"
+    },
+    {
+      "key": "Numbness",
+      "fr": "Engourdissement",
+      "ar": "خدر"
+    },
+    {
+      "key": "Muscle Spasm",
+      "fr": "Spasme musculaire",
+      "ar": "تشنج عضلي"
+    },
+    {
+      "key": "Limited Range of Motion",
+      "fr": "Amplitude réduite",
+      "ar": "محدودية مدى الحركة"
+    },
+    {
+      "key": "Hand Numbness",
+      "fr": "Engourdissement de la main",
+      "ar": "خدر اليد"
+    },
+    {
+      "key": "Wrist Pain",
+      "fr": "Douleur du poignet",
+      "ar": "ألم المعصم"
+    },
+    {
+      "key": "Weak Grip",
+      "fr": "Poigne faible",
+      "ar": "ضعف القبضة"
+    },
+    {
+      "key": "Scaling",
+      "fr": "Desquamation",
+      "ar": "تقشّر"
+    },
+    {
+      "key": "Pimples",
+      "fr": "Boutons",
+      "ar": "بثور"
+    },
+    {
+      "key": "Oily Skin",
+      "fr": "Peau grasse",
+      "ar": "بشرة دهنية"
+    },
+    {
+      "key": "Blackheads",
+      "fr": "Points noirs",
+      "ar": "رؤوس سوداء"
+    },
+    {
+      "key": "Facial Redness",
+      "fr": "Rougeur du visage",
+      "ar": "احمرار الوجه"
+    },
+    {
+      "key": "Flushing",
+      "fr": "Bouffées vasomotrices",
+      "ar": "احمرار مفاجئ"
+    },
+    {
+      "key": "Visible Blood Vessels",
+      "fr": "Vaisseaux visibles",
+      "ar": "أوعية دموية ظاهرة"
+    },
+    {
+      "key": "Tooth Pain",
+      "fr": "Douleur dentaire",
+      "ar": "ألم الأسنان"
+    },
+    {
+      "key": "Muscle Pain",
+      "fr": "Douleur musculaire",
+      "ar": "ألم العضلات"
+    },
+    {
+      "key": "Tenderness",
+      "fr": "Sensibilité à la palpation",
+      "ar": "إيلام"
+    },
+    {
+      "key": "Tingling",
+      "fr": "Fourmillements",
+      "ar": "وخز"
+    },
+    {
+      "key": "Burning Sensation",
+      "fr": "Sensation de brûlure",
+      "ar": "إحساس بالحرقان"
+    },
+    {
+      "key": "Balance Problems",
+      "fr": "Troubles de l'équilibre",
+      "ar": "مشاكل التوازن"
+    },
+    {
+      "key": "Hearing Loss",
+      "fr": "Perte auditive",
+      "ar": "ضعف السمع"
+    },
+    {
+      "key": "Tinnitus",
+      "fr": "Acouphènes",
+      "ar": "طنين الأذن"
+    },
+    {
+      "key": "Ear Fullness",
+      "fr": "Sensation d'oreille pleine",
+      "ar": "امتلاء الأذن"
+    },
+    {
+      "key": "Ringing in Ears",
+      "fr": "Bourdonnements",
+      "ar": "رنين في الأذن"
+    },
+    {
+      "key": "Hearing Difficulty",
+      "fr": "Difficulté à entendre",
+      "ar": "صعوبة السمع"
+    },
+    {
+      "key": "Eye Dryness",
+      "fr": "Sécheresse oculaire",
+      "ar": "جفاف العين"
+    },
+    {
+      "key": "Irritation",
+      "fr": "Irritation",
+      "ar": "تهيّج"
+    },
+    {
+      "key": "Mouth Sores",
+      "fr": "Ulcérations buccales",
+      "ar": "تقرّحات الفم"
+    },
+    {
+      "key": "Severe Cough",
+      "fr": "Toux sévère",
+      "ar": "سعال شديد"
+    },
+    {
+      "key": "Gas",
+      "fr": "Gaz",
+      "ar": "غازات"
+    },
+    {
+      "key": "Blood in Stool",
+      "fr": "Sang dans les selles",
+      "ar": "دم في البراز"
+    },
+    {
+      "key": "Abdominal Cramps",
+      "fr": "Crampes abdominales",
+      "ar": "تقلّصات بطنية"
+    },
+    {
+      "key": "Genital Ulcer",
+      "fr": "Ulcère génital",
+      "ar": "قرحة تناسلية"
+    },
+    {
+      "key": "Genital Sores",
+      "fr": "Plaies génitales",
+      "ar": "تقرّحات تناسلية"
+    },
+    {
+      "key": "Genital Warts",
+      "fr": "Verrues génitales",
+      "ar": "ثآليل تناسلية"
+    },
+    {
+      "key": "Genital Discomfort",
+      "fr": "Gêne génitale",
+      "ar": "انزعاج تناسلي"
+    },
+    {
+      "key": "Testicular Pain",
+      "fr": "Douleur testiculaire",
+      "ar": "ألم الخصية"
+    },
+    {
+      "key": "Anxiety",
+      "fr": "Anxiété",
+      "ar": "قلق"
+    },
+    {
+      "key": "Sweating",
+      "fr": "Transpiration",
+      "ar": "تعرق"
+    },
+    {
+      "key": "Loss of Appetite",
+      "fr": "Perte d'appétit",
+      "ar": "فقدان الشهية"
+    },
+    {
+      "key": "Insomnia",
+      "fr": "Insomnie",
+      "ar": "أرق"
+    },
+    {
+      "key": "Crusting",
+      "fr": "Croûtes",
+      "ar": "تكوّن قشور"
+    },
+    {
+      "key": "Low Hemoglobin",
+      "fr": "Hémoglobine basse",
+      "ar": "انخفاض الهيموغلوبين"
+    },
+    {
+      "key": "Low Hematocrit",
+      "fr": "Hématocrite bas",
+      "ar": "انخفاض الهيماتوكريت"
+    },
+    {
+      "key": "Low Ferritin",
+      "fr": "Ferritine basse",
+      "ar": "انخفاض الفيريتين"
+    },
+    {
+      "key": "High WBC",
+      "fr": "Leucocytose",
+      "ar": "ارتفاع كريات الدم البيضاء"
+    },
+    {
+      "key": "High CRP",
+      "fr": "CRP élevée",
+      "ar": "ارتفاع البروتين المتفاعل C"
+    },
+    {
+      "key": "High ESR",
+      "fr": "VS élevée",
+      "ar": "ارتفاع سرعة الترسيب"
+    },
+    {
+      "key": "Elevated ALT",
+      "fr": "ALAT élevée",
+      "ar": "ارتفاع ALT (ألانين ترانسفيراز)"
+    },
+    {
+      "key": "Elevated AST",
+      "fr": "ASAT élevée",
+      "ar": "ارتفاع AST (أسبارتات ترانسفيراز)"
+    },
+    {
+      "key": "Elevated Bilirubin",
+      "fr": "Bilirubine élevée",
+      "ar": "ارتفاع البيليروبين"
+    },
+    {
+      "key": "Elevated ALP",
+      "fr": "Phosphatase alcaline élevée",
+      "ar": "ارتفاع الفوسفاتاز القلوي"
+    },
+    {
+      "key": "Elevated Amylase",
+      "fr": "Amylase élevée",
+      "ar": "ارتفاع الأميلاز"
+    },
+    {
+      "key": "Elevated Lipase",
+      "fr": "Lipase élevée",
+      "ar": "ارتفاع الليباز"
+    },
+    {
+      "key": "High Fasting Glucose",
+      "fr": "Glycémie à jeun élevée",
+      "ar": "ارتفاع سكر الدم الصائم"
+    },
+    {
+      "key": "High HbA1c",
+      "fr": "Hémoglobine glyquée (HbA1c) élevée",
+      "ar": "ارتفاع الهيموغلوبين السكري (HbA1c)"
+    },
+    {
+      "key": "High TSH",
+      "fr": "TSH élevée",
+      "ar": "ارتفاع TSH"
+    },
+    {
+      "key": "Low TSH",
+      "fr": "TSH basse",
+      "ar": "انخفاض TSH"
+    },
+    {
+      "key": "Low Free T4",
+      "fr": "T4 libre basse",
+      "ar": "انخفاض T4 الحر"
+    },
+    {
+      "key": "High Free T4",
+      "fr": "T4 libre élevée",
+      "ar": "ارتفاع T4 الحر"
+    },
+    {
+      "key": "Low Vitamin D",
+      "fr": "Vitamine D basse",
+      "ar": "انخفاض فيتامين د"
+    }
   ],
   "conditions": [
-    { "key": "Flu", "fr": "Grippe", "ar": "إنفلونزا" },
-    { "key": "Common Cold", "fr": "Rhume", "ar": "زكام" },
-    { "key": "COVID-19", "fr": "COVID-19", "ar": "كوفيد-19" },
-    { "key": "Chlamydia", "fr": "Chlamydia", "ar": "الكلاميديا" },
-    { "key": "Gonorrhea", "fr": "Gonorrhée", "ar": "السيلان" },
-    { "key": "Genital Herpes", "fr": "Herpès génital", "ar": "هربس تناسلي" },
-    { "key": "Trichomoniasis", "fr": "Trichomonase", "ar": "داء المشعرات" },
-    { "key": "HPV Genital Warts", "fr": "Verrues génitales (HPV)", "ar": "ثآليل تناسلية (HPV)" },
-    { "key": "Pelvic Inflammatory Disease", "fr": "Maladie inflammatoire pelvienne", "ar": "مرض التهاب الحوض" },
-    { "key": "Non-gonococcal Urethritis", "fr": "Urétrite non gonococcique", "ar": "التهاب الإحليل غير السيلاني" },
-    { "key": "Acute HIV Infection", "fr": "Infection VIH aiguë", "ar": "عدوى فيروس نقص المناعة الحادة" },
-    { "key": "Acute Hepatitis B", "fr": "Hépatite B aiguë", "ar": "التهاب الكبد B الحاد" },
-    { "key": "Acute Hepatitis C", "fr": "Hépatite C aiguë", "ar": "التهاب الكبد C الحاد" },
-    { "key": "Chronic Hepatitis B", "fr": "Hépatite B chronique", "ar": "التهاب الكبد B المزمن" },
-    { "key": "Chronic Hepatitis C", "fr": "Hépatite C chronique", "ar": "التهاب الكبد C المزمن" },
-    { "key": "Migraine", "fr": "Migraine", "ar": "شقيقة" },
-    { "key": "Tension Headache", "fr": "Céphalée de tension", "ar": "صداع توتري" },
-    { "key": "Cluster Headache", "fr": "Céphalée en grappes", "ar": "صداع عنقودي" },
-    { "key": "Sinusitis", "fr": "Sinusite", "ar": "التهاب الجيوب الأنفية" },
-    { "key": "Strep Throat", "fr": "Angine streptococcique", "ar": "التهاب الحلق العقدي" },
-    { "key": "Bronchitis", "fr": "Bronchite", "ar": "التهاب الشعب الهوائية" },
-    { "key": "Pneumonia", "fr": "Pneumonie", "ar": "التهاب رئوي" },
-    { "key": "Gastroenteritis", "fr": "Gastro-entérite", "ar": "التهاب المعدة والأمعاء" },
-    { "key": "Food Poisoning", "fr": "Intoxication alimentaire", "ar": "تسمم غذائي" },
-    { "key": "Irritable Bowel Syndrome", "fr": "Syndrome de l'intestin irritable", "ar": "متلازمة القولون العصبي" },
-    { "key": "GERD", "fr": "RGO", "ar": "ارتجاع معدي مريئي" },
-    { "key": "Peptic Ulcer", "fr": "Ulcère peptique", "ar": "قرحة هضمية" },
-    { "key": "Appendicitis", "fr": "Appendicite", "ar": "التهاب الزائدة الدودية" },
-    { "key": "Gallstones", "fr": "Calculs biliaires", "ar": "حصوات المرارة" },
-    { "key": "Pancreatitis", "fr": "Pancréatite", "ar": "التهاب البنكرياس" },
-    { "key": "Urinary Tract Infection", "fr": "Infection urinaire", "ar": "عدوى المسالك البولية" },
-    { "key": "Kidney Stones", "fr": "Calculs rénaux", "ar": "حصى الكلى" },
-    { "key": "Otitis Media", "fr": "Otite moyenne", "ar": "التهاب الأذن الوسطى" },
-    { "key": "Conjunctivitis", "fr": "Conjonctivite", "ar": "التهاب ملتحمة العين" },
-    { "key": "Mononucleosis", "fr": "Mononucléose", "ar": "داء الوحيدات" },
-    { "key": "Chickenpox", "fr": "Varicelle", "ar": "جدري الماء" },
-    { "key": "Shingles", "fr": "Zona", "ar": "الهربس النطاقي" },
-    { "key": "Cellulitis", "fr": "Cellulite (infection)", "ar": "التهاب النسيج الخلوي" },
-    { "key": "Lyme Disease", "fr": "Maladie de Lyme", "ar": "داء لايم" },
-    { "key": "Allergic Rhinitis", "fr": "Rhinite allergique", "ar": "التهاب الأنف التحسّسي" },
-    { "key": "Asthma", "fr": "Asthme", "ar": "ربو" },
-    { "key": "COPD", "fr": "BPCO", "ar": "مرض الانسداد الرئوي المزمن" },
-    { "key": "Anxiety", "fr": "Anxiété", "ar": "قلق" },
-    { "key": "Panic Attack", "fr": "Crise de panique", "ar": "نوبة هلع" },
-    { "key": "Depression", "fr": "Dépression", "ar": "اكتئاب" },
-    { "key": "Insomnia", "fr": "Insomnie", "ar": "أرق" },
-    { "key": "Dehydration", "fr": "Déshydratation", "ar": "جفاف" },
-    { "key": "Heat Exhaustion", "fr": "Coup de chaleur (épuisement)", "ar": "إنهاك حراري" },
-    { "key": "Heat Stroke", "fr": "Coup de chaleur", "ar": "ضربة شمس" },
-    { "key": "Anemia", "fr": "Anémie", "ar": "فقر دم" },
-    { "key": "Iron Deficiency", "fr": "Carence en fer", "ar": "نقص الحديد" },
-    { "key": "Vitamin D Deficiency", "fr": "Carence en vitamine D", "ar": "نقص فيتامين د" },
-    { "key": "Hypothyroidism", "fr": "Hypothyroïdie", "ar": "قصور الغدة الدرقية" },
-    { "key": "Hyperthyroidism", "fr": "Hyperthyroïdie", "ar": "فرط نشاط الغدة الدرقية" },
-    { "key": "Diabetes Type 2", "fr": "Diabète de type 2", "ar": "داء السكري النوع الثاني" },
-    { "key": "Hypertension", "fr": "Hypertension", "ar": "ارتفاع ضغط الدم" },
-    { "key": "Hypotension", "fr": "Hypotension", "ar": "انخفاض ضغط الدم" },
-    { "key": "Arrhythmia", "fr": "Arythmie", "ar": "اضطراب نظم القلب" },
-    { "key": "Heart Failure", "fr": "Insuffisance cardiaque", "ar": "فشل قلبي" },
-    { "key": "Angina", "fr": "Angine de poitrine", "ar": "ذبحة صدرية" },
-    { "key": "Gout", "fr": "Goutte", "ar": "نقرس" },
-    { "key": "Osteoarthritis", "fr": "Arthrose", "ar": "فصال عظمي" },
-    { "key": "Rheumatoid Arthritis", "fr": "Polyarthrite rhumatoïde", "ar": "التهاب المفاصل الروماتويدي" },
-    { "key": "Sciatica", "fr": "Sciatique", "ar": "عرق النسا" },
-    { "key": "Low Back Pain", "fr": "Lombalgie", "ar": "ألم أسفل الظهر" },
-    { "key": "Neck Strain", "fr": "Entorse cervicale", "ar": "شدّ عضلي بالعنق" },
-    { "key": "Sprain", "fr": "Entorse", "ar": "التواء" },
-    { "key": "Carpal Tunnel Syndrome", "fr": "Syndrome du canal carpien", "ar": "متلازمة النفق الرسغي" },
-    { "key": "Dermatitis", "fr": "Dermatite", "ar": "التهاب الجلد" },
-    { "key": "Eczema", "fr": "Eczéma", "ar": "إكزيما" },
-    { "key": "Psoriasis", "fr": "Psoriasis", "ar": "صدفية" },
-    { "key": "Acne", "fr": "Acné", "ar": "حب الشباب" },
-    { "key": "Rosacea", "fr": "Rosacée", "ar": "روزاسيا" },
-    { "key": "Tooth Abscess", "fr": "Abcès dentaire", "ar": "خراج سني" },
-    { "key": "Tension Myalgia", "fr": "Myalgie de tension", "ar": "ألم عضلي توتري" },
-    { "key": "Mononeuropathy", "fr": "Mononeuropathie", "ar": "اعتلال عصب أحادي" },
-    { "key": "Peripheral Neuropathy", "fr": "Neuropathie périphérique", "ar": "اعتلال الأعصاب المحيطية" },
-    { "key": "Vertigo", "fr": "Vertige", "ar": "دوار" },
-    { "key": "Meniere's Disease", "fr": "Maladie de Ménière", "ar": "داء منيير" },
-    { "key": "Tinnitus", "fr": "Acouphènes", "ar": "طنين الأذن" },
-    { "key": "Dry Eye", "fr": "Syndrome de l'oeil sec", "ar": "جفاف العين" },
-    { "key": "Allergic Conjunctivitis", "fr": "Conjonctivite allergique", "ar": "التهاب الملتحمة التحسّسي" },
-    { "key": "Celiac Disease", "fr": "Maladie cœliaque", "ar": "داء الزلاقي" },
-    { "key": "Lactose Intolerance", "fr": "Intolérance au lactose", "ar": "عدم تحمّل اللاكتوز" },
-    { "key": "Ulcerative Colitis", "fr": "Rectocolite hémorragique", "ar": "التهاب القولون التقرّحي" },
-    { "key": "Crohn's Disease", "fr": "Maladie de Crohn", "ar": "داء كرون" },
-    { "key": "PMS", "fr": "SPM", "ar": "متلازمة ما قبل الطمث" },
-    { "key": "Otitis Externa", "fr": "Otite externe", "ar": "التهاب الأذن الخارجية" },
-    { "key": "Sinus Headache", "fr": "Céphalée sinusienne", "ar": "صداع جيبي" },
-    { "key": "Viral Pharyngitis", "fr": "Pharyngite virale", "ar": "التهاب البلعوم الفيروسي" },
-    { "key": "Bacterial Conjunctivitis", "fr": "Conjonctivite bactérienne", "ar": "التهاب الملتحمة الجرثومي" },
-    { "key": "Hand Foot and Mouth", "fr": "Maladie pieds-mains-bouche", "ar": "مرض اليد والقدم والفم" },
-    { "key": "Whooping Cough", "fr": "Coqueluche", "ar": "السعال الديكي" },
-    { "key": "Measles", "fr": "Rougeole", "ar": "حصبة" },
-    { "key": "Mumps", "fr": "Oreillons", "ar": "نكاف" },
-    { "key": "Primary Syphilis", "fr": "Syphilis primaire", "ar": "الزهري الأولي" },
-    { "key": "Secondary Syphilis", "fr": "Syphilis secondaire", "ar": "الزهري الثانوي" },
-    { "key": "Mycoplasma Genitalium Infection", "fr": "Infection à Mycoplasma genitalium", "ar": "عدوى الميكوبلازما التناسلية" }
-  ]
-  ,
+    {
+      "key": "Flu",
+      "fr": "Grippe",
+      "ar": "إنفلونزا"
+    },
+    {
+      "key": "Common Cold",
+      "fr": "Rhume",
+      "ar": "زكام"
+    },
+    {
+      "key": "COVID-19",
+      "fr": "COVID-19",
+      "ar": "كوفيد-19"
+    },
+    {
+      "key": "Chlamydia",
+      "fr": "Chlamydia",
+      "ar": "الكلاميديا"
+    },
+    {
+      "key": "Gonorrhea",
+      "fr": "Gonorrhée",
+      "ar": "السيلان"
+    },
+    {
+      "key": "Genital Herpes",
+      "fr": "Herpès génital",
+      "ar": "هربس تناسلي"
+    },
+    {
+      "key": "Trichomoniasis",
+      "fr": "Trichomonase",
+      "ar": "داء المشعرات"
+    },
+    {
+      "key": "HPV Genital Warts",
+      "fr": "Verrues génitales (HPV)",
+      "ar": "ثآليل تناسلية (HPV)"
+    },
+    {
+      "key": "Pelvic Inflammatory Disease",
+      "fr": "Maladie inflammatoire pelvienne",
+      "ar": "مرض التهاب الحوض"
+    },
+    {
+      "key": "Non-gonococcal Urethritis",
+      "fr": "Urétrite non gonococcique",
+      "ar": "التهاب الإحليل غير السيلاني"
+    },
+    {
+      "key": "Acute HIV Infection",
+      "fr": "Infection VIH aiguë",
+      "ar": "عدوى فيروس نقص المناعة الحادة"
+    },
+    {
+      "key": "Acute Hepatitis B",
+      "fr": "Hépatite B aiguë",
+      "ar": "التهاب الكبد B الحاد"
+    },
+    {
+      "key": "Acute Hepatitis C",
+      "fr": "Hépatite C aiguë",
+      "ar": "التهاب الكبد C الحاد"
+    },
+    {
+      "key": "Chronic Hepatitis B",
+      "fr": "Hépatite B chronique",
+      "ar": "التهاب الكبد B المزمن"
+    },
+    {
+      "key": "Chronic Hepatitis C",
+      "fr": "Hépatite C chronique",
+      "ar": "التهاب الكبد C المزمن"
+    },
+    {
+      "key": "Migraine",
+      "fr": "Migraine",
+      "ar": "شقيقة"
+    },
+    {
+      "key": "Tension Headache",
+      "fr": "Céphalée de tension",
+      "ar": "صداع توتري"
+    },
+    {
+      "key": "Cluster Headache",
+      "fr": "Céphalée en grappes",
+      "ar": "صداع عنقودي"
+    },
+    {
+      "key": "Sinusitis",
+      "fr": "Sinusite",
+      "ar": "التهاب الجيوب الأنفية"
+    },
+    {
+      "key": "Strep Throat",
+      "fr": "Angine streptococcique",
+      "ar": "التهاب الحلق العقدي"
+    },
+    {
+      "key": "Bronchitis",
+      "fr": "Bronchite",
+      "ar": "التهاب الشعب الهوائية"
+    },
+    {
+      "key": "Pneumonia",
+      "fr": "Pneumonie",
+      "ar": "التهاب رئوي"
+    },
+    {
+      "key": "Gastroenteritis",
+      "fr": "Gastro-entérite",
+      "ar": "التهاب المعدة والأمعاء"
+    },
+    {
+      "key": "Food Poisoning",
+      "fr": "Intoxication alimentaire",
+      "ar": "تسمم غذائي"
+    },
+    {
+      "key": "Irritable Bowel Syndrome",
+      "fr": "Syndrome de l'intestin irritable",
+      "ar": "متلازمة القولون العصبي"
+    },
+    {
+      "key": "GERD",
+      "fr": "RGO",
+      "ar": "ارتجاع معدي مريئي"
+    },
+    {
+      "key": "Peptic Ulcer",
+      "fr": "Ulcère peptique",
+      "ar": "قرحة هضمية"
+    },
+    {
+      "key": "Appendicitis",
+      "fr": "Appendicite",
+      "ar": "التهاب الزائدة الدودية"
+    },
+    {
+      "key": "Gallstones",
+      "fr": "Calculs biliaires",
+      "ar": "حصوات المرارة"
+    },
+    {
+      "key": "Pancreatitis",
+      "fr": "Pancréatite",
+      "ar": "التهاب البنكرياس"
+    },
+    {
+      "key": "Urinary Tract Infection",
+      "fr": "Infection urinaire",
+      "ar": "عدوى المسالك البولية"
+    },
+    {
+      "key": "Kidney Stones",
+      "fr": "Calculs rénaux",
+      "ar": "حصى الكلى"
+    },
+    {
+      "key": "Otitis Media",
+      "fr": "Otite moyenne",
+      "ar": "التهاب الأذن الوسطى"
+    },
+    {
+      "key": "Conjunctivitis",
+      "fr": "Conjonctivite",
+      "ar": "التهاب ملتحمة العين"
+    },
+    {
+      "key": "Mononucleosis",
+      "fr": "Mononucléose",
+      "ar": "داء الوحيدات"
+    },
+    {
+      "key": "Chickenpox",
+      "fr": "Varicelle",
+      "ar": "جدري الماء"
+    },
+    {
+      "key": "Shingles",
+      "fr": "Zona",
+      "ar": "الهربس النطاقي"
+    },
+    {
+      "key": "Cellulitis",
+      "fr": "Cellulite (infection)",
+      "ar": "التهاب النسيج الخلوي"
+    },
+    {
+      "key": "Lyme Disease",
+      "fr": "Maladie de Lyme",
+      "ar": "داء لايم"
+    },
+    {
+      "key": "Allergic Rhinitis",
+      "fr": "Rhinite allergique",
+      "ar": "التهاب الأنف التحسّسي"
+    },
+    {
+      "key": "Asthma",
+      "fr": "Asthme",
+      "ar": "ربو"
+    },
+    {
+      "key": "COPD",
+      "fr": "BPCO",
+      "ar": "مرض الانسداد الرئوي المزمن"
+    },
+    {
+      "key": "Anxiety",
+      "fr": "Anxiété",
+      "ar": "قلق"
+    },
+    {
+      "key": "Panic Attack",
+      "fr": "Crise de panique",
+      "ar": "نوبة هلع"
+    },
+    {
+      "key": "Depression",
+      "fr": "Dépression",
+      "ar": "اكتئاب"
+    },
+    {
+      "key": "Insomnia",
+      "fr": "Insomnie",
+      "ar": "أرق"
+    },
+    {
+      "key": "Dehydration",
+      "fr": "Déshydratation",
+      "ar": "جفاف"
+    },
+    {
+      "key": "Heat Exhaustion",
+      "fr": "Coup de chaleur (épuisement)",
+      "ar": "إنهاك حراري"
+    },
+    {
+      "key": "Heat Stroke",
+      "fr": "Coup de chaleur",
+      "ar": "ضربة شمس"
+    },
+    {
+      "key": "Anemia",
+      "fr": "Anémie",
+      "ar": "فقر دم"
+    },
+    {
+      "key": "Iron Deficiency",
+      "fr": "Carence en fer",
+      "ar": "نقص الحديد"
+    },
+    {
+      "key": "Vitamin D Deficiency",
+      "fr": "Carence en vitamine D",
+      "ar": "نقص فيتامين د"
+    },
+    {
+      "key": "Hypothyroidism",
+      "fr": "Hypothyroïdie",
+      "ar": "قصور الغدة الدرقية"
+    },
+    {
+      "key": "Hyperthyroidism",
+      "fr": "Hyperthyroïdie",
+      "ar": "فرط نشاط الغدة الدرقية"
+    },
+    {
+      "key": "Diabetes Type 2",
+      "fr": "Diabète de type 2",
+      "ar": "داء السكري النوع الثاني"
+    },
+    {
+      "key": "Hypertension",
+      "fr": "Hypertension",
+      "ar": "ارتفاع ضغط الدم"
+    },
+    {
+      "key": "Hypotension",
+      "fr": "Hypotension",
+      "ar": "انخفاض ضغط الدم"
+    },
+    {
+      "key": "Arrhythmia",
+      "fr": "Arythmie",
+      "ar": "اضطراب نظم القلب"
+    },
+    {
+      "key": "Heart Failure",
+      "fr": "Insuffisance cardiaque",
+      "ar": "فشل قلبي"
+    },
+    {
+      "key": "Angina",
+      "fr": "Angine de poitrine",
+      "ar": "ذبحة صدرية"
+    },
+    {
+      "key": "Gout",
+      "fr": "Goutte",
+      "ar": "نقرس"
+    },
+    {
+      "key": "Osteoarthritis",
+      "fr": "Arthrose",
+      "ar": "فصال عظمي"
+    },
+    {
+      "key": "Rheumatoid Arthritis",
+      "fr": "Polyarthrite rhumatoïde",
+      "ar": "التهاب المفاصل الروماتويدي"
+    },
+    {
+      "key": "Sciatica",
+      "fr": "Sciatique",
+      "ar": "عرق النسا"
+    },
+    {
+      "key": "Low Back Pain",
+      "fr": "Lombalgie",
+      "ar": "ألم أسفل الظهر"
+    },
+    {
+      "key": "Neck Strain",
+      "fr": "Entorse cervicale",
+      "ar": "شدّ عضلي بالعنق"
+    },
+    {
+      "key": "Sprain",
+      "fr": "Entorse",
+      "ar": "التواء"
+    },
+    {
+      "key": "Carpal Tunnel Syndrome",
+      "fr": "Syndrome du canal carpien",
+      "ar": "متلازمة النفق الرسغي"
+    },
+    {
+      "key": "Dermatitis",
+      "fr": "Dermatite",
+      "ar": "التهاب الجلد"
+    },
+    {
+      "key": "Eczema",
+      "fr": "Eczéma",
+      "ar": "إكزيما"
+    },
+    {
+      "key": "Psoriasis",
+      "fr": "Psoriasis",
+      "ar": "صدفية"
+    },
+    {
+      "key": "Acne",
+      "fr": "Acné",
+      "ar": "حب الشباب"
+    },
+    {
+      "key": "Rosacea",
+      "fr": "Rosacée",
+      "ar": "روزاسيا"
+    },
+    {
+      "key": "Tooth Abscess",
+      "fr": "Abcès dentaire",
+      "ar": "خراج سني"
+    },
+    {
+      "key": "Tension Myalgia",
+      "fr": "Myalgie de tension",
+      "ar": "ألم عضلي توتري"
+    },
+    {
+      "key": "Mononeuropathy",
+      "fr": "Mononeuropathie",
+      "ar": "اعتلال عصب أحادي"
+    },
+    {
+      "key": "Peripheral Neuropathy",
+      "fr": "Neuropathie périphérique",
+      "ar": "اعتلال الأعصاب المحيطية"
+    },
+    {
+      "key": "Vertigo",
+      "fr": "Vertige",
+      "ar": "دوار"
+    },
+    {
+      "key": "Meniere's Disease",
+      "fr": "Maladie de Ménière",
+      "ar": "داء منيير"
+    },
+    {
+      "key": "Tinnitus",
+      "fr": "Acouphènes",
+      "ar": "طنين الأذن"
+    },
+    {
+      "key": "Dry Eye",
+      "fr": "Syndrome de l'oeil sec",
+      "ar": "جفاف العين"
+    },
+    {
+      "key": "Allergic Conjunctivitis",
+      "fr": "Conjonctivite allergique",
+      "ar": "التهاب الملتحمة التحسّسي"
+    },
+    {
+      "key": "Celiac Disease",
+      "fr": "Maladie cœliaque",
+      "ar": "داء الزلاقي"
+    },
+    {
+      "key": "Lactose Intolerance",
+      "fr": "Intolérance au lactose",
+      "ar": "عدم تحمّل اللاكتوز"
+    },
+    {
+      "key": "Ulcerative Colitis",
+      "fr": "Rectocolite hémorragique",
+      "ar": "التهاب القولون التقرّحي"
+    },
+    {
+      "key": "Crohn's Disease",
+      "fr": "Maladie de Crohn",
+      "ar": "داء كرون"
+    },
+    {
+      "key": "PMS",
+      "fr": "SPM",
+      "ar": "متلازمة ما قبل الطمث"
+    },
+    {
+      "key": "Otitis Externa",
+      "fr": "Otite externe",
+      "ar": "التهاب الأذن الخارجية"
+    },
+    {
+      "key": "Sinus Headache",
+      "fr": "Céphalée sinusienne",
+      "ar": "صداع جيبي"
+    },
+    {
+      "key": "Viral Pharyngitis",
+      "fr": "Pharyngite virale",
+      "ar": "التهاب البلعوم الفيروسي"
+    },
+    {
+      "key": "Bacterial Conjunctivitis",
+      "fr": "Conjonctivite bactérienne",
+      "ar": "التهاب الملتحمة الجرثومي"
+    },
+    {
+      "key": "Hand Foot and Mouth",
+      "fr": "Maladie pieds-mains-bouche",
+      "ar": "مرض اليد والقدم والفم"
+    },
+    {
+      "key": "Whooping Cough",
+      "fr": "Coqueluche",
+      "ar": "السعال الديكي"
+    },
+    {
+      "key": "Measles",
+      "fr": "Rougeole",
+      "ar": "حصبة"
+    },
+    {
+      "key": "Mumps",
+      "fr": "Oreillons",
+      "ar": "نكاف"
+    },
+    {
+      "key": "Primary Syphilis",
+      "fr": "Syphilis primaire",
+      "ar": "الزهري الأولي"
+    },
+    {
+      "key": "Secondary Syphilis",
+      "fr": "Syphilis secondaire",
+      "ar": "الزهري الثانوي"
+    },
+    {
+      "key": "Mycoplasma Genitalium Infection",
+      "fr": "Infection à Mycoplasma genitalium",
+      "ar": "عدوى الميكوبلازما التناسلية"
+    }
+  ],
   "categories": [
-    { "key": "Respiratory", "fr": "Respiratoire", "ar": "تنفسي" },
-    { "key": "Gastrointestinal", "fr": "Gastro-intestinal", "ar": "هضمي" },
-    { "key": "Neurological", "fr": "Neurologique", "ar": "عصبي" },
-    { "key": "Musculoskeletal", "fr": "Musculosquelettique", "ar": "عضلي هيكلي" },
-    { "key": "Dermatological", "fr": "Dermatologique", "ar": "جلدي" },
-    { "key": "ENT/Eye", "fr": "ORL/Œil", "ar": "أنف وأذن وحنجرة/عين" },
-    { "key": "Cardiac/Vascular", "fr": "Cardiaque/Vasculaire", "ar": "قلبي/وعائي" },
-    { "key": "Endocrine/Metabolic", "fr": "Endocrinien/Métabolique", "ar": "غدي صمي/استقلابي" },
-    { "key": "Genitourinary", "fr": "Génito-urinaire", "ar": "بولي تناسلي" },
-    { "key": "Mental Health", "fr": "Santé mentale", "ar": "صحة نفسية" },
-    { "key": "General/Systemic", "fr": "Général/Systémique", "ar": "عام/جهازي" },
-    { "key": "Sexual Health / STIs", "fr": "Santé sexuelle / IST", "ar": "الصحة الجنسية / الأمراض المنقولة جنسيًا" },
-    { "key": "Laboratory Findings", "fr": "Résultats biologiques", "ar": "نتائج المختبر" }
+    {
+      "key": "Respiratory",
+      "fr": "Respiratoire",
+      "ar": "تنفسي"
+    },
+    {
+      "key": "Gastrointestinal",
+      "fr": "Gastro-intestinal",
+      "ar": "هضمي"
+    },
+    {
+      "key": "Neurological",
+      "fr": "Neurologique",
+      "ar": "عصبي"
+    },
+    {
+      "key": "Musculoskeletal",
+      "fr": "Musculosquelettique",
+      "ar": "عضلي هيكلي"
+    },
+    {
+      "key": "Dermatological",
+      "fr": "Dermatologique",
+      "ar": "جلدي"
+    },
+    {
+      "key": "ENT/Eye",
+      "fr": "ORL/Œil",
+      "ar": "أنف وأذن وحنجرة/عين"
+    },
+    {
+      "key": "Cardiac/Vascular",
+      "fr": "Cardiaque/Vasculaire",
+      "ar": "قلبي/وعائي"
+    },
+    {
+      "key": "Endocrine/Metabolic",
+      "fr": "Endocrinien/Métabolique",
+      "ar": "غدي صمي/استقلابي"
+    },
+    {
+      "key": "Genitourinary",
+      "fr": "Génito-urinaire",
+      "ar": "بولي تناسلي"
+    },
+    {
+      "key": "Mental Health",
+      "fr": "Santé mentale",
+      "ar": "صحة نفسية"
+    },
+    {
+      "key": "General/Systemic",
+      "fr": "Général/Systémique",
+      "ar": "عام/جهازي"
+    },
+    {
+      "key": "Sexual Health / STIs",
+      "fr": "Santé sexuelle / IST",
+      "ar": "الصحة الجنسية / الأمراض المنقولة جنسيًا"
+    },
+    {
+      "key": "Laboratory Findings",
+      "fr": "Résultats biologiques",
+      "ar": "نتائج المختبر"
+    }
   ]
 }

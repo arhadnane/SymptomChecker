@@ -4,6 +4,28 @@ namespace SymptomCheckerApp.Services;
 
 public class SettingsService
 {
+    private static AppSettings CreateDefaultSettings() => new()
+    {
+        Language = "en",
+        DarkMode = false,
+        Model = SymptomCheckerService.DetectionModel.Ensemble.ToString(),
+        ThresholdPercent = 0,
+        MinMatch = 1,
+        TopK = 0,
+        ShowOnlyCategory = false,
+        OllamaUrl = OllamaService.DefaultBaseUrl,
+        OllamaModel = OllamaService.DefaultModelName
+    };
+
+    private static AppSettings ApplyMissingDefaults(AppSettings settings)
+    {
+        settings.Language ??= "en";
+        settings.Model ??= SymptomCheckerService.DetectionModel.Ensemble.ToString();
+        settings.OllamaUrl ??= OllamaService.DefaultBaseUrl;
+        settings.OllamaModel ??= OllamaService.DefaultModelName;
+        return settings;
+    }
+
     public class AppSettings
     {
         public string? Language { get; set; }
@@ -40,6 +62,11 @@ public class SettingsService
         public bool AutoAi { get; set; }
         // UI layout prefs
         public bool? LeftPanelCollapsed { get; set; }
+        // Guided Diagnosis Assistant (spec 001-guided-diagnosis-ux). All
+        // additive and nullable so older settings.json files load unchanged.
+        public Models.UiMode? UiMode { get; set; }
+        public int? PatientWizardLastStep { get; set; }
+        public Dictionary<string, bool>? CollapsedSections { get; set; }
     }
 
     private readonly string _settingsPath;
@@ -55,13 +82,13 @@ public class SettingsService
     {
         try
         {
-            if (!File.Exists(_settingsPath)) { Settings = new AppSettings(); return; }
+            if (!File.Exists(_settingsPath)) { Settings = CreateDefaultSettings(); return; }
             var json = File.ReadAllText(_settingsPath);
-            Settings = JsonSerializer.Deserialize<AppSettings>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new AppSettings();
+            Settings = ApplyMissingDefaults(JsonSerializer.Deserialize<AppSettings>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? CreateDefaultSettings());
         }
         catch
         {
-            Settings = new AppSettings();
+            Settings = CreateDefaultSettings();
         }
     }
 
@@ -79,17 +106,7 @@ public class SettingsService
 
     public void Reset()
     {
-        Settings = new AppSettings
-        {
-            // Provide some sane defaults
-            Language = "en",
-            DarkMode = false,
-            Model = "Jaccard",
-            ThresholdPercent = 0,
-            MinMatch = 1,
-            TopK = 0,
-            ShowOnlyCategory = false
-        };
+        Settings = CreateDefaultSettings();
         Save();
     }
 }

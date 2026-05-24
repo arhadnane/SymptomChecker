@@ -18,6 +18,11 @@ namespace SymptomCheckerApp.Services
     /// </summary>
     public class OllamaService : IDisposable
     {
+        public const string DefaultBaseUrl = "http://localhost:11434";
+        public const string DefaultModelName = "kimi-k2.6";
+        private const int DiagnosisMaxTokens = 2600;
+        private const int MedicationMaxTokens = 2200;
+
         private readonly HttpClient _http;
         private string _baseUrl;
         private string _model;
@@ -32,7 +37,7 @@ namespace SymptomCheckerApp.Services
         /// <summary>Base URL of the Ollama server.</summary>
         public string BaseUrl => _baseUrl;
 
-        public OllamaService(string baseUrl = "http://localhost:11434", string model = "llama3")
+        public OllamaService(string baseUrl = DefaultBaseUrl, string model = DefaultModelName)
         {
             _baseUrl = baseUrl.TrimEnd('/');
             _model = model;
@@ -106,6 +111,83 @@ namespace SymptomCheckerApp.Services
             return chatResp?.Message?.Content;
         }
 
+        internal static string? ChoosePreferredModel(IReadOnlyList<string> availableModels, string? preferredModel = null)
+        {
+            if (availableModels.Count == 0)
+            {
+                return null;
+            }
+
+            var requested = string.IsNullOrWhiteSpace(preferredModel)
+                ? DefaultModelName
+                : preferredModel.Trim();
+
+            var exactMatch = availableModels.FirstOrDefault(model =>
+                string.Equals(model, requested, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(exactMatch))
+            {
+                return exactMatch;
+            }
+
+            string? bestModel = null;
+            int bestScore = int.MinValue;
+
+            foreach (var model in availableModels)
+            {
+                int score = ScoreModelPreference(model, requested);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestModel = model;
+                }
+            }
+
+            return bestModel ?? availableModels[0];
+        }
+
+        private static int ScoreModelPreference(string modelName, string preferredModel)
+        {
+            var normalizedName = NormalizeModelName(modelName);
+            var normalizedPreferred = NormalizeModelName(preferredModel);
+            int score = 0;
+
+            if (normalizedName == normalizedPreferred)
+            {
+                score += 1000;
+            }
+
+            if (normalizedPreferred.Contains("kimi", StringComparison.OrdinalIgnoreCase) &&
+                normalizedName.Contains("kimi", StringComparison.OrdinalIgnoreCase))
+            {
+                score += 500;
+            }
+
+            if (normalizedPreferred.Contains("k2", StringComparison.OrdinalIgnoreCase) &&
+                normalizedName.Contains("k2", StringComparison.OrdinalIgnoreCase))
+            {
+                score += 250;
+            }
+
+            if (normalizedPreferred.Contains("26", StringComparison.OrdinalIgnoreCase) &&
+                normalizedName.Contains("26", StringComparison.OrdinalIgnoreCase))
+            {
+                score += 120;
+            }
+
+            if (normalizedName.Contains("kimi", StringComparison.OrdinalIgnoreCase)) score += 300;
+            if (normalizedName.Contains("k2", StringComparison.OrdinalIgnoreCase)) score += 150;
+            if (normalizedName.Contains("llama", StringComparison.OrdinalIgnoreCase)) score += 50;
+            if (normalizedName.Contains("mistral", StringComparison.OrdinalIgnoreCase)) score += 40;
+
+            return score;
+        }
+
+        private static string NormalizeModelName(string value)
+        {
+            var chars = value.Where(char.IsLetterOrDigit).ToArray();
+            return new string(chars).ToLowerInvariant();
+        }
+
         /// <summary>
         /// Run AI-powered diagnostic reinforcement given the selected symptoms and
         /// the algorithmic matches. Returns a structured result with assessment,
@@ -124,10 +206,6 @@ namespace SymptomCheckerApp.Services
         {
             var sw = Stopwatch.StartNew();
 
-            string symptomsStr = string.Join(", ", selectedSymptoms);
-            string matchesStr = string.Join("\n", algorithmicMatches.Select(m =>
-                $"  - {m.Name} (score: {m.Score:F3}, matched symptoms: {string.Join(", ", m.MatchedSymptoms)})"));
-
             var vitalsInfo = new StringBuilder();
             if (patientAge.HasValue) vitalsInfo.Append($"Age: {patientAge.Value} years. ");
             if (tempC.HasValue) vitalsInfo.Append($"Temperature: {tempC.Value:F1}°C. ");
@@ -137,55 +215,69 @@ namespace SymptomCheckerApp.Services
 
             string langInstruction = language.ToLowerInvariant() switch
             {
-                "fr" => "Respond entirely in French.",
-                "ar" => "Respond entirely in Arabic.",
-                _ => "Respond in English."
+                                "fr" => "Write all string values in French.",
+                                "ar" => "Write all string values in Arabic.",
+                                _ => "Write all string values in English."
             };
 
-            string systemPrompt = $@"You are a medical education assistant integrated into a symptom checker application.
-Your role is to provide EDUCATIONAL analysis only — never replace professional medical advice.
-{langInstruction}
+                        var groundedInput = JsonSerializer.Serialize(new
+                        {
+                                selected_symptoms = selectedSymptoms,
+                                vitals = new
+                                {
+                                        age_years = patientAge,
+                                        temperature_c = tempC,
+                                        heart_rate_bpm = heartRate,
+                                        respiratory_rate_min = respRate,
+                                        spo2_percent = spO2,
+                                        summary = vitalsInfo.ToString().Trim()
+                                },
+                                algorithmic_candidates = algorithmicMatches
+                                        .Take(5)
+                                        .Select(match => new
+                                        {
+                                                condition = match.Name,
+                                                score = Math.Round(match.Score, 3),
+                                                matched_symptoms = match.MatchedSymptoms
+                                        })
+                                        .ToList()
+                        });
 
-IMPORTANT RULES:
-1. Always include a disclaimer that this is educational only.
-2. For medication suggestions, clearly distinguish OTC (over-the-counter) from prescription-only.
-3. Include basic dosage guidance for OTC medications when applicable.
-4. Highlight red flags (symptoms requiring urgent medical attention).
-5. Be factual, concise and evidence-based.
+                                                string systemPrompt = $$"""
+You are a medical education assistant integrated into a symptom checker application.
+Your role is EDUCATIONAL only and must remain strictly grounded in the provided candidate conditions.
+{{langInstruction}}
 
-Respond in the following structured format (use these exact section headers):
+OUTPUT RULES:
+1. Return exactly one valid JSON object.
+2. Do not use markdown.
+3. Do not wrap the JSON in code fences.
+4. Do not mention any diagnosis that is not present in algorithmic_candidates.
+5. If the evidence is weak or mixed, say so explicitly in diagnostic_assessment.
+6. Medication suggestions must be conservative, educational, and clearly labeled OTC or Prescription.
+7. red_flags must be based only on the reported symptoms, vitals, and candidate conditions.
 
-## DIAGNOSTIC ASSESSMENT
-[Your assessment of the algorithmic results and the symptoms]
+Use exactly this JSON shape:
+{
+    "diagnostic_assessment": "string",
+    "confidence": 0.0,
+    "medications": [
+        {
+            "name": "string",
+            "category": "OTC or Prescription",
+            "purpose": "string",
+            "dosage": "string",
+            "warning": "string"
+        }
+    ],
+    "red_flags": ["string"],
+    "self_care": "string",
+    "disclaimer": "string"
+}
+""";
 
-## CONFIDENCE
-[A number between 0 and 1 indicating how much you agree with the top algorithmic diagnosis]
-
-## MEDICATIONS
-For each medication, use this format (one per line):
-- MEDICATION: [name] | CATEGORY: [OTC/Prescription] | PURPOSE: [why] | DOSAGE: [standard adult dosage if OTC] | WARNING: [key contraindications]
-
-## RED FLAGS
-- [List any symptoms or combinations that need urgent medical attention]
-
-## SELF-CARE
-[Brief self-care advice]
-
-## DISCLAIMER
-[Educational disclaimer]";
-
-            string userPrompt = $@"Patient selected symptoms: {symptomsStr}
-
-{(vitalsInfo.Length > 0 ? $"Vitals: {vitalsInfo}" : "")}
-
-Algorithmic analysis results (from mathematical models):
-{matchesStr}
-
-Please analyze these symptoms and algorithmic results. Provide:
-1. Your assessment of the diagnosis (reinforcing or questioning the algorithmic results)
-2. Appropriate medication suggestions (clearly marking OTC vs prescription)
-3. Any red flags
-4. Self-care advice";
+                        string userPrompt = $@"Use only the following input JSON as evidence for your answer:
+{groundedInput}";
 
             var messages = new List<OllamaChatMessage>
             {
@@ -195,7 +287,7 @@ Please analyze these symptoms and algorithmic results. Provide:
 
             try
             {
-                var rawResponse = await ChatAsync(messages, 0.3, 1500, ct);
+                var rawResponse = await ChatAsync(messages, 0.2, DiagnosisMaxTokens, ct);
                 sw.Stop();
 
                 if (string.IsNullOrEmpty(rawResponse))
@@ -209,6 +301,21 @@ Please analyze these symptoms and algorithmic results. Provide:
                 }
 
                 return ParseDiagnosisResponse(rawResponse, sw.ElapsedMilliseconds);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                sw.Stop();
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                sw.Stop();
+                return new AiDiagnosisResult
+                {
+                    RawResponse = ex.Message,
+                    DiagnosticAssessment = "Ollama request timed out before the model returned an answer. Try again or choose a smaller/faster model.",
+                    ElapsedMs = sw.ElapsedMilliseconds
+                };
             }
             catch (Exception ex)
             {
@@ -236,31 +343,48 @@ Please analyze these symptoms and algorithmic results. Provide:
 
             string langInstruction = language.ToLowerInvariant() switch
             {
-                "fr" => "Respond entirely in French.",
-                "ar" => "Respond entirely in Arabic.",
-                _ => "Respond in English."
+                                "fr" => "Write all string values in French.",
+                                "ar" => "Write all string values in Arabic.",
+                                _ => "Write all string values in English."
             };
 
-            string systemPrompt = $@"You are a medical education assistant. {langInstruction}
-Provide EDUCATIONAL medication information for the given condition. NEVER replace professional medical advice.
+                        var groundedInput = JsonSerializer.Serialize(new
+                        {
+                                condition = conditionName,
+                                matched_symptoms = matchedSymptoms,
+                                patient_age_years = patientAge
+                        });
 
-Respond using this exact format:
+                                                string systemPrompt = $$"""
+You are a medical education assistant. {{langInstruction}}
+Provide EDUCATIONAL medication guidance grounded only in the provided condition and matched symptoms.
 
-## MEDICATIONS
-For each medication:
-- MEDICATION: [name] | CATEGORY: [OTC/Prescription] | PURPOSE: [why] | DOSAGE: [dosage if OTC] | WARNING: [key warnings]
+OUTPUT RULES:
+1. Return exactly one valid JSON object.
+2. Do not use markdown or code fences.
+3. Do not discuss any diagnosis other than the provided condition.
+4. Use an empty array when no medication is appropriate.
 
-## RED FLAGS
-- [When to seek immediate medical help]
+Use exactly this JSON shape:
+{
+    "diagnostic_assessment": "string",
+    "confidence": 0.0,
+    "medications": [
+        {
+            "name": "string",
+            "category": "OTC or Prescription",
+            "purpose": "string",
+            "dosage": "string",
+            "warning": "string"
+        }
+    ],
+    "red_flags": ["string"],
+    "self_care": "string",
+    "disclaimer": "string"
+}
+""";
 
-## SELF-CARE
-[Self-care advice]
-
-## DISCLAIMER
-[Educational disclaimer]";
-
-            var ageStr = patientAge.HasValue ? $" Patient age: {patientAge.Value} years." : "";
-            string userPrompt = $"Condition: {conditionName}\nPresenting symptoms: {string.Join(", ", matchedSymptoms)}{ageStr}\n\nProvide educational medication information and self-care guidance.";
+                        string userPrompt = $"Use only the following input JSON as evidence for your answer:\n{groundedInput}";
 
             var messages = new List<OllamaChatMessage>
             {
@@ -270,7 +394,7 @@ For each medication:
 
             try
             {
-                var rawResponse = await ChatAsync(messages, 0.3, 1200, ct);
+                var rawResponse = await ChatAsync(messages, 0.2, MedicationMaxTokens, ct);
                 sw.Stop();
 
                 if (string.IsNullOrEmpty(rawResponse))
@@ -285,6 +409,21 @@ For each medication:
 
                 return ParseDiagnosisResponse(rawResponse, sw.ElapsedMilliseconds);
             }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                sw.Stop();
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                sw.Stop();
+                return new AiDiagnosisResult
+                {
+                    RawResponse = ex.Message,
+                    DiagnosticAssessment = "Ollama request timed out before the model returned medication guidance. Try again or choose a smaller/faster model.",
+                    ElapsedMs = sw.ElapsedMilliseconds
+                };
+            }
             catch (Exception ex)
             {
                 sw.Stop();
@@ -297,8 +436,189 @@ For each medication:
             }
         }
 
-        /// <summary>Parse the structured markdown response into an AiDiagnosisResult.</summary>
-        private static AiDiagnosisResult ParseDiagnosisResponse(string raw, long elapsedMs)
+        /// <summary>Parse the structured JSON response into an AiDiagnosisResult, with markdown fallback.</summary>
+        internal static AiDiagnosisResult ParseDiagnosisResponse(string raw, long elapsedMs)
+        {
+            if (TryParseDiagnosisJson(raw, elapsedMs, out var jsonResult))
+            {
+                return jsonResult;
+            }
+
+            return ParseDiagnosisMarkdownResponse(raw, elapsedMs);
+        }
+
+        private static bool TryParseDiagnosisJson(string raw, long elapsedMs, out AiDiagnosisResult result)
+        {
+            result = new AiDiagnosisResult();
+            if (!TryExtractJsonPayload(raw, out var jsonPayload))
+            {
+                return false;
+            }
+
+            try
+            {
+                using var document = JsonDocument.Parse(jsonPayload);
+                var root = document.RootElement;
+                if (root.ValueKind != JsonValueKind.Object)
+                {
+                    return false;
+                }
+
+                result = new AiDiagnosisResult
+                {
+                    RawResponse = raw,
+                    ElapsedMs = elapsedMs,
+                    DiagnosticAssessment = GetString(root, "diagnostic_assessment", "assessment", "diagnosticAssessment"),
+                    ConfidenceReinforcement = GetNullableDouble(root, "confidence", "confidence_reinforcement", "confidenceReinforcement"),
+                    SelfCareAdvice = GetString(root, "self_care", "selfCare"),
+                    Disclaimer = GetString(root, "disclaimer")
+                };
+
+                if (root.TryGetProperty("medications", out var medsElement) && medsElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var medElement in medsElement.EnumerateArray())
+                    {
+                        if (medElement.ValueKind != JsonValueKind.Object)
+                        {
+                            continue;
+                        }
+
+                        var medication = new MedicationProposal
+                        {
+                            Name = GetString(medElement, "name", "medication"),
+                            Category = GetString(medElement, "category"),
+                            Purpose = GetString(medElement, "purpose"),
+                            Dosage = GetString(medElement, "dosage"),
+                            Warning = GetString(medElement, "warning")
+                        };
+
+                        if (!string.IsNullOrWhiteSpace(medication.Name))
+                        {
+                            result.Medications.Add(medication);
+                        }
+                    }
+                }
+
+                if (root.TryGetProperty("red_flags", out var redFlagsElement) && redFlagsElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var redFlag in redFlagsElement.EnumerateArray())
+                    {
+                        if (redFlag.ValueKind == JsonValueKind.String)
+                        {
+                            var value = redFlag.GetString();
+                            if (!string.IsNullOrWhiteSpace(value))
+                            {
+                                result.RedFlags.Add(value);
+                            }
+                        }
+                    }
+                }
+
+                return HasStructuredContent(result);
+            }
+            catch
+            {
+                result = new AiDiagnosisResult();
+                return false;
+            }
+        }
+
+        private static bool HasStructuredContent(AiDiagnosisResult result)
+        {
+            return !string.IsNullOrWhiteSpace(result.DiagnosticAssessment) ||
+                   result.ConfidenceReinforcement.HasValue ||
+                   result.Medications.Count > 0 ||
+                   result.RedFlags.Count > 0 ||
+                   !string.IsNullOrWhiteSpace(result.SelfCareAdvice) ||
+                   !string.IsNullOrWhiteSpace(result.Disclaimer);
+        }
+
+        private static bool TryExtractJsonPayload(string raw, out string jsonPayload)
+        {
+            jsonPayload = string.Empty;
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return false;
+            }
+
+            var fencedMatch = Regex.Match(raw, "```(?:json)?\\s*(\\{[\\s\\S]*\\})\\s*```", RegexOptions.IgnoreCase);
+            if (fencedMatch.Success)
+            {
+                jsonPayload = fencedMatch.Groups[1].Value.Trim();
+                return true;
+            }
+
+            var trimmed = raw.Trim();
+            if (trimmed.StartsWith("{", StringComparison.Ordinal) && trimmed.EndsWith("}", StringComparison.Ordinal))
+            {
+                jsonPayload = trimmed;
+                return true;
+            }
+
+            int firstBrace = trimmed.IndexOf('{');
+            int lastBrace = trimmed.LastIndexOf('}');
+            if (firstBrace >= 0 && lastBrace > firstBrace)
+            {
+                jsonPayload = trimmed.Substring(firstBrace, lastBrace - firstBrace + 1).Trim();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static string GetString(JsonElement element, params string[] propertyNames)
+        {
+            foreach (var propertyName in propertyNames)
+            {
+                if (TryGetPropertyIgnoreCase(element, propertyName, out var value) && value.ValueKind == JsonValueKind.String)
+                {
+                    return value.GetString() ?? string.Empty;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static double? GetNullableDouble(JsonElement element, params string[] propertyNames)
+        {
+            foreach (var propertyName in propertyNames)
+            {
+                if (!TryGetPropertyIgnoreCase(element, propertyName, out var value))
+                {
+                    continue;
+                }
+
+                if (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number))
+                {
+                    return Math.Clamp(number, 0, 1);
+                }
+
+                if (value.ValueKind == JsonValueKind.String &&
+                    double.TryParse(value.GetString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+                {
+                    return Math.Clamp(parsed, 0, 1);
+                }
+            }
+
+            return null;
+        }
+
+        private static bool TryGetPropertyIgnoreCase(JsonElement element, string propertyName, out JsonElement value)
+        {
+            foreach (var property in element.EnumerateObject())
+            {
+                if (string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    value = property.Value;
+                    return true;
+                }
+            }
+
+            value = default;
+            return false;
+        }
+
+        private static AiDiagnosisResult ParseDiagnosisMarkdownResponse(string raw, long elapsedMs)
         {
             var result = new AiDiagnosisResult
             {
@@ -490,6 +810,21 @@ Respond in the following structured format (use these EXACT section headers):
                 }
 
                 return ParseImageAnalysisResponse(rawResponse, sw.ElapsedMilliseconds);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                sw.Stop();
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                sw.Stop();
+                return new ImageAnalysisResult
+                {
+                    RawResponse = ex.Message,
+                    Recommendation = "Ollama request timed out before the vision model returned an answer. Try again or choose a smaller/faster multimodal model.",
+                    ElapsedMs = sw.ElapsedMilliseconds
+                };
             }
             catch (Exception ex)
             {
@@ -696,6 +1031,21 @@ Respond in the following structured format (use these EXACT section headers):
                 }
 
                 return ParseBloodAnalysisResponse(rawResponse, sw.ElapsedMilliseconds);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                sw.Stop();
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                sw.Stop();
+                return new BloodAnalysisResult
+                {
+                    RawResponse = ex.Message,
+                    Recommendation = "Ollama request timed out before the blood analysis model returned an answer. Try again or choose a smaller/faster multimodal model.",
+                    ElapsedMs = sw.ElapsedMilliseconds
+                };
             }
             catch (Exception ex)
             {

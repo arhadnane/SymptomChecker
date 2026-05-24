@@ -116,6 +116,7 @@ namespace SymptomCheckerApp.UI
             RefreshSymptomList();
             UpdateDecisionRules();
             UpdatePercRule();
+            HandleModeResetAfterSettingsReset();
         }
 
         private void SaveSettingsProfile()

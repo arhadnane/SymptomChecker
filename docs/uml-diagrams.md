@@ -128,6 +128,35 @@ sequenceDiagram
   UI-->>U: Details with localized treatments/meds/advice
 ```
 
+## Sequence Diagram — Mode Selection And Guided Flow
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant MS as ModeSelector
+  participant MF as MainForm
+  participant PS as PatientShell
+  participant TS as TriageService
+  participant SC as SymptomCheckerService
+  participant SS as SettingsService
+
+  U->>MS: Choose Patient mode
+  MS->>MF: ApplyUiMode(Patient)
+  MF->>SS: Save UiMode=Patient
+  MF->>PS: Sync current symptoms/vitals + show step 1
+  U->>PS: Pick category and symptoms
+  PS->>MF: CategorySelected / SymptomsSelectionChanged
+  MF->>PS: Sync step data
+  U->>PS: Enter optional health details
+  PS->>MF: VitalsChanged
+  MF->>TS: DetectRedFlags(vitals, symptoms, perc)
+  U->>PS: Show results
+  PS->>MF: RunCheckRequested
+  MF->>SC: GetMatches(symptoms, model, threshold, topK, minMatch)
+  SC-->>MF: List<ConditionMatch>
+  MF->>PS: SetResultsState + cards + red flags
+```
+
 ## Activity Diagram — Filtering and Selection
 
 ```mermaid
@@ -192,6 +221,58 @@ graph LR
   TR --> TRJ
   SET --> SETJ
   WIKI --> SC
+```
+
+## Component Diagram — Shell Hosting
+
+```mermaid
+graph TD
+  MF[MainForm Host]
+  MS[ModeSelector]
+  PS[PatientShell]
+  PR[ProfessionalShell]
+  CS[CollapsibleSection]
+  RC[ConditionResultCard]
+  RB[RedFlagBanner]
+  TS[TranslationService]
+  SS[SettingsService]
+  TRI[TriageService]
+  MATCH[SymptomCheckerService]
+
+  MF --> MS
+  MF --> PS
+  MF --> PR
+  PR --> CS
+  PS --> RC
+  PS --> RB
+  MF --> RC
+  MF --> RB
+  PS --> TS
+  PR --> TS
+  MF --> SS
+  MF --> TRI
+  MF --> MATCH
+```
+
+## State Diagram — UI Mode And Shells
+
+```mermaid
+stateDiagram-v2
+  [*] --> ModeSelection
+  ModeSelection --> PatientMode : choose Patient
+  ModeSelection --> ProfessionalMode : choose Professional
+  PatientMode --> ProfessionalMode : Ctrl+M / Switch mode
+  ProfessionalMode --> PatientMode : Ctrl+M / Switch mode
+  PatientMode --> ModeSelection : Reset settings
+  ProfessionalMode --> ModeSelection : Reset settings
+
+  state PatientMode {
+    [*] --> Step1
+    Step1 --> Step2 : Next
+    Step2 --> Step3 : Next
+    Step3 --> Step4 : Show results
+    Step4 --> Step1 : Start over
+  }
 ```
 
 ## Deployment Diagram
