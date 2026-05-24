@@ -364,7 +364,7 @@ namespace SymptomCheckerApp.UI
                 Dock = DockStyle.Top,
                 AutoSize = true,
                 WrapContents = true,
-                AutoScroll = false, // We'll wrap; container will cap height
+                AutoScroll = false,
                 Padding = new Padding(3),
                 FlowDirection = FlowDirection.LeftToRight,
                 Margin = new Padding(0)
@@ -458,6 +458,7 @@ namespace SymptomCheckerApp.UI
 
             filterBar.Controls.Add(_lblFilter);
             filterBar.Controls.Add(_filterBox);
+            filterBar.Controls.Add(_checkButton);
             filterBar.Controls.Add(_selectVisibleButton);
             filterBar.Controls.Add(_clearVisibleButton);
             filterBar.Controls.Add(_selectAllButton);
@@ -772,13 +773,20 @@ namespace SymptomCheckerApp.UI
                 Padding = new Padding(0)
             };
             filterHost.Controls.Add(filterBar);
-            // After layout we can cap height dynamically
+            // Keep filter actions readable on smaller widths by forcing wrapping
+            // to the host width; overflow still remains scrollable.
             filterHost.Resize += (s, e) =>
             {
+                int availableWidth = Math.Max(220, filterHost.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 6);
+                filterBar.MaximumSize = new Size(availableWidth, 0);
                 int maxH = ScaleY(120); // max visible area for filter controls (DPI-scaled)
                 if (filterBar.Height > maxH)
                 {
-                    filterHost.AutoScrollMinSize = new Size(filterBar.Width, filterBar.Height + 4);
+                    filterHost.AutoScrollMinSize = new Size(availableWidth, filterBar.Height + 4);
+                }
+                else
+                {
+                    filterHost.AutoScrollMinSize = Size.Empty;
                 }
             };
             leftPanel.Controls.Add(filterHost, 0, 0);
@@ -810,7 +818,6 @@ namespace SymptomCheckerApp.UI
             topControls.Controls.Add(_lblLanguage);
             topControls.Controls.Add(_languageSelector);
             topControls.Controls.Add(_darkModeToggle);
-            topControls.Controls.Add(_checkButton);
             topControls.Controls.Add(_exitButton);
             topControls.Controls.Add(_syncButton);
             topControls.Controls.Add(_missingTransButton);

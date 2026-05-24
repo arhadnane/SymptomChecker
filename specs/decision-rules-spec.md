@@ -58,7 +58,7 @@ The McIsaac score adds an age adjustment to the Centor score to account for the 
 
 ### 2.3 Computation
 
-```
+```text
 McIsaac = Centor + AgeAdjustment
 Clamped to range [0, 5]
 ```
@@ -101,7 +101,7 @@ The PERC rule is designed to identify patients at very low risk for pulmonary em
 
 ### 3.3 Result
 
-```
+```text
 PERC negative = ALL 8 criteria pass
 ```
 
@@ -155,7 +155,7 @@ The triage system flags symptom combinations and vital-sign thresholds that coul
 
 ### 4.4 Severity Priority System
 
-```
+```text
 Priority 1 = Most critical (red — immediate concern)
 Priority 2 = High concern (orange — urgent review)
 Priority 3 = Moderate concern (yellow — prompt attention)
@@ -167,7 +167,8 @@ Red flags are sorted by severity (ascending priority number), then alphabeticall
 ### 4.5 Triage Banner Format
 
 **LTR languages (EN, FR):**
-```
+
+```text
 Possible red flags:
  • [Flag 1 localized text]
  • [Flag 2 localized text]
@@ -175,7 +176,8 @@ If these apply, consider seeking urgent medical attention. This tool is educatio
 ```
 
 **RTL language (AR):**
-```
+
+```text
 [Header]:
 [Flag 1 localized text]  •
 [Flag 2 localized text]  •
@@ -184,7 +186,7 @@ If these apply, consider seeking urgent medical attention. This tool is educatio
 
 ### 4.6 Evaluation Flow
 
-```
+```text
 TriageService.EvaluateV2()
   1. Call Evaluate() for symptom-only flags
   2. Check each vital threshold → add keys
@@ -219,7 +221,7 @@ Rules are hardcoded in `TriageService.cs` (static class) and `MainForm.cs` (Cent
 
 ### 6.2 Recommended Extension Approach
 
-**Option A: JSON-Driven Rules (Preferred for simple thresholds)**
+### Option A: JSON-Driven Rules (Preferred for simple thresholds)
 
 Define a `rules.json` file:
 
@@ -248,7 +250,7 @@ Define a `rules.json` file:
 
 A `RulesEngine` service loads and evaluates these rules without code changes.
 
-**Option B: Plugin-Based Rules (For complex scoring systems)**
+### Option B: Plugin-Based Rules (For complex scoring systems)
 
 ```csharp
 public interface IDecisionRule
