@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SymptomCheckerApp.Models;
 
 namespace SymptomCheckerApp.Services
 {
@@ -125,6 +126,85 @@ namespace SymptomCheckerApp.Services
                 return cmp != 0 ? cmp : string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
             });
             return list;
+        }
+
+        // ---------------------------------------------------------------
+        // Spec 001-guided-diagnosis-ux: typed RedFlag detection used by the
+        // new RedFlagBanner UI control. Reuses EvaluateV2 above for symptom
+        // combos and adds a typed contract for the UI layer. Educational only.
+        // Severity 1..5 (higher = more urgent), matching contracts/red-flags-triage.md.
+        // ---------------------------------------------------------------
+
+        private static readonly Dictionary<string, (int Severity, string MessageKey)> _typedRules =
+            new(StringComparer.OrdinalIgnoreCase)
+        {
+            // Vitals (per data-model.md)
+            { "RF_Hypoxia",              (4, "RedFlag_Spo2_Low") },
+            { "RF_Hypotension",          (4, "RedFlag_Sbp_Low") },
+            { "RF_SevereHypertension",   (3, "RedFlag_Sbp_High") },
+            { "RF_Tachycardia",          (2, "RedFlag_Hr_High") },
+            { "RF_Tachypnea",            (3, "RedFlag_Rr_High") },
+            { "RF_HighFever",            (3, "RedFlag_Temp_High") },
+            { "RF_PERC_Positive",        (4, "RedFlag_Perc_Chest") },
+            // Symptom combos
+            { "RF_ChestPain_SOB",        (4, "RedFlag_ChestPain_Sob") },
+            { "RF_Fainting_ChestPain",   (4, "RedFlag_Fainting_ChestPain") },
+            { "RF_Fever_NeckPain_Light", (3, "RedFlag_Meningitis_Like") },
+            { "RF_SevereCough_SOB",      (3, "RedFlag_SevereCough_Sob") },
+            { "RF_BloodInStool",         (3, "RedFlag_Blood_Stool") },
+            { "RF_BloodInUrine",         (3, "RedFlag_Blood_Urine") },
+            { "RF_Confusion",            (4, "RedFlag_Confusion") },
+            { "RF_TesticularPain",       (3, "RedFlag_Testicular_Pain") },
+        };
+
+        /// <summary>
+        /// Typed wrapper used by the Guided Diagnosis Assistant UI (spec 001).
+        /// Returns an ordered list of <see cref="RedFlag"/> records (severity
+        /// descending, then by code). Educational only.
+        /// </summary>
+        public static IReadOnlyList<RedFlag> DetectRedFlags(
+            VitalsSnapshot vitals,
+            IReadOnlyCollection<string> selectedSymptoms,
+            bool percPositive)
+        {
+            var symptomSet = selectedSymptoms != null
+                ? new HashSet<string>(selectedSymptoms, StringComparer.OrdinalIgnoreCase)
+                : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            bool percChestOrSob = percPositive &&
+                (symptomSet.Contains("Chest Pain") || symptomSet.Contains("Shortness of Breath"));
+
+            var codes = EvaluateV2(
+                symptomSet,
+                tempC: vitals.TempC,
+                heartRate: vitals.HeartRate,
+                respRate: vitals.RespRate,
+                systolicBP: vitals.SystolicBP,
+                diastolicBP: vitals.DiastolicBP,
+                spO2: vitals.SpO2,
+                percPositiveWithChestOrSob: percChestOrSob);
+
+            var flags = new List<RedFlag>(codes.Count);
+            foreach (var code in codes)
+            {
+                if (_typedRules.TryGetValue(code, out var rule))
+                {
+                    flags.Add(new RedFlag(code, rule.Severity, rule.MessageKey));
+                }
+                else
+                {
+                    // Unknown code: still surface it with safe defaults.
+                    flags.Add(new RedFlag(code, 1, "RedFlag_Generic"));
+                }
+            }
+
+            flags.Sort((a, b) =>
+            {
+                int cmp = b.Severity.CompareTo(a.Severity); // severity descending
+                return cmp != 0 ? cmp : string.Compare(a.Code, b.Code, StringComparison.OrdinalIgnoreCase);
+            });
+
+            return flags;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SymptomCheckerApp.Models
     public class OllamaChatRequest
     {
         [JsonPropertyName("model")]
-        public string Model { get; set; } = "llama3";
+        public string Model { get; set; } = "kimi-k2.6";
 
         [JsonPropertyName("messages")]
         public List<OllamaChatMessage> Messages { get; set; } = new();

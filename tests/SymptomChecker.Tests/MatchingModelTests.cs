@@ -165,12 +165,63 @@ namespace SymptomChecker.Tests
             Assert.True(maxLowTemp >= maxNoTemp - 0.001, "Lower temperature should sharpen the distribution");
         }
 
+        [Fact]
+        public void NaiveBayes_PrefersConditionMatchingMoreSelectedSymptoms_WhenOtherSymptomsAreUnknown()
+        {
+            var model = new NaiveBayesModel();
+            var conditions = new List<Condition>
+            {
+                new()
+                {
+                    Name = "Broad Match",
+                    Symptoms = new List<string> { "Cough", "Fever", "Shortness of Breath", "Chest Pain" }
+                },
+                new()
+                {
+                    Name = "Partial Match",
+                    Symptoms = new List<string> { "Cough" }
+                }
+            };
+            var conditionSets = conditions.ToDictionary(
+                condition => condition.Name,
+                condition => new HashSet<string>(condition.Symptoms, StringComparer.OrdinalIgnoreCase),
+                StringComparer.OrdinalIgnoreCase);
+            var vocabulary = conditions
+                .SelectMany(condition => condition.Symptoms)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(symptom => symptom)
+                .ToList();
+            var selected = new HashSet<string>(new[] { "Cough", "Fever" }, StringComparer.OrdinalIgnoreCase);
+
+            var results = model.ComputeMatches(selected, conditions, conditionSets, vocabulary, 0.0, null)
+                .OrderByDescending(result => result.Score)
+                .ToList();
+
+            Assert.Equal("Broad Match", results[0].Name);
+            Assert.True(results[0].Score > results[1].Score);
+        }
+
+        [Fact]
+        public void Ensemble_BlendsSimilarityAndProbabilisticSignals()
+        {
+            var model = new EnsembleModel();
+            var selected = new HashSet<string>(new[] { "Cough", "Fever" }, StringComparer.OrdinalIgnoreCase);
+
+            var results = model.ComputeMatches(selected, _conditions, _conditionSets, _vocabulary, 0.0, null)
+                .OrderByDescending(result => result.Score)
+                .ToList();
+
+            Assert.Equal("Pneumonia", results[0].Name);
+            Assert.InRange(results[0].Score, 0.0, 1.0);
+            Assert.True(results[0].Score > results[1].Score);
+        }
+
         // --- Interface contract tests ---
 
         [Fact]
         public void AllModels_ReturnMatchedSymptoms()
         {
-            IMatchingModel[] models = { new JaccardModel(), new CosineModel(), new NaiveBayesModel() };
+            IMatchingModel[] models = { new JaccardModel(), new CosineModel(), new NaiveBayesModel(), new EnsembleModel() };
             var selected = new HashSet<string>(new[] { "Cough", "Fever" }, StringComparer.OrdinalIgnoreCase);
 
             foreach (var model in models)
@@ -189,6 +240,7 @@ namespace SymptomChecker.Tests
             Assert.Equal("Jaccard", new JaccardModel().Name);
             Assert.Equal("Cosine", new CosineModel().Name);
             Assert.Equal("NaiveBayes", new NaiveBayesModel().Name);
+            Assert.Equal("Ensemble", new EnsembleModel().Name);
         }
     }
 }

@@ -29,5 +29,23 @@ namespace SymptomChecker.Tests
             Assert.Equal("Pneumonie", t.Condition("Pneumonia"));
             Assert.Equal("Respiratoire", t.Category("Respiratory"));
         }
+
+        [Fact]
+        public void RuntimeTranslations_ContainGuidedWizardAndProfessionalSectionKeys()
+        {
+            var runtimePath = Path.Combine(AppContext.BaseDirectory, "data", "translations.json");
+            var t = new TranslationService(runtimePath);
+
+            t.SetLanguage("en");
+            Assert.NotEqual("Patient_Step1_Title", t.T("Patient_Step1_Title"));
+            Assert.NotEqual("Patient_RunCheck", t.T("Patient_RunCheck"));
+
+            t.SetLanguage("fr");
+            Assert.NotEqual("Patient_Step4_Title", t.T("Patient_Step4_Title"));
+
+            t.SetLanguage("ar");
+            Assert.NotEqual("Pro_Section_Ai", t.T("Pro_Section_Ai"));
+            Assert.NotEqual("Pro_Section_Symptoms", t.T("Pro_Section_Symptoms"));
+        }
     }
 }

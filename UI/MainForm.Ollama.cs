@@ -162,10 +162,12 @@ namespace SymptomCheckerApp.UI
         private async Task InitializeOllamaAsync()
         {
             var url = _aiUrlBox.Text?.Trim();
-            if (string.IsNullOrEmpty(url)) url = "http://localhost:11434";
+            if (string.IsNullOrEmpty(url)) url = OllamaService.DefaultBaseUrl;
+
+            var preferredModel = _settingsService?.Settings.OllamaModel ?? OllamaService.DefaultModelName;
 
             _ollamaService?.Dispose();
-            _ollamaService = new OllamaService(url);
+            _ollamaService = new OllamaService(url, preferredModel);
 
             var available = await _ollamaService.CheckAvailabilityAsync();
             UpdateOllamaStatusUI(available);
@@ -181,12 +183,13 @@ namespace SymptomCheckerApp.UI
             try
             {
                 var url = _aiUrlBox.Text?.Trim();
-                if (string.IsNullOrEmpty(url)) url = "http://localhost:11434";
+                if (string.IsNullOrEmpty(url)) url = OllamaService.DefaultBaseUrl;
+                var preferredModel = _settingsService?.Settings.OllamaModel ?? OllamaService.DefaultModelName;
 
                 if (_ollamaService == null || _ollamaService.BaseUrl != url.TrimEnd('/'))
                 {
                     _ollamaService?.Dispose();
-                    _ollamaService = new OllamaService(url);
+                    _ollamaService = new OllamaService(url, preferredModel);
                 }
 
                 var available = await _ollamaService.CheckAvailabilityAsync();
@@ -201,33 +204,21 @@ namespace SymptomCheckerApp.UI
 
                 if (_ollamaModelSelector.Items.Count > 0)
                 {
-                    // Prefer models with "llama" or "mistral" in the name
-                    int bestIdx = 0;
-                    for (int i = 0; i < _ollamaModelSelector.Items.Count; i++)
-                    {
-                        var name = _ollamaModelSelector.Items[i]?.ToString() ?? "";
-                        if (name.Contains("llama", StringComparison.OrdinalIgnoreCase) ||
-                            name.Contains("mistral", StringComparison.OrdinalIgnoreCase))
-                        {
-                            bestIdx = i;
-                            break;
-                        }
-                    }
+                    var preferredSelection = OllamaService.ChoosePreferredModel(
+                        models,
+                        _settingsService?.Settings.OllamaModel ?? OllamaService.DefaultModelName);
 
-                    // Restore from settings if available
-                    if (_settingsService?.Settings.OllamaModel is string savedModel && !string.IsNullOrEmpty(savedModel))
+                    if (!string.IsNullOrEmpty(preferredSelection))
                     {
                         for (int i = 0; i < _ollamaModelSelector.Items.Count; i++)
                         {
-                            if (string.Equals(_ollamaModelSelector.Items[i]?.ToString(), savedModel, StringComparison.OrdinalIgnoreCase))
+                            if (string.Equals(_ollamaModelSelector.Items[i]?.ToString(), preferredSelection, StringComparison.OrdinalIgnoreCase))
                             {
-                                bestIdx = i;
+                                _ollamaModelSelector.SelectedIndex = i;
                                 break;
                             }
                         }
                     }
-
-                    _ollamaModelSelector.SelectedIndex = bestIdx;
                 }
             }
             catch (Exception ex)
@@ -277,10 +268,7 @@ namespace SymptomCheckerApp.UI
                 }
             }
 
-            _ollamaCts?.Cancel();
-            _ollamaCts = new CancellationTokenSource();
-
-            SetAiLoading(true);
+            var requestCts = BeginOllamaRequest();
 
             try
             {
@@ -295,22 +283,26 @@ namespace SymptomCheckerApp.UI
                     _checkedSymptoms.ToList(),
                     _lastResults,
                     lang, age, tempC, hr, rr, spo2,
-                    _ollamaCts.Token);
+                    requestCts.Token);
+
+                if (!IsCurrentOllamaRequest(requestCts)) return;
 
                 _lastAiResult = result;
                 DisplayAiResult(result);
             }
             catch (OperationCanceledException)
             {
-                _aiOutputBox.Text = "AI analysis cancelled.";
+                if (!IsCurrentOllamaRequest(requestCts)) return;
+                _aiOutputBox.Text = _translationService?.T("AiCancelled") ?? "AI analysis cancelled.";
             }
             catch (Exception ex)
             {
+                if (!IsCurrentOllamaRequest(requestCts)) return;
                 _aiOutputBox.Text = $"Error: {ex.Message}";
             }
             finally
             {
-                SetAiLoading(false);
+                CompleteOllamaRequest(requestCts);
             }
         }
 
@@ -351,10 +343,7 @@ namespace SymptomCheckerApp.UI
             if (!string.IsNullOrEmpty(selectedModel))
                 _ollamaService.SetModel(selectedModel);
 
-            _ollamaCts?.Cancel();
-            _ollamaCts = new CancellationTokenSource();
-
-            SetAiLoading(true);
+            var requestCts = BeginOllamaRequest();
 
             try
             {
@@ -362,23 +351,52 @@ namespace SymptomCheckerApp.UI
                 double? age = _numAge.Value > 0 ? (double)_numAge.Value : null;
 
                 var result = await _ollamaService.GetMedicationAdviceAsync(
-                    conditionName, matchedSymptoms, lang, age, _ollamaCts.Token);
+                    conditionName, matchedSymptoms, lang, age, requestCts.Token);
+
+                if (!IsCurrentOllamaRequest(requestCts)) return;
 
                 _lastAiResult = result;
                 DisplayAiResult(result);
             }
             catch (OperationCanceledException)
             {
-                _aiOutputBox.Text = "Cancelled.";
+                if (!IsCurrentOllamaRequest(requestCts)) return;
+                _aiOutputBox.Text = _translationService?.T("AiCancelled") ?? "AI analysis cancelled.";
             }
             catch (Exception ex)
             {
+                if (!IsCurrentOllamaRequest(requestCts)) return;
                 _aiOutputBox.Text = $"Error: {ex.Message}";
             }
             finally
             {
+                CompleteOllamaRequest(requestCts);
+            }
+        }
+
+        private CancellationTokenSource BeginOllamaRequest()
+        {
+            _ollamaCts?.Cancel();
+            var requestCts = new CancellationTokenSource();
+            _ollamaCts = requestCts;
+            SetAiLoading(true);
+            return requestCts;
+        }
+
+        private bool IsCurrentOllamaRequest(CancellationTokenSource requestCts)
+        {
+            return ReferenceEquals(_ollamaCts, requestCts);
+        }
+
+        private void CompleteOllamaRequest(CancellationTokenSource requestCts)
+        {
+            if (ReferenceEquals(_ollamaCts, requestCts))
+            {
+                _ollamaCts = null;
                 SetAiLoading(false);
             }
+
+            requestCts.Dispose();
         }
 
         private void SetAiLoading(bool loading)

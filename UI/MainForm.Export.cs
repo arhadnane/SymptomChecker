@@ -96,6 +96,9 @@ namespace SymptomCheckerApp.UI
                 RememberExportFolder(sfd.FileName);
 
                 var sb = new System.Text.StringBuilder();
+                // Spec 001-guided-diagnosis-ux T040: educational disclaimer first.
+                string disclaimer = string.Format(t?.T("Export_Disclaimer") ?? "EDUCATIONAL TOOL ONLY — NOT A DIAGNOSIS. Always consult a qualified healthcare professional. Generated on {0}.", DateTime.Now.ToString("u"));
+                sb.AppendLine("# " + disclaimer.Replace("\r", " ").Replace("\n", " "));
                 sb.AppendLine(string.Join(",", new[] { EscapeCsv(hCond), EscapeCsv(hScore), EscapeCsv(hMatches), EscapeCsv(hCategory) }));
 
                 var rows = GetExportTargetMatches();
@@ -145,6 +148,10 @@ namespace SymptomCheckerApp.UI
 
                 var sb = new System.Text.StringBuilder();
                 sb.AppendLine("# " + (t?.T("Title") ?? "Symptom Checker (Educational)"));
+                // Spec 001-guided-diagnosis-ux T040: educational disclaimer first.
+                string mdDisclaimer = string.Format(t?.T("Export_Disclaimer") ?? "EDUCATIONAL TOOL ONLY — NOT A DIAGNOSIS. Always consult a qualified healthcare professional. Generated on {0}.", DateTime.Now.ToString("u"));
+                sb.AppendLine();
+                sb.AppendLine("> **⚠️ " + mdDisclaimer + "**");
                 if (_checkedSymptoms.Count > 0)
                 {
                     sb.AppendLine();
@@ -193,7 +200,10 @@ namespace SymptomCheckerApp.UI
                 RememberExportFolder(sfd.FileName);
                 var rows = GetExportTargetMatches();
                 var sb = new System.Text.StringBuilder();
-                sb.AppendLine("<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><title>" + (t?.T("Title") ?? "Symptom Checker") + "</title><style>body{font-family:Segoe UI,Arial,sans-serif;font-size:14px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;}th{background:#f4f4f4;}code{font-size:12px;color:#555;} .meta{font-size:11px;color:#666;margin-top:8px;} .badge{background:#1976d2;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px;} </style></head><body>");
+                sb.AppendLine("<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><title>" + (t?.T("Title") ?? "Symptom Checker") + "</title><style>body{font-family:Segoe UI,Arial,sans-serif;font-size:14px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;}th{background:#f4f4f4;}code{font-size:12px;color:#555;} .meta{font-size:11px;color:#666;margin-top:8px;} .badge{background:#1976d2;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px;} .disclaimer{background:#fde7e9;border:1px solid #b00020;color:#641423;padding:10px;border-radius:6px;margin-bottom:14px;font-weight:bold;} </style></head><body>");
+                // Spec 001-guided-diagnosis-ux T040: educational disclaimer first.
+                string htmlDisclaimer = string.Format(t?.T("Export_Disclaimer") ?? "EDUCATIONAL TOOL ONLY — NOT A DIAGNOSIS. Always consult a qualified healthcare professional. Generated on {0}.", DateTime.Now.ToString("u"));
+                sb.AppendLine("<div class=\"disclaimer\">⚠️ " + System.Net.WebUtility.HtmlEncode(htmlDisclaimer) + "</div>");
                 sb.AppendLine("<h1>" + (t?.T("Title") ?? "Symptom Checker (Educational)") + "</h1>");
                 if (_checkedSymptoms.Count > 0)
                 {

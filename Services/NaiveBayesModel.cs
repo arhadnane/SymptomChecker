@@ -6,8 +6,8 @@ using SymptomCheckerApp.Models;
 namespace SymptomCheckerApp.Services
 {
     /// <summary>
-    /// Bernoulli Naive Bayes with Laplace smoothing and optional temperature scaling.
-    /// P(c|S) ∝ P(c) · Π P(x_sym|c), normalized via softmax.
+    /// Positive-evidence Bernoulli Naive Bayes with Laplace smoothing and optional
+    /// temperature scaling. Unselected symptoms are treated as unknown rather than absent.
     /// </summary>
     public class NaiveBayesModel : IMatchingModel
     {
@@ -36,15 +36,12 @@ namespace SymptomCheckerApp.Services
                 var matched = condSet.Intersect(selectedSymptoms, StringComparer.OrdinalIgnoreCase).ToList();
                 int matchCount = matched.Count;
 
-                foreach (var sym in vocabulary)
+                foreach (var sym in selectedSymptoms)
                 {
                     bool presentInCond = condSet.Contains(sym);
                     // Laplace: P(x=1|c) = (count_present + 1) / (N + 2)
                     double p1 = (presentInCond ? 2.0 : 1.0) / 3.0;
-                    double p0 = 1 - p1;
-
-                    bool selected = selectedSymptoms.Contains(sym);
-                    logP += Math.Log(selected ? p1 : p0);
+                    logP += Math.Log(p1);
                 }
 
                 condScores.Add((c.Name, logP, matchCount, matched));

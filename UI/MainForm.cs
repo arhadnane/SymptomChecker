@@ -67,6 +67,10 @@ namespace SymptomCheckerApp.UI
     private readonly Button _exitButton = new Button();
     private readonly ListBox _resultsList = new ListBox();
     private readonly Label _triageBanner = new Label();
+    // Guided Diagnosis Assistant — spec 001-guided-diagnosis-ux (T011, T012, T032)
+    private readonly FlowLayoutPanel _resultsCards = new FlowLayoutPanel();
+    private SymptomCheckerApp.UI.Controls.RedFlagBanner? _redFlagBanner;
+    private readonly CheckBox _showLegacyList = new CheckBox();
         private readonly Label _disclaimer = new Label();
         private readonly ComboBox _modelSelector = new ComboBox();
         private readonly NumericUpDown _threshold = new NumericUpDown();
@@ -95,6 +99,12 @@ namespace SymptomCheckerApp.UI
     private readonly ContextMenuStrip _resultsContext = new ContextMenuStrip();
     private readonly Label _lblLanguage = new Label();
     private readonly Label _lblPerf = new Label();
+    private SymptomCheckerApp.UI.Controls.ModeSelector? _modeSelectorOverlay;
+    private Panel? _modeChrome;
+    private Label? _modeStatusLabel;
+    private Label? _modeHintLabel;
+    private Button? _modeSwitchButton;
+    private UiMode? _activeUiMode;
     // UI: collapse toggle
     private Button? _collapseBtn;
     // Model tuning (new)
@@ -185,9 +195,15 @@ namespace SymptomCheckerApp.UI
                     if (_checkButton.Enabled) _checkButton.PerformClick();
                     e.Handled = true;
                 }
+                else if (e.Control && e.KeyCode == Keys.M)
+                {
+                    ToggleUiMode();
+                    e.Handled = true;
+                }
             };
 
             InitializeLayout();
+            InitializeModeChrome();
             Load += MainForm_Load;
             // Set initial focus for keyboard/screen reader users and ensure right panel is wide enough on first show
             this.Shown += (s, e) =>
@@ -210,6 +226,7 @@ namespace SymptomCheckerApp.UI
                         if ((vs.Height - targetV - vs.SplitterWidth) >= vs.Panel2MinSize)
                             vs.SplitterDistance = targetV;
                     }
+                    ApplyProfessionalShellLayout();
                 }
                 catch { }
                 _filterBox.Focus();
@@ -233,6 +250,7 @@ namespace SymptomCheckerApp.UI
                         if (target >= vs.Panel1MinSize && (vs.Height - target) >= vs.Panel2MinSize)
                             vs.SplitterDistance = target;
                     }
+                    ApplyProfessionalShellLayout();
                 }
                 catch { }
             };
@@ -256,6 +274,7 @@ namespace SymptomCheckerApp.UI
                 Orientation = Orientation.Vertical,
                 Name = "_mainSplit"
             };
+            _mainSplitHost = split;
             // Responsive: set splitter as percentage of width
             try
             {
@@ -284,15 +303,24 @@ namespace SymptomCheckerApp.UI
                 TabStop = false
             };
             _collapseBtn = collapseBtn;
-            bool collapsed = false;
             collapseBtn.Click += (s, e) =>
             {
+                bool collapsed = split.Panel1Collapsed;
                 if (!collapsed)
                 {
                     split.Panel1Collapsed = true;
                     collapseBtn.Text = "≫";
-                    collapsed = true;
-                    try { _settingsService!.Settings.LeftPanelCollapsed = true; _settingsService.Save(); } catch { }
+                    try
+                    {
+                        if (_settingsService != null)
+                        {
+                            _settingsService.Settings.LeftPanelCollapsed = true;
+                            _settingsService.Settings.CollapsedSections ??= new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+                            _settingsService.Settings.CollapsedSections["pro.symptoms"] = true;
+                            _settingsService.Save();
+                        }
+                    }
+                    catch { }
                 }
                 else
                 {
@@ -305,8 +333,17 @@ namespace SymptomCheckerApp.UI
                         split.SplitterDistance = Math.Max(split.Panel1MinSize, Math.Min(t, m));
                     } catch { }
                     collapseBtn.Text = "≪";
-                    collapsed = false;
-                    try { _settingsService!.Settings.LeftPanelCollapsed = false; _settingsService.Save(); } catch { }
+                    try
+                    {
+                        if (_settingsService != null)
+                        {
+                            _settingsService.Settings.LeftPanelCollapsed = false;
+                            _settingsService.Settings.CollapsedSections ??= new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+                            _settingsService.Settings.CollapsedSections["pro.symptoms"] = false;
+                            _settingsService.Save();
+                        }
+                    }
+                    catch { }
                 }
             };
             // We'll place this control in the top controls row to avoid overlaying content
@@ -472,13 +509,14 @@ namespace SymptomCheckerApp.UI
                 WrapContents = true,
                 AutoScroll = true,
                 FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(3)
+                Padding = new Padding(3),
+                Name = "_topControls"
             };
-            var vitalsRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true };
-            var rulesRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true };
+            var vitalsRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true, Name = "_vitalsRow" };
+            var rulesRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true, Name = "_rulesRow" };
 
             _modelSelector.DropDownStyle = ComboBoxStyle.DropDownList;
-            _modelSelector.Items.AddRange(new object[] { DetectionModel.Jaccard, DetectionModel.Cosine, DetectionModel.NaiveBayes });
+            _modelSelector.Items.AddRange(new object[] { DetectionModel.Jaccard, DetectionModel.Cosine, DetectionModel.NaiveBayes, DetectionModel.Ensemble });
             _modelSelector.AccessibleName = "Detection model";
             _modelSelector.TabIndex = 10;
             _modelSelector.SelectedIndexChanged += (s, e) =>
@@ -493,7 +531,8 @@ namespace SymptomCheckerApp.UI
                 _nbTempEnable.Enabled = nb;
                 _nbTempValue.Enabled = nb && _nbTempEnable.Checked;
             };
-            _modelSelector.SelectedIndex = 0;
+            _modelSelector.SelectedItem = DetectionModel.Ensemble;
+            if (_modelSelector.SelectedIndex < 0) _modelSelector.SelectedIndex = 0;
 
             _threshold.Minimum = 0;
             _threshold.Maximum = 100;
@@ -625,7 +664,7 @@ namespace SymptomCheckerApp.UI
             _darkModeToggle.AutoSize = true;
             _darkModeToggle.AccessibleName = "Toggle dark mode";
             _darkModeToggle.TabIndex = 20;
-            _darkModeToggle.CheckedChanged += (s, e) => { ApplyTheme(); if (_settingsService != null) { _settingsService.Settings.DarkMode = _darkModeToggle.Checked; _settingsService.Save(); } };
+            _darkModeToggle.CheckedChanged += (s, e) => { ApplyTheme(); UpdateModePresentation(); if (_settingsService != null) { _settingsService.Settings.DarkMode = _darkModeToggle.Checked; _settingsService.Save(); } };
 
             _checkButton.Text = "Check";
             _checkButton.AutoSize = true;
@@ -846,8 +885,38 @@ namespace SymptomCheckerApp.UI
             rulesRow.Controls.Add(_grpCentor);
             rulesRow.Controls.Add(_grpPerc);
             rightPanel.Controls.Add(rulesRow, 0, 2);
-            // Place results list in the percent row (index 3) so it expands; triage banner becomes auto row below
-            rightPanel.Controls.Add(_resultsList, 0, 3);
+            // Spec 001-guided-diagnosis-ux: row 3 hosts (top→bottom):
+            //   - RedFlagBanner (typed, non-dismissable)
+            //   - FlowLayoutPanel of ConditionResultCards (default view — surfaces
+            //     localized Treatments / Medications / CareAdvice directly)
+            //   - Legacy ListBox (collapsed by default, opt-in for right-click
+            //     export/context menu and for power users)
+            _redFlagBanner = new SymptomCheckerApp.UI.Controls.RedFlagBanner(_translationService, _darkModeToggle.Checked);
+            _resultsCards.Dock = DockStyle.Fill;
+            _resultsCards.AutoScroll = true;
+            _resultsCards.FlowDirection = FlowDirection.TopDown;
+            _resultsCards.WrapContents = false;
+            _resultsCards.BackColor = Color.Transparent;
+            _resultsCards.AccessibleName = "Educational result cards";
+
+            _resultsList.Dock = DockStyle.Bottom;
+            _resultsList.Height = ScaleY(110);
+            _resultsList.Visible = false; // Opt-in via _showLegacyList
+
+            _showLegacyList.Text = "Show classic list";
+            _showLegacyList.AutoSize = true;
+            _showLegacyList.Checked = false;
+            _showLegacyList.AccessibleName = "Show legacy results list";
+            _showLegacyList.CheckedChanged += (s, e) => { _resultsList.Visible = _showLegacyList.Checked; };
+
+            _showLegacyList.Dock = DockStyle.Bottom;
+            var resultsHost = new Panel { Dock = DockStyle.Fill, Margin = new Padding(0), Name = "_resultsHost" };
+            // Order matters: Fill must be added LAST so it occupies the remaining space.
+            resultsHost.Controls.Add(_redFlagBanner);   // Dock=Top
+            resultsHost.Controls.Add(_showLegacyList);  // Dock=Bottom (toggle row)
+            resultsHost.Controls.Add(_resultsList);     // Dock=Bottom (collapsed by default)
+            resultsHost.Controls.Add(_resultsCards);    // Dock=Fill — primary view
+            rightPanel.Controls.Add(resultsHost, 0, 3);
             rightPanel.Controls.Add(_triageBanner, 0, 4);
             rightPanel.Controls.Add(_disclaimer, 0, 5);
             split.Panel2.Controls.Add(rightPanel);
@@ -859,6 +928,7 @@ namespace SymptomCheckerApp.UI
                 Orientation = Orientation.Horizontal,
                 Name = "_mainVerticalSplit"
             };
+            _mainVerticalSplitHost = mainLayout;
             try
             {
                 int p1MinV = ScaleY(200);
@@ -876,7 +946,6 @@ namespace SymptomCheckerApp.UI
             }
             catch { try { mainLayout.SplitterDistance = 400; } catch { } }
             // Add the existing horizontal split into the top panel
-            mainLayout.Panel1.Controls.Add(split);
             // Bottom panel: TabControl with AI Diagnosis + Image Analysis tabs
             var aiTabControl = new TabControl
             {
@@ -892,7 +961,7 @@ namespace SymptomCheckerApp.UI
             aiTabControl.TabPages.Add(tabAiDiag);
             aiTabControl.TabPages.Add(tabImageAnalysis);
             aiTabControl.TabPages.Add(tabBloodAnalysis);
-            mainLayout.Panel2.Controls.Add(aiTabControl);
+            InitializeProfessionalShell(mainLayout, split, leftPanel, topControls, vitalsRow, rulesRow, resultsHost, aiTabControl);
             Controls.Add(mainLayout);
 
             // Settings path label placed at bottom-left of main form
@@ -1051,7 +1120,11 @@ namespace SymptomCheckerApp.UI
                 try
                 {
                     var sc = FindControl<SplitContainer>(this, "_mainSplit");
-                    if (sc != null && _settingsService?.Settings.LeftPanelCollapsed == true)
+                    bool leftPanelCollapsed = _settingsService?.Settings.CollapsedSections != null &&
+                                              _settingsService.Settings.CollapsedSections.TryGetValue("pro.symptoms", out var storedCollapsed)
+                        ? storedCollapsed
+                        : (_settingsService?.Settings.LeftPanelCollapsed == true);
+                    if (sc != null && leftPanelCollapsed)
                     {
                         sc.Panel1Collapsed = true; if (_collapseBtn != null) _collapseBtn.Text = "≫";
                     }
@@ -1130,9 +1203,11 @@ namespace SymptomCheckerApp.UI
                 }
                 catch { }
                 ApplyTheme();
+                SyncProfessionalShellFromState();
                 RefreshSymptomList();
                 UpdateDecisionRules();
                 UpdatePercRule();
+                RestoreOrPromptForUiMode();
                 // Initialize Ollama connection (non-blocking)
                 _ = InitializeOllamaAsync();
             }
@@ -1299,11 +1374,27 @@ namespace SymptomCheckerApp.UI
                 ApplyImageAnalysisTranslations();
                 // Apply Blood Analysis panel translations
                 ApplyBloodAnalysisTranslations();
+                var topControls = FindControl<FlowLayoutPanel>(this, "_topControls");
+                if (topControls != null) topControls.AccessibleName = t.T("Pro_Section_Model");
+                var vitalsRow = FindControl<FlowLayoutPanel>(this, "_vitalsRow");
+                if (vitalsRow != null) vitalsRow.AccessibleName = t.T("Pro_Section_Vitals");
+                var rulesRow = FindControl<FlowLayoutPanel>(this, "_rulesRow");
+                if (rulesRow != null) rulesRow.AccessibleName = t.T("Pro_Section_Rules");
+                var resultsHost = FindControl<Panel>(this, "_resultsHost");
+                if (resultsHost != null) resultsHost.AccessibleName = t.T("Pro_Section_Results");
+                var aiTabControl = FindControl<TabControl>(this, "_aiTabControl");
+                if (aiTabControl != null) aiTabControl.AccessibleName = t.T("Pro_Section_Ai");
+                UpdateProfessionalShellPresentation();
+                SyncPatientShellFromState(restoreStep: false);
+                UpdateModePresentation();
             }
             else
             {
                 Text = TitleText;
                 _disclaimer.Text = DisclaimerText;
+                UpdateProfessionalShellPresentation();
+                SyncPatientShellFromState(restoreStep: false);
+                UpdateModePresentation();
             }
         }
 
@@ -1339,6 +1430,8 @@ namespace SymptomCheckerApp.UI
             _lastResults = matches;
             RebuildResultsListItems();
             UpdateTriageBanner();
+            // Spec 001-guided-diagnosis-ux T042: typed RedFlagBanner.
+            RefreshRedFlagBanner();
             try { _lblPerf.Text = $"{sw.ElapsedMilliseconds} ms"; } catch { }
 
             // Auto-run AI diagnosis if enabled and Ollama is available

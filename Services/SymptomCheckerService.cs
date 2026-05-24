@@ -41,7 +41,8 @@ namespace SymptomCheckerApp.Services
             {
                 { DetectionModel.Jaccard, new JaccardModel() },
                 { DetectionModel.Cosine, new CosineModel() },
-                { DetectionModel.NaiveBayes, new NaiveBayesModel() }
+                { DetectionModel.NaiveBayes, new NaiveBayesModel() },
+                { DetectionModel.Ensemble, new EnsembleModel() }
             };
 
             RebuildVocabulary();
@@ -78,12 +79,14 @@ namespace SymptomCheckerApp.Services
         {
             Jaccard,
             Cosine,
-            NaiveBayes
+            NaiveBayes,
+            Ensemble
         }
 
         // Get scored results for a given model. threshold is interpreted as:
         // - Jaccard/Cosine: minimum score [0..1]
         // - NaiveBayes: minimum normalized probability [0..1]
+        // - Ensemble: minimum normalized consensus score [0..1]
         public List<ConditionMatch> GetMatches(
             IEnumerable<string> selectedSymptoms,
             DetectionModel model,

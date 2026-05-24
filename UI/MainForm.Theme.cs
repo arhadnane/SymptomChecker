@@ -39,6 +39,14 @@ namespace SymptomCheckerApp.UI
                     fl.BackColor = panel;
                     foreach (Control child in fl.Controls) ApplyThemeToControl(child, back, fore, panel, dark);
                     break;
+                case Panel pnl:
+                    pnl.BackColor = panel;
+                    foreach (Control child in pnl.Controls) ApplyThemeToControl(child, back, fore, panel, dark);
+                    break;
+                case UserControl uc:
+                    uc.BackColor = panel;
+                    foreach (Control child in uc.Controls) ApplyThemeToControl(child, back, fore, panel, dark);
+                    break;
                 case CheckedListBox clb:
                     clb.BackColor = back; clb.ForeColor = fore;
                     break;

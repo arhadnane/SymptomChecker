@@ -43,5 +43,15 @@ namespace SymptomChecker.Tests
             Assert.Single(res);
             Assert.Equal("Common Cold", res[0].Name);
         }
+
+        [Fact]
+        public void Ensemble_TopK_Works()
+        {
+            var svc = new SymptomCheckerService(DataPath("conditions.min.json"));
+            var sel = new[] { "Cough", "Runny Nose" };
+            var res = svc.GetMatches(sel, SymptomCheckerService.DetectionModel.Ensemble, threshold: 0.0, topK: 1, minMatchCount: 0);
+            Assert.Single(res);
+            Assert.Equal("Common Cold", res[0].Name);
+        }
     }
 }

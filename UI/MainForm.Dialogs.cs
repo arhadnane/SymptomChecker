@@ -64,6 +64,11 @@ namespace SymptomCheckerApp.UI
             {
                 sb.AppendLine($" • {(t?.T("Explain_Prob") ?? "Estimated probability")}: {match.Score:F3}");
             }
+            else if (model == SymptomCheckerService.DetectionModel.Ensemble)
+            {
+                sb.AppendLine($" • {(t?.T("Explain_MatchedOverlap") ?? "Matched overlap")}: {match.MatchCount}");
+                sb.AppendLine($" • {(t?.T("Explain_Similarity") ?? "Consensus score")}: {match.Score:F3}");
+            }
 
             List<string>? locTreat = null;
             List<string>? locMeds = null;
