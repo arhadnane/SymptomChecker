@@ -46,6 +46,7 @@ public record MatchingOptions(
 ```
 
 **Registration:**
+
 ```csharp
 var models = new Dictionary<string, IMatchingModel>
 {
@@ -56,11 +57,13 @@ var models = new Dictionary<string, IMatchingModel>
 ```
 
 **Benefits:**
+
 - Open/closed principle — add models without modifying existing code
 - Each model is independently testable
 - UI model selector populated from registry
 
 **Candidate New Models:**
+
 | Model | Description |
 |---|---|
 | TF-IDF | Weight symptoms by inverse frequency across conditions |
@@ -101,6 +104,7 @@ public enum RiskLevel { Low, Intermediate, High, Critical }
 ```
 
 **Benefits:**
+
 - Rules can be added without UI code changes
 - Criteria drive dynamic UI generation (checkboxes for Boolean, NumericUpDown for Numeric)
 - Scoring logic is testable in isolation
@@ -132,6 +136,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 **Description:** Interactive visualization showing how symptoms connect to conditions.
 
 **Implementation Notes:**
+
 - Use a graph layout library (e.g., Microsoft Automatic Graph Layout — MSAGL) or custom GDI+ rendering
 - Nodes: symptoms (circles) and conditions (rectangles)
 - Edges: symptom→condition association
@@ -146,6 +151,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 **Description:** Track which symptoms are most/least selected across sessions for educational pattern analysis.
 
 **Implementation Notes:**
+
 - Aggregate data stored locally in `analytics.json`
 - No personally identifiable data — only symptom selection counts
 - Bar chart or heatmap visualization
@@ -157,6 +163,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 **Description:** Richer educational information per condition beyond the current details dialog.
 
 **Proposed Content:**
+
 - Prevalence estimate (from Wikidata or manual annotation)
 - Related conditions (conditions sharing ≥ 3 symptoms)
 - Differential diagnosis hints (educational)
@@ -175,6 +182,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 **Description:** Step-by-step tutorial mode for new users.
 
 **Steps:**
+
 1. Select a category → expand accordion
 2. Check some symptoms → see instant feedback
 3. Enter vitals → observe triage banner
@@ -194,6 +202,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 **Current:** EN, FR, AR
 
 **Candidate Languages:**
+
 | Language | Code | RTL? | Notes |
 |---|---|---|---|
 | Spanish | es | No | Large user base |
@@ -202,6 +211,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 | Urdu | ur | Yes | Shares RTL infrastructure with AR |
 
 **Requirements per new language:**
+
 1. Add translations to `translations.json` (ui, symptoms, conditions, messages, categories, uiDetails sections)
 2. Add `Name_Xx` and `Treatment_Xx` fields to conditions (or use fallback to EN)
 3. Test RTL layout if applicable
@@ -211,6 +221,7 @@ Implementations: `JsonFileDataProvider` (current), `SqliteDataProvider` (future)
 
 **Priority:** Low  
 **Description:** CLI tool or script to:
+
 - Extract all translation keys and their EN values
 - Generate a template file for translators
 - Validate completeness of a new language against EN baseline
@@ -315,6 +326,7 @@ Use `partial class MainForm` to keep all code in the same class while splitting 
 **Current tests:** `SymptomCheckerServiceTests`, `TriageServiceTests`, `TranslationServiceTests`, `CategoriesServiceTests`, `CategoryWeightingTests`, `NaiveBayesTemperatureTests`
 
 **Missing coverage:**
+
 - `SynonymService` unit tests
 - `WikidataImporter` tests (mock HTTP)
 - `SchemaValidator` edge cases
@@ -339,6 +351,7 @@ Produces a single `.exe` with embedded runtime — no .NET install required on t
 ### 7.2 MSIX Packaging
 
 Package as MSIX for Windows Store or enterprise sideloading:
+
 - Auto-update support
 - Clean install/uninstall
 - Sandboxed file access (data files bundled as AppData)

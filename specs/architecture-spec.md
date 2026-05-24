@@ -2,7 +2,7 @@
 
 ## 1. High-Level Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                      Program.cs                         │
 │  (Entry point, exception handlers, logger bootstrap)    │
@@ -62,7 +62,7 @@
 
 ### 3.1 Startup Sequence
 
-```
+```text
 Program.Main()
   ├── Create LoggerService(logs/)
   ├── Create MainForm
@@ -86,7 +86,7 @@ Program.Main()
 
 ### 3.2 Match Computation Flow
 
-```
+```text
 User clicks "Check"
   └── CheckButton_Click()
         ├── Collect _checkedSymptoms
@@ -113,7 +113,7 @@ User clicks "Check"
 
 ### 3.3 Wikidata Sync Flow
 
-```
+```text
 User clicks "Sync"
   └── SyncFromWikidataAsync()
         ├── WikidataImporter.FetchConditionsAsync(limit: 200)
@@ -133,7 +133,7 @@ User clicks "Sync"
 
 ### 4.1 Current Dependencies
 
-```
+```text
 MainForm ──depends──▶ SymptomCheckerService
          ──depends──▶ CategoriesService
          ──depends──▶ SynonymService
@@ -213,7 +213,7 @@ Implementations: `JsonFileConditionDataProvider`, `InMemoryConditionDataProvider
 
 ## 6. Component Diagram
 
-```
+```text
 ┌──────────────────────────────────────────────────┐
 │                    Application                    │
 │                                                  │

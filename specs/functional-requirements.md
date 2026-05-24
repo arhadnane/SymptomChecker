@@ -4,7 +4,7 @@
 
 ### 1.1 Primary Flow — Symptom Check
 
-```
+```text
 1. Application starts → loads conditions.json, categories.json, synonyms.json, translations.json, settings.json
 2. User optionally selects a language (EN/FR/AR) and theme (light/dark)
 3. User filters symptoms using the filter text box and/or category selector
@@ -19,7 +19,7 @@
 
 ### 1.2 Wikidata Sync Flow
 
-```
+```text
 1. User clicks "Sync"
 2. Application fires a SPARQL query to Wikidata (no API key)
 3. Fetched conditions are merged into the local dataset (additive merge)
@@ -29,7 +29,7 @@
 
 ### 1.3 Export Flow
 
-```
+```text
 1. User right-clicks the results list
 2. User selects Export (CSV / Markdown / HTML)
 3. SaveFileDialog opens; user chooses path
@@ -39,7 +39,7 @@
 
 ### 1.4 Session Management
 
-```
+```text
 1. User clicks "Save" → saves selected symptoms + model + parameters to a JSON file
 2. User clicks "Load" → restores a previously saved session
 3. User clicks "Reset Settings" → reverts to defaults

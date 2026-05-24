@@ -19,7 +19,7 @@
 
 ### 1.2 Top-Level Layout
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │ [Top Bar] Language · Theme · Settings · Sync · Session  │
 ├────────────────────────┬────────────────────────────────┤
@@ -62,7 +62,7 @@
 
 Layout uses nested `FlowLayoutPanel` containers:
 
-```
+```text
 ▼ Category A (checkbox header — select/deselect all)
    ☐ Symptom 1
    ☐ Symptom 2
@@ -138,10 +138,12 @@ PERC result label shows "PERC negative" or "PERC positive" (localized), updates 
 | Double-click | Opens Details dialog for selected `ListItem` |
 
 **GroupHeader rendering:**
+
 - Bold font, category-colored background stripe
 - Displays group name + item count
 
 **ListItem rendering:**
+
 - Regular font, alternating row background (light mode) or uniform dark background (dark mode)
 - Columns: Condition name (localized) | Match score (%) | Model indicator icon
 - Hover: Highlight background
@@ -150,7 +152,7 @@ PERC result label shows "PERC negative" or "PERC positive" (localized), updates 
 
 Modal dialog shown on double-click of a result item:
 
-```
+```text
 ┌──────────────────────────────────────┐
 │ Condition Name (Localized)           │
 ├──────────────────────────────────────┤
@@ -201,6 +203,7 @@ Row of buttons below results list:
 | Export HTML | Save results to `.html` file | Styled HTML with inline CSS |
 
 All exports include:
+
 - Timestamp
 - Language code
 - Model name
@@ -274,7 +277,7 @@ All exports include:
 
 ### 5.2 Theme Application
 
-```
+```text
 ApplyTheme(Control root, bool isDark)
   foreach control in root.Controls (recursive):
     set BackColor, ForeColor based on control type
@@ -290,6 +293,7 @@ Theme changes apply immediately without restart.
 ### 6.1 RTL Activation
 
 When language = `ar`:
+
 - `Form.RightToLeft = RightToLeft.Yes`
 - `Form.RightToLeftLayout = true`
 - All controls inherit RTL layout
@@ -300,10 +304,10 @@ When language = `ar`:
 |---|---|---|
 | Text alignment | Left | Right |
 | Split panel order | Input left, Results right | Input right, Results left |
-| Bullet lists | ` • text` | `text  •` |
+| Bullet lists | `• text` | `text •` |
 | Status bar | Left-aligned | Right-aligned |
 | Scroll bars | Right side | Left side |
-| Triage banner bullets | ` • Flag` | `Flag  •` |
+| Triage banner bullets | `• Flag` | `Flag •` |
 
 ### 6.3 Font Consideration
 

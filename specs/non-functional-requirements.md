@@ -47,7 +47,7 @@
 | `RightToLeft = Yes` and `RightToLeftLayout = true` applied at Form level | Implemented |
 | Individual controls explicitly set for RTL (lists, checkboxes, groups) | Implemented |
 | Bullet points reversed for RTL (appended to end) | Implemented in banner and details |
-| Result items rendered with `TextFormatFlags.RightToLeft | Right` | Implemented in owner-draw |
+| Result items rendered with `TextFormatFlags.RightToLeft \| Right` | Implemented in owner-draw |
 | Context menu mirrors for RTL | Implemented |
 
 ### 2.4 Contrast & Readability
@@ -76,7 +76,7 @@
 
 ### 3.2 Fallback Chain
 
-```
+```text
 Requested language → available translation → English fallback → raw key
 ```
 
