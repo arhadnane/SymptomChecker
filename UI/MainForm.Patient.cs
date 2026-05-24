@@ -29,6 +29,7 @@ namespace SymptomCheckerApp.UI
             _patientShell.RunCheckRequested += () => CheckButton_Click(this, EventArgs.Empty);
             _patientShell.StepChanged += OnPatientStepChanged;
             _patientShell.RestartRequested += RestartPatientWizard;
+            _patientShell.ModeSwitchRequested += OnPatientModeSwitchRequested;
 
             _mainVerticalSplitHost.Panel1.Controls.Add(_patientShell);
             _patientShell.BringToFront();
@@ -330,6 +331,17 @@ namespace SymptomCheckerApp.UI
                 _settingsService.Settings.PatientWizardLastStep = 1;
                 _settingsService.Save();
             }
+        }
+
+        private void OnPatientModeSwitchRequested()
+        {
+            if (_settingsService?.Settings.UiMode == null)
+            {
+                ShowModeSelector();
+                return;
+            }
+
+            ToggleUiMode();
         }
     }
 }
