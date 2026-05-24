@@ -7,13 +7,23 @@ namespace SymptomChecker.Tests
     public class OllamaServiceTests
     {
         [Fact]
-        public void ChoosePreferredModel_PrefersKimiFamilyWhenDefaultExactNameIsUnavailable()
+        public void ChoosePreferredModel_PrefersGemmaFamilyWhenDefaultExactNameIsUnavailable()
         {
-            var models = new List<string> { "llama3", "kimi-k2:latest", "mistral" };
+          var models = new List<string> { "llama3", "gemma4:latest", "mistral" };
 
-            var selected = OllamaService.ChoosePreferredModel(models, "kimi-k2.6");
+          var selected = OllamaService.ChoosePreferredModel(models, "gemma4");
 
-            Assert.Equal("kimi-k2:latest", selected);
+          Assert.Equal("gemma4:latest", selected);
+        }
+
+        [Fact]
+        public void ChoosePreferredModel_FallsBackToFirstAvailableWhenPreferredMissing()
+        {
+          var models = new List<string> { "llama3", "mistral" };
+
+          var selected = OllamaService.ChoosePreferredModel(models, "gemma4");
+
+          Assert.Equal("llama3", selected);
         }
 
         [Fact]

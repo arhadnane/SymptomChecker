@@ -20,6 +20,7 @@ namespace SymptomCheckerApp.UI.Controls
         private readonly Label _title = new();
         private readonly Label _body = new();
         private readonly Button _emergencyButton = new();
+        private readonly TableLayoutPanel _stack = new();
         private TranslationService? _t;
         private bool _darkMode;
 
@@ -40,10 +41,16 @@ namespace SymptomCheckerApp.UI.Controls
 
         private void ApplyTheme()
         {
-            BackColor = _darkMode ? Color.FromArgb(140, 30, 30) : Color.FromArgb(176, 0, 32);
-            ForeColor = Color.White;
-            _title.ForeColor = Color.White;
-            _body.ForeColor = Color.White;
+            Color bannerBackground = _darkMode
+                ? Color.FromArgb(140, 30, 30)
+                : Color.FromArgb(255, 214, 214);
+            Color textColor = _darkMode ? Color.White : Color.Black;
+
+            BackColor = bannerBackground;
+            ForeColor = textColor;
+            _stack.BackColor = bannerBackground;
+            _title.ForeColor = textColor;
+            _body.ForeColor = textColor;
             _emergencyButton.BackColor = Color.White;
             _emergencyButton.ForeColor = Color.FromArgb(176, 0, 32);
         }
@@ -61,28 +68,21 @@ namespace SymptomCheckerApp.UI.Controls
             Visible = false;
             BorderStyle = BorderStyle.FixedSingle;
 
-            BackColor = _darkMode ? Color.FromArgb(140, 30, 30) : Color.FromArgb(176, 0, 32);
-            ForeColor = Color.White;
-
             string lang = (_t?.CurrentLanguage ?? "en").ToLowerInvariant();
             if (lang == "ar") RightToLeft = RightToLeft.Yes;
 
             _title.AutoSize = true;
             _title.Font = new Font(Font.FontFamily, 11f, FontStyle.Bold);
-            _title.ForeColor = Color.White;
             _title.Text = T("RedFlag_Banner_Title");
             _title.Margin = new Padding(0, 0, 0, 4);
 
             _body.AutoSize = true;
             _body.Font = new Font(Font.FontFamily, 9.25f, FontStyle.Regular);
-            _body.ForeColor = Color.White;
             _body.MaximumSize = new Size(620, 0);
 
             _emergencyButton.Text = T("RedFlag_WhenToCall_Button");
             _emergencyButton.AutoSize = true;
             _emergencyButton.FlatStyle = FlatStyle.Flat;
-            _emergencyButton.BackColor = Color.White;
-            _emergencyButton.ForeColor = Color.FromArgb(176, 0, 32);
             _emergencyButton.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
             _emergencyButton.Margin = new Padding(0, 6, 0, 0);
             _emergencyButton.AccessibleName = T("RedFlag_WhenToCall_Button");
@@ -97,18 +97,16 @@ namespace SymptomCheckerApp.UI.Controls
                     RightToLeft == RightToLeft.Yes ? MessageBoxOptions.RtlReading : 0);
             };
 
-            var stack = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoSize = true,
-                ColumnCount = 1,
-                BackColor = BackColor,
-            };
-            stack.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            stack.Controls.Add(_title, 0, 0);
-            stack.Controls.Add(_body, 0, 1);
-            stack.Controls.Add(_emergencyButton, 0, 2);
-            Controls.Add(stack);
+            _stack.Dock = DockStyle.Fill;
+            _stack.AutoSize = true;
+            _stack.ColumnCount = 1;
+            _stack.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            _stack.Controls.Add(_title, 0, 0);
+            _stack.Controls.Add(_body, 0, 1);
+            _stack.Controls.Add(_emergencyButton, 0, 2);
+            Controls.Add(_stack);
+
+            ApplyTheme();
 
             AccessibleName = "Red flag banner";
             AccessibleDescription = "Possible urgent symptoms — educational guidance only";

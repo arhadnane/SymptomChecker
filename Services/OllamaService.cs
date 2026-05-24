@@ -19,7 +19,7 @@ namespace SymptomCheckerApp.Services
     public class OllamaService : IDisposable
     {
         public const string DefaultBaseUrl = "http://localhost:11434";
-        public const string DefaultModelName = "kimi-k2.6";
+        public const string DefaultModelName = "gemma4";
         private const int DiagnosisMaxTokens = 2600;
         private const int MedicationMaxTokens = 2200;
 
@@ -129,57 +129,18 @@ namespace SymptomCheckerApp.Services
                 return exactMatch;
             }
 
-            string? bestModel = null;
-            int bestScore = int.MinValue;
-
-            foreach (var model in availableModels)
+            // If the requested value is a family name (e.g. "gemma4"), allow
+            // selecting tagged variants like "gemma4:latest".
+            var normalizedRequested = NormalizeModelName(requested);
+            var familyMatch = availableModels.FirstOrDefault(model =>
+                NormalizeModelName(model).StartsWith(normalizedRequested, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(familyMatch))
             {
-                int score = ScoreModelPreference(model, requested);
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestModel = model;
-                }
+                return familyMatch;
             }
 
-            return bestModel ?? availableModels[0];
-        }
-
-        private static int ScoreModelPreference(string modelName, string preferredModel)
-        {
-            var normalizedName = NormalizeModelName(modelName);
-            var normalizedPreferred = NormalizeModelName(preferredModel);
-            int score = 0;
-
-            if (normalizedName == normalizedPreferred)
-            {
-                score += 1000;
-            }
-
-            if (normalizedPreferred.Contains("kimi", StringComparison.OrdinalIgnoreCase) &&
-                normalizedName.Contains("kimi", StringComparison.OrdinalIgnoreCase))
-            {
-                score += 500;
-            }
-
-            if (normalizedPreferred.Contains("k2", StringComparison.OrdinalIgnoreCase) &&
-                normalizedName.Contains("k2", StringComparison.OrdinalIgnoreCase))
-            {
-                score += 250;
-            }
-
-            if (normalizedPreferred.Contains("26", StringComparison.OrdinalIgnoreCase) &&
-                normalizedName.Contains("26", StringComparison.OrdinalIgnoreCase))
-            {
-                score += 120;
-            }
-
-            if (normalizedName.Contains("kimi", StringComparison.OrdinalIgnoreCase)) score += 300;
-            if (normalizedName.Contains("k2", StringComparison.OrdinalIgnoreCase)) score += 150;
-            if (normalizedName.Contains("llama", StringComparison.OrdinalIgnoreCase)) score += 50;
-            if (normalizedName.Contains("mistral", StringComparison.OrdinalIgnoreCase)) score += 40;
-
-            return score;
+            // Requested default not available: choose the first existing model.
+            return availableModels[0];
         }
 
         private static string NormalizeModelName(string value)

@@ -78,7 +78,7 @@ namespace SymptomChecker.Tests
                 var svc = new SettingsService(path);
 
                 Assert.Equal("Ensemble", svc.Settings.Model);
-                Assert.Equal("kimi-k2.6", svc.Settings.OllamaModel);
+                Assert.Equal("gemma4", svc.Settings.OllamaModel);
             }
             finally
             {
@@ -98,7 +98,7 @@ namespace SymptomChecker.Tests
 
                 svc.Reset();
                 Assert.Equal("Ensemble", svc.Settings.Model);
-                Assert.Equal("kimi-k2.6", svc.Settings.OllamaModel);
+                Assert.Equal("gemma4", svc.Settings.OllamaModel);
                 Assert.Null(svc.Settings.UiMode);
                 Assert.Null(svc.Settings.PatientWizardLastStep);
                 Assert.Null(svc.Settings.CollapsedSections);
