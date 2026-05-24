@@ -88,7 +88,7 @@ The application:
 
 ### 3.3 Wikidata Request Details
 
-```
+```text
 POST https://query.wikidata.org/sparql
 Content-Type: application/x-www-form-urlencoded
 Accept: application/sparql-results+json
