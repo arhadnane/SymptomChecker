@@ -49,7 +49,7 @@
 
 ### 2.1 conditions.json
 
-```
+```text
 {
   "conditions": [
     {
@@ -70,6 +70,7 @@
 ```
 
 **Constraints:**
+
 - `name` must be non-empty after trimming
 - `symptoms` must contain at least 1 unique, non-empty string
 - Localized fields (`_fr`, `_ar`) are optional; absence triggers fallback to base field
@@ -79,7 +80,7 @@
 
 ### 2.2 categories.json
 
-```
+```text
 {
   "categories": [
     {
@@ -94,12 +95,13 @@
 **Current categories:** Respiratory, Gastrointestinal, Neurological, Musculoskeletal, Dermatological, ENT/Eye, Cardiac/Vascular, Endocrine/Metabolic, Genitourinary, Mental Health, General/Systemic, Sexual Health / STIs, Laboratory Findings.
 
 **Matching logic:**
+
 1. If `symptoms` array is non-empty → use exactly those symptom names
 2. Else → for each symptom in vocabulary, check if any keyword is a case-insensitive substring
 
 ### 2.3 translations.json
 
-```
+```text
 {
   "languages": string[] (required, min 1, unique; e.g. ["en","fr","ar"]),
   "ui": [{ "key": string, "en": string, "fr": string?, "ar": string? }],
@@ -112,13 +114,14 @@
 ```
 
 **Notes:**
+
 - `key` values must match canonical names used in code and other data files
 - `en` is required for `ui` and `messages` sections; optional for `symptoms`/`conditions`/`categories` where the key itself serves as the English label
 - Null or empty localized values trigger fallback
 
 ### 2.4 synonyms.json
 
-```
+```text
 {
   "synonyms": [
     {
@@ -133,7 +136,7 @@
 
 ### 2.5 settings.json (auto-generated)
 
-```
+```text
 {
   "Language": string?,
   "DarkMode": boolean,
@@ -184,6 +187,7 @@ Add a `"version"` field to the root of each data file:
 ```
 
 Update schemas to include `version` as an optional string field. Application logic:
+
 1. Read `version` — if absent, assume `"1.0"` (backward compatible)
 2. If version is newer than expected, warn user and proceed with best-effort parsing
 3. On save, always write current version
@@ -205,7 +209,7 @@ Update schemas to include `version` as an optional string field. Application log
 
 ### 4.1 Merge Algorithm (`MergeConditions`)
 
-```
+```text
 For each incoming condition:
   1. Skip if name is empty/whitespace
   2. Lookup existing condition by name (case-insensitive)
@@ -245,7 +249,7 @@ For each incoming condition:
 
 ### 5.1 UI Labels (`T()` method)
 
-```
+```text
 1. Look up key in ui[]
 2. If found: return field for current language (fr/ar), or en if empty
 3. If not in ui[]: look up key in messages[]
@@ -255,7 +259,7 @@ For each incoming condition:
 
 ### 5.2 Symptom / Condition / Category Names
 
-```
+```text
 1. Look up key in respective array (symptoms[]/conditions[]/categories[])
 2. If found and localized value is non-empty: return localized value
 3. Else: return the canonical key (which is the English name)
@@ -263,7 +267,7 @@ For each incoming condition:
 
 ### 5.3 Condition Detail Fields (Treatments, Medications, CareAdvice)
 
-```
+```text
 1. Read language from TranslationService.CurrentLanguage
 2. If "fr": use Treatments_Fr ?? Treatments, Medications_Fr ?? Medications, CareAdvice_Fr ?? CareAdvice
 3. If "ar": use Treatments_Ar ?? Treatments, Medications_Ar ?? Medications, CareAdvice_Ar ?? CareAdvice

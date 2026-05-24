@@ -19,6 +19,7 @@
 ### 1.2 Justification for Non-Regulated Status
 
 The application:
+
 - Does **not** accept free-text patient descriptions
 - Does **not** store patient identifiers (name, DOB, address, insurance, etc.)
 - Does **not** render diagnoses — only educational condition matches
@@ -80,6 +81,7 @@ The application:
 ### 3.2 No Inbound Connections
 
 The application:
+
 - Does not open any listening ports
 - Does not register any URL handlers or protocol handlers
 - Does not expose any API endpoints
@@ -120,6 +122,7 @@ At startup, the following data files are validated against their JSON schemas:
 | `translations.json` | `translations.schema.json` | NJsonSchema |
 
 **On validation failure:**
+
 - Warning logged
 - MessageBox displayed to user
 - Application continues with valid data files; invalid files are skipped
@@ -188,6 +191,7 @@ Every user-facing surface must display or reference the educational disclaimer:
 ### 6.2 Language Requirements
 
 All disclaimers must be:
+
 - Available in all supported languages (EN, FR, AR)
 - Displayed in the currently selected language
 - Never truncated or hidden behind scroll
@@ -195,6 +199,7 @@ All disclaimers must be:
 ### 6.3 No-Diagnosis Guarantee
 
 The application must never:
+
 - Use the word "diagnosis" or "diagnose" in any user-facing text (use "match", "suggestion", "educational result")
 - Present results with > 100% confidence
 - Recommend specific medications or dosages without "educational only" qualifier
