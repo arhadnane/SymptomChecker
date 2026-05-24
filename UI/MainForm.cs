@@ -103,7 +103,9 @@ namespace SymptomCheckerApp.UI
     private Panel? _modeChrome;
     private Label? _modeStatusLabel;
     private Label? _modeHintLabel;
+    private ComboBox? _modeLanguageSelector;
     private Button? _modeSwitchButton;
+    private bool _syncingModeLanguageSelector;
     private UiMode? _activeUiMode;
     // UI: collapse toggle
     private Button? _collapseBtn;
@@ -227,6 +229,7 @@ namespace SymptomCheckerApp.UI
                             vs.SplitterDistance = targetV;
                     }
                     ApplyProfessionalShellLayout();
+                    ApplyModeChromeLayoutCompensation();
                 }
                 catch { }
                 _filterBox.Focus();
@@ -251,6 +254,7 @@ namespace SymptomCheckerApp.UI
                             vs.SplitterDistance = target;
                     }
                     ApplyProfessionalShellLayout();
+                    ApplyModeChromeLayoutCompensation();
                 }
                 catch { }
             };
@@ -507,10 +511,12 @@ namespace SymptomCheckerApp.UI
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 WrapContents = true,
                 AutoScroll = true,
                 FlowDirection = FlowDirection.LeftToRight,
                 Padding = new Padding(3),
+                Margin = new Padding(0),
                 Name = "_topControls"
             };
             var vitalsRow = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, WrapContents = true, Name = "_vitalsRow" };
@@ -826,6 +832,12 @@ namespace SymptomCheckerApp.UI
             _lblPerf.AutoSize = true; _lblPerf.Padding = new Padding(10,6,0,0); _lblPerf.Text = ""; _lblPerf.AccessibleName = "Performance timing"; topControls.Controls.Add(_lblPerf);
             // Top bar (models etc.)
             rightPanel.Controls.Add(topControls, 0, 0);
+            topControls.Resize += (s, e) =>
+            {
+                // Keep wrapping stable across DPI/scaling changes.
+                int maxWidth = Math.Max(240, rightPanel.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 6);
+                topControls.MaximumSize = new Size(maxWidth, 0);
+            };
             // Vitals row
             vitalsRow.Controls.Add(_lblVitals);
             vitalsRow.Controls.Add(_lblTemp);
