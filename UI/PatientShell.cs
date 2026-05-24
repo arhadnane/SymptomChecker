@@ -79,6 +79,7 @@ namespace SymptomCheckerApp.UI
         private readonly Button _backButton = new();
         private readonly Button _nextButton = new();
         private readonly Button _restartButton = new();
+        private readonly Button _switchModeButton = new();
 
         private TranslationService? _translationService;
         private bool _darkMode;
@@ -95,6 +96,7 @@ namespace SymptomCheckerApp.UI
         public event Action<PatientVitalsState>? VitalsChanged;
         public event Action? RunCheckRequested;
         public event Action? RestartRequested;
+        public event Action? ModeSwitchRequested;
 
         public int CurrentStep => _currentStep;
         public FlowLayoutPanel ResultCardsHost => _resultsCards;
@@ -134,6 +136,7 @@ namespace SymptomCheckerApp.UI
 
             _backButton.Text = T("Patient_Back", "Back");
             _restartButton.Text = T("Patient_Restart", "Start over");
+            _switchModeButton.Text = T("Mode_Switch_Button", "Switch mode");
             _nextButton.Text = _currentStep == 3
                 ? T("Patient_RunCheck", "Show results")
                 : T("Patient_Next", "Next");
@@ -330,9 +333,16 @@ namespace SymptomCheckerApp.UI
             _restartButton.Padding = new Padding(12, 7, 12, 7);
             _restartButton.Click += (s, e) => RestartRequested?.Invoke();
 
+            _switchModeButton.AutoSize = true;
+            _switchModeButton.FlatStyle = FlatStyle.Flat;
+            _switchModeButton.Padding = new Padding(12, 7, 12, 7);
+            _switchModeButton.AccessibleName = "Switch mode";
+            _switchModeButton.Click += (s, e) => ModeSwitchRequested?.Invoke();
+
             _navigationBar.Controls.Add(_nextButton);
             _navigationBar.Controls.Add(_backButton);
             _navigationBar.Controls.Add(_restartButton);
+            _navigationBar.Controls.Add(_switchModeButton);
 
             _root.Controls.Add(_header, 0, 0);
             _root.Controls.Add(_contentHost, 0, 1);
@@ -718,6 +728,7 @@ namespace SymptomCheckerApp.UI
 
             StyleNavigationButton(_backButton, secondary: true);
             StyleNavigationButton(_restartButton, secondary: true);
+            StyleNavigationButton(_switchModeButton, secondary: true);
             StyleNavigationButton(_nextButton, secondary: false);
         }
 
