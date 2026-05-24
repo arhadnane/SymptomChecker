@@ -79,10 +79,43 @@ namespace SymptomCheckerApp.UI
                 }
             };
 
+            _modeLanguageSelector = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = ScaleX(110),
+                Margin = new Padding(0, 4, 8, 4),
+                AccessibleName = "Quick language selector"
+            };
+            _modeLanguageSelector.SelectedIndexChanged += (s, e) =>
+            {
+                if (_syncingModeLanguageSelector || _modeLanguageSelector.SelectedItem is not LangItem selected) return;
+
+                for (int i = 0; i < _languageSelector.Items.Count; i++)
+                {
+                    if (_languageSelector.Items[i] is LangItem item &&
+                        item.Code.Equals(selected.Code, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _languageSelector.SelectedIndex = i;
+                        break;
+                    }
+                }
+            };
+
+            var rightActions = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                WrapContents = false,
+                FlowDirection = FlowDirection.LeftToRight,
+                Margin = new Padding(0),
+                Padding = new Padding(0)
+            };
+            rightActions.Controls.Add(_modeLanguageSelector);
+            rightActions.Controls.Add(_modeSwitchButton);
+
             leftStack.Controls.Add(_modeStatusLabel, 0, 0);
             leftStack.Controls.Add(_modeHintLabel, 0, 1);
             layout.Controls.Add(leftStack, 0, 0);
-            layout.Controls.Add(_modeSwitchButton, 1, 0);
+            layout.Controls.Add(rightActions, 1, 0);
             _modeChrome.Controls.Add(layout);
 
             Controls.Add(_modeChrome);
@@ -94,8 +127,28 @@ namespace SymptomCheckerApp.UI
         {
             if (_modeChrome == null) return;
 
-            _modeChrome.SendToBack();
+            // Keep the mode chrome above the main content and reserve layout space.
+            _modeChrome.BringToFront();
+            Controls.SetChildIndex(_modeChrome, 0);
+            ApplyModeChromeLayoutCompensation();
             PerformLayout();
+        }
+
+        private void ApplyModeChromeLayoutCompensation()
+        {
+            if (_mainVerticalSplitHost == null) return;
+
+            int topOffset = (_modeChrome != null && _modeChrome.Visible)
+                ? _modeChrome.Bottom
+                : 0;
+
+            _mainVerticalSplitHost.Dock = DockStyle.None;
+            _mainVerticalSplitHost.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _mainVerticalSplitHost.Location = new Point(0, topOffset);
+            _mainVerticalSplitHost.Size = new Size(
+                Math.Max(200, ClientSize.Width),
+                Math.Max(160, ClientSize.Height - topOffset));
+            _mainVerticalSplitHost.PerformLayout();
         }
 
         private void EnsureModeSelectorOverlay()
@@ -140,6 +193,7 @@ namespace SymptomCheckerApp.UI
             _modeSelectorOverlay.Visible = true;
             _modeSelectorOverlay.BringToFront();
             if (_modeChrome != null) _modeChrome.Visible = false;
+            ApplyModeChromeLayoutCompensation();
             _modeSelectorOverlay.Focus();
         }
 
@@ -154,6 +208,7 @@ namespace SymptomCheckerApp.UI
                 _modeChrome.Visible = true;
                 EnsureModeChromeDockOrder();
             }
+            ApplyModeChromeLayoutCompensation();
         }
 
         private void ToggleUiMode()
@@ -270,6 +325,7 @@ namespace SymptomCheckerApp.UI
             }
 
             HideModeSelector();
+            ApplyModeChromeLayoutCompensation();
             UpdateModePresentation();
 
             BeginInvoke(new Action(() =>
@@ -326,6 +382,8 @@ namespace SymptomCheckerApp.UI
                 _modeSwitchButton.Text = TMode("Mode_Switch_Button", "Switch mode");
             }
 
+            SyncModeLanguageSelector();
+
             if (_modeChrome != null)
             {
                 bool dark = _darkModeToggle.Checked;
@@ -343,6 +401,11 @@ namespace SymptomCheckerApp.UI
                     _modeSwitchButton.BackColor = dark ? Color.FromArgb(54, 62, 72) : Color.White;
                     _modeSwitchButton.ForeColor = dark ? Color.WhiteSmoke : Color.FromArgb(28, 28, 28);
                 }
+                if (_modeLanguageSelector != null)
+                {
+                    _modeLanguageSelector.BackColor = dark ? Color.FromArgb(54, 62, 72) : Color.White;
+                    _modeLanguageSelector.ForeColor = dark ? Color.WhiteSmoke : Color.FromArgb(28, 28, 28);
+                }
             }
 
             _modeSelectorOverlay?.UpdatePresentation(_translationService, _darkModeToggle.Checked);
@@ -355,6 +418,47 @@ namespace SymptomCheckerApp.UI
             foreach (var control in controls)
             {
                 control.Visible = visible;
+            }
+        }
+
+        private void SyncModeLanguageSelector()
+        {
+            if (_modeLanguageSelector == null) return;
+
+            _syncingModeLanguageSelector = true;
+            try
+            {
+                _modeLanguageSelector.Items.Clear();
+                foreach (var item in _languageSelector.Items)
+                {
+                    if (item is LangItem lang)
+                    {
+                        _modeLanguageSelector.Items.Add(lang);
+                    }
+                }
+
+                if (_languageSelector.SelectedItem is LangItem selected)
+                {
+                    for (int i = 0; i < _modeLanguageSelector.Items.Count; i++)
+                    {
+                        if (_modeLanguageSelector.Items[i] is LangItem lang &&
+                            lang.Code.Equals(selected.Code, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _modeLanguageSelector.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else if (_modeLanguageSelector.Items.Count > 0)
+                {
+                    _modeLanguageSelector.SelectedIndex = 0;
+                }
+
+                _modeLanguageSelector.Enabled = _modeLanguageSelector.Items.Count > 0;
+            }
+            finally
+            {
+                _syncingModeLanguageSelector = false;
             }
         }
 
@@ -371,6 +475,18 @@ namespace SymptomCheckerApp.UI
             if (control == null) return;
 
             control.Visible = true;
+            if (control is FlowLayoutPanel flow)
+            {
+                flow.AutoSize = true;
+                flow.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                flow.WrapContents = true;
+                flow.AutoScroll = true;
+                foreach (Control child in flow.Controls)
+                {
+                    child.Visible = true;
+                }
+                flow.PerformLayout();
+            }
 
             var current = control.Parent;
             while (current != null)
